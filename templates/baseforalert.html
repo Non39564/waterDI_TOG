@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Bootstrap demo{% endblock %}</title>
+    <!-- JQuery links  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Notifications -->
+    <link
+      href="{{ url_for('static', filename='css/notification.css') }}"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.js"
+    ></script>
+    <!-- Google CHART LIVE  -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Apex CHART LIVE  -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/sidebar.css') }}"
+    />
+    
+    <!--Toast-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var toastElementList = [].slice.call(document.querySelectorAll(".toast"));
+      var toastList = toastElementList.map(function(element){
+          return new bootstrap.Toast(element, {
+              autohide: true
+            });
+      });
+    });
+    </script>
+    {% block head %} {% endblock %}
+    <script>
+      
+    </script>
+  </head>
+  <body>
+    <!-- The sidebar -->
+    <!--Main Navigation-->
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenualert" class="collapse d-lg-block sidebar collapse bg-dark bg-gradient text-white">
+      <div class="position-sticky">
+        <div id="v-tabs-tab" class="list-group list-group-flush mx-3 mt-4 ">
+          <a href="/" class="list-group-item list-group-item-action py-2 ripple 
+          border-0 border-bottom bg-dark bg-gradient text-white"
+            ><i class="bi-solid bi-display fa-fw me-3"></i><span>Live Monitor</span>
+          </a>
+          <a href="alert" class="list-group-item list-group-item-action py-2 ripple 
+          border-0 border-bottom bg-dark bg-gradient text-white"
+            ><i class="fa-solid fa-bell fa-fw me-3"></i><span>Alert Status</span>
+          </a>
+          {% if current_user.is_authenticated %}
+          <a href="add" class="list-group-item list-group-item-action py-2 ripple 
+          border-0 border-bottom bg-dark bg-gradient text-white"
+            ><i class="fa-solid fa-bell fa-fw me-3"></i><span>Add</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+    <!-- Sidebar -->
+  
+    <!-- Navbar -->
+    <nav id="main-navbaralert" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <!-- Container wrapper -->
+      <div class="container-fluid pl-20">
+        
+        <!-- Toggle button -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#sidebarMenualert"
+          aria-controls="sidebarMenualert"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+  
+        <!-- Brand -->
+        <a class="navbar-brand " href="/">
+          <img
+            src="https://www.thaiopticalgroup.com/TOGEU.png"
+            height="50"
+            alt="TOG Logo"
+            loading="lazy"
+          />
+        </a>
+      <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+  </header>
+  <!--Main Navigation-->
+  
+  <!--Main layout-->
+  <main style="margin-top: 58px;">
+    <div class="container pt-4">{% block content %} {% endblock %}</div>
+  </main>
+  <!--Main layout-->
+     {% block footer %} {% endblock %}
+     {% block script %} {% endblock %}
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function () {
+      $('.nav a').click(function(e) {
+  
+          $('.nav a.active').removeClass('active');
+  
+          var $parent = $(this).parent();
+          $parent.addClass('active');
+          e.preventDefault();
+      });
+    });
+  </script>
+  </body>
+</html>

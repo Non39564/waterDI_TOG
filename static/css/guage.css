@@ -1,0 +1,10 @@
+#data {
+    height: 100%;
+    width: 100%;
+}
+
+.display{
+	display:none;
+    padding:10px;
+    margin-top:20px;
+}

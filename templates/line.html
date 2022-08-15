@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block title %}Real-Time Charts{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/line.js') }}"></script>
+{% endblock %}
+{% block content %}
+<!-- <div class="select-wrapper">
+    <select id="selectionLP" class="select select-initialized">
+        <option value="" disabled selected>Choose Phase</option>
+        <option value="all">All</option>
+        <option value="LP4">OP2 Phase 4</option>
+        <option value="LP5">OP2 Phase 5</option>
+        <option value="LP9">OP2 Phase 9</option>
+    </select>
+</div> -->
+<div id="linechartP4" class="display dataP4"></div>
+<div id="linechartP5" class="display dataP5"></div>
+<div id="linechartP9" class="display dataP9"></div>
+{% endblock %}
+{% block script %}
+{% endblock %}
