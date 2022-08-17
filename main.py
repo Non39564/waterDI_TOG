@@ -1,12 +1,53 @@
-from flask import Flask, render_template, make_response, jsonify, request
+from cmath import phase
+from flask import Flask, render_template, make_response, jsonify, request, redirect, url_for
 from flask_login import LoginManager, login_required
 import flask_login, flask
-import json, requests, os
+import json, requests, urllib.request
 import time
 from time import time
 
 app = Flask(__name__)
 app.secret_key = 'waterdishow'
+
+def clean(phase, result):
+    data = 0
+    if phase == "4":
+        data = 0
+    if phase == "5":
+        data = 1
+    if phase == "9":
+        data = 2
+    with open("./static/js/guage.js", "r") as f:
+        lines = f.readlines()
+    with open("./static/js/guage.js", "w") as f:
+        for line in lines:
+            print(line)
+            print(phase)
+            print(data)
+            print(result)
+            if not f"""dataP{phase}.addRow([json[{data}].Data[{result}].id, json[{data}].Data[{result}].Water]);""" in line.strip("\n"):
+                f.write(line)
+                
+def addtoshow(phase, result):
+    if phase == "Phase 4":
+        phase = 4
+        data = 0
+        line_insert = 28
+    elif phase == "Phase 5":
+        phase = 5
+        data = 1
+        line_insert = 36
+    else :
+        phase = 9
+        data = 2
+        line_insert = 45
+    with open("./static/js/guage.js", "r") as f:
+        lines = f.readlines()
+        lines[line_insert] =  f'\n dataP{phase}.addRow([json[{data}].Data[{result}].id, json[{data}].Data[{result}].Water]);  \n'
+        a_file = open("./static/js/guage.js", "w")
+        a_file.writelines(lines)
+        a_file.close()
+
 #login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -43,19 +84,77 @@ def login():
         user.id = username
         flask_login.login_user(user)
         return flask.redirect(flask.url_for('index'))
+    
+    errorpassword = "True"
+    return render_template('index.html', sweetalert=errorpassword)
 
-    return 'Bad login'
-
-@app.route('/protected')
-@flask_login.login_required
-def protected():
-    return 'Logged in as: ' + flask_login.current_user.id
-
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 @flask_login.login_required
 def add():
+    if request.method == 'POST':
+        phase = flask.request.form['inputPhase']
+        Mname = flask.request.form['inputnameM']
+        listofname = []
+        with urllib.request.urlopen("http://127.0.0.1:5000/dataapi") as url:
+            data = json.loads(url.read().decode())
+            for datause in data:
+                if datause['Phase'] == phase:
+                    for position in datause['Data']:
+                        listofname.append(position['id'])
+                        if phase == "Phase 4" and position['id'] == Mname:
+                            find_key = Mname
+                            result = listofname.index(find_key)
+                            addsuccess = "True"
+                            addtoshow(phase, result)
+                            break
+                        elif phase == "Phase 5" and position['id'] == Mname:
+                            find_key = Mname
+                            result = listofname.index(find_key)
+                            addsuccess = "True"
+                            addtoshow(phase, result)
+                            break
+                        elif phase == "Phase 9" and position['id'] == Mname:
+                            find_key = Mname
+                            result = listofname.index(find_key)
+                            addsuccess = "True"
+                            addtoshow(phase, result)
+                            break
+                        else :
+                            addsuccess = "False"
+                        
+        return render_template('add.html',phase = phase, Mname = Mname, addsuccess=addsuccess)
     return render_template('add.html')
 
+@app.route('/delete', methods=['GET', 'POST'])
+@flask_login.login_required
+def delete():
+    phase = flask.request.form['delPhase']
+    Mname = flask.request.form['delnameM']
+    Fphase = "Phase " + phase
+    listofname = []
+    with urllib.request.urlopen("http://127.0.0.1:5000/dataapi") as url:
+        data = json.loads(url.read().decode())
+        for datause in data:
+            if datause['Phase'] == Fphase:
+                for position in datause['Data']:
+                    listofname.append(position['id'])
+                    if Fphase == "Phase 4" and position['id'] == Mname:
+                        find_key = Mname
+                        result = listofname.index(find_key)
+                        delsuccess = "True"
+                        clean(phase, result)
+                    if Fphase == "Phase 5" and position['id'] == Mname:
+                        find_key = Mname
+                        result = listofname.index(find_key)
+                        delsuccess = "True"
+                        clean(phase, result)
+                    if Fphase == "Phase 9" and position['id'] == Mname:
+                        find_key = Mname
+                        result = listofname.index(find_key)
+                        delsuccess = "True"
+                        clean(phase, result)
+    return render_template('add.html',phase = phase, Mname = Mname, delsuccess = delsuccess)
+        
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
@@ -106,7 +205,8 @@ def dataapi():
                                                       {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
                                                       {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
                                                       {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
-                                                      {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
+                                                      {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},
+                                                      {"id":"Test", "Water":data[1], "Temp":data[9], "Status":True},]},
           ]
     response = make_response(json.dumps(user))
     response.content_type = 'application/json'

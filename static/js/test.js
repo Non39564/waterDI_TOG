@@ -26,7 +26,7 @@ function drawChart() {
       dataP4.addRow([json[0].Data[0].id, json[0].Data[0].Water]);
       dataP4.addRow([json[0].Data[1].id, json[0].Data[1].Water]);
       dataP4.addRow([json[0].Data[2].id, json[0].Data[2].Water]);
- 
+
 
       document.getElementById("Phase5").innerHTML = json[0].Station+" "+json[1].Phase;
       dataP5.addRow([json[1].Data[0].id, json[1].Data[0].Water]);
@@ -39,11 +39,11 @@ function drawChart() {
       document.getElementById("Phase9").innerHTML = json[0].Station+" "+json[2].Phase;
       dataP9.addRow([json[2].Data[0].id, json[2].Data[0].Water]);
       dataP9.addRow([json[2].Data[1].id, json[2].Data[1].Water]);
-      dataP9.addRow([json[2].Data[3].id, json[2].Data[3].Water]);  
+      dataP9.addRow([json[2].Data[2].id, json[2].Data[2].Water]);
       dataP9.addRow([json[2].Data[3].id, json[2].Data[3].Water]);
       dataP9.addRow([json[2].Data[4].id, json[2].Data[4].Water]);
       dataP9.addRow([json[2].Data[5].id, json[2].Data[5].Water]);
-
+      
           
       chartP4.draw(dataP4, options);
       chartP5.draw(dataP5, options);

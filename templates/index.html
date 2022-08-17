@@ -2,7 +2,6 @@
 {% block title %}Real-Time Charts{% endblock %}
 {% block head %}
 <script src="{{ url_for('static', filename='js/guage.js') }}"></script>
-<script src="{{ url_for('static', filename='js/alert.js') }}"></script>
 {% endblock %}
 {% block content %}
 
@@ -15,16 +14,9 @@
         <option value="P9">OP2 Phase 9</option>
     </select>
 </div>
-<div id="container"></div>
-<!-- Tab content -->
-<div class="tab-content" id="v-tabs-tabContent">
+
 <!-- Phase -->
-    <div 
-    class="tab-pane fade show active"
-    id="v-tabs-status"
-    role="tabpanel"
-    aria-labelledby="v-tabs-status-tab"
-    >
+
         <div class="p-1 mb-2 bg-dark bg-gradient text-white">
             <h2 class="text-center m-0" id="Phase4"></h2>
         </div>
@@ -38,66 +30,8 @@
             <h2 class="text-center m-0" id="Phase9"></h2>
         </div>
         <div id="dataP9" class="display dataP9"></div>
-    </div>
 
 <!-- Phase end -->
-<!-- Line Chart -->
-    <div 
-        class="tab-pane fade"
-        id="v-tabs-sumary"
-        role="tabpanel"
-        aria-labelledby="v-tabs-sumary-tab"
-    >
-    {% include 'line.html' %}
-    </div>
-<!-- End Line Chart -->
-<!-- Add -->
-<div 
-        class="tab-pane fade"
-        id="v-tabs-add"
-        role="tabpanel"
-        aria-labelledby="v-tabs-add-tab"
-    >
-    {% include 'add.html' %}
-</div>
-<!-- End Add -->
-
-</div>
-
-<!-- Toasts -->
-
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header bg-danger bg-gradient text-white ">
-      <!-- <img src="..." class="rounded me-2" alt="..."> -->
-      <i class='fas fa-exclamation-triangle'></i>&nbsp
-      <strong class="me-auto">Alert</strong>
-      <small id="timealert"></small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body bg-danger text-white ">
-      <div id="AlertId"></div>
-    </div>
-  </div>
-</div>
-<!--End Toasts -->
-
- <!-- End Tab content -->
-
 {% endblock %}
 {% block script %}
-<script>
-    $(document).ready(function(){
-        $('#selectionGP').on('change', function(){
-            var demovalue = $(this).val();
-            if ($(this).val() == "all"){
-                $("div.display").show();
-            } else {
-                $("div.display").hide();
-                $(".data"+demovalue).show();
-            }
-        });
-    });
-</script>
-
 {% endblock %}

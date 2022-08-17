@@ -4,8 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Bootstrap demo{% endblock %}</title>
-    <!-- JQuery links  -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -32,15 +30,17 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css"
       rel="stylesheet"
     />
-    <!-- MDB -->
+    
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.js"
     ></script>
     <!-- Google CHART LIVE  -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!-- Apex CHART LIVE  -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- JQuery links  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <link
       type="text/css"
       rel="stylesheet"
@@ -61,81 +61,105 @@
     });
     </script>
     {% block head %} {% endblock %}
-    <script>
-      
-    </script>
+    <script src="{{ url_for('static', filename='js/alert.js') }}"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   </head>
+  {% if sweetalert == "True" %}
+  <body onload="AlertsLogin()">
+  {% endif %}
+  {% if addsuccess == "True" %}
+  <body onload="AlertAddSuccess()">
+  {% endif %}
+  {% if addsuccess == "False" %}
+  <body onload="AlertAddError()">
+  {% endif %}
+  {% if delsuccess== "True" %}
+  <body onload="AlertDeleteSuccess()">
+  {% endif %}
   <body>
     <!-- The sidebar -->
     <!--Main Navigation-->
 <header>
     <!-- Sidebar -->
-    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-dark bg-gradient text-white">
+    <nav id="sidebarMenu" class="d-lg-block sidebar collapse bg-dark bg-gradient text-white">
       <div class="position-sticky">
-        <div id="v-tabs-tab" class="list-group list-group-flush mx-3 mt-4 ">
-          <div
-          class="nav flex-column nav-tabs text-center "
-          id="v-tabs-tab"
-          role="tablist"
-          aria-orientation="vertical"
-          >
+        <!-- side nav new -->
+        <div class="list-group list-group-flush mt-4">
           <a
-            class="list-group-item list-group-item-action py-2 ripple 
-            border-0 border-bottom bg-dark bg-gradient text-white"
-            id="/"
-            data-mdb-toggle="tab"
-            href="#v-tabs-status"
-            aria-selected="true"
-          >
-            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Status  Machine code</span>
+             href="/"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="fas fa-tachometer-alt fa-fw me-3"></i>
+             <span>Status  Machine code</span>
           </a>
-          <a 
-            class="list-group-item list-group-item-action py-2 ripple 
-            border-0 border-bottom bg-dark bg-gradient text-white"
-            id="sumary"
-            data-mdb-toggle="tab"
-            href="#v-tabs-sumary"
-            aria-selected="true"
-          >
-            <i class="fas fa-chart-area fa-fw me-3"></i><span>Sumary Deionzed water</span>
+          <a
+             href="line"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="fas fa-chart-line fa-fw me-3"></i>
+             <span>Sumary Deionzed water</span>
           </a>
-          <a href="report" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white" 
-            ><i class="fas fa-lock fa-fw me-3"></i><span>Trend Deionized water</span>
+          <a
+             href="#"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="fa-solid fa-square-poll-horizontal fa-fw me-3"></i>
+             <span>Trend Deionized water</span>
           </a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white"
-            ><i class="fas fa-chart-line fa-fw me-3"></i><span>Status Open Carbon and Resin</span>
+          <a
+             href="#"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="fas fa-toggle-on fa-fw me-3"></i>
+            <span>Status Open Carbon and Resin</span>
+          </a>
+          <a
+             href="alert"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+            <i class="fa-solid fa-bell fa-fw me-3"></i>
+            <span>Alert Status</span>
           </a>
           {% if current_user.is_authenticated %}
-          <a 
-          class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white"
-          id="add"
-          data-mdb-toggle="tab"
-          href="#v-tabs-add"
-          aria-selected="true"
-            ><i class="bi bi-node-plus-fill fa-fw me-3"></i><span>Add</span>
+          <a
+             href="add"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+            <i class="bi bi-node-plus-fill fa-fw me-3"></i>
+            <span>Manage Machine</span>
           </a>
-          {% endif %}
-          </div>
-          <a href="alert" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white"
-            ><i class="fa-solid fa-bell fa-fw me-3"></i><span>Alert Status</span>
-          </a>
-          {% if current_user.is_authenticated %}
-          <a href="logout" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white "style="margin-top: 100%;"
-            ><i class="bi-solid bi-door-open-fill fa-fw me-3"></i><span>Logout</span>
+          <a
+             href="logout"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true" style="margin-top: 100%;"
+             >
+            <i class="bi-solid bi-door-open-fill fa-fw me-3"></i>
+            <span>Logout</span>
           </a>
           {% else %}
-          <!-- Button trigger modal -->
           <button type="button" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white" id="loginbutton" data-mdb-toggle="modal" data-mdb-target="#exampleModal" style="margin-top: 120%;">
-            <i class="bi-solid bi-door-open-fill fa-fw me-3"></i><span>Login</span>
+          border-0 border-bottom bg-dark bg-gradient text-white" style="margin-top: 120%;" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+          <i class="bi-solid bi-door-open-fill fa-fw me-3"></i><span>Login</span>
           </button>
           {% endif %}
+
         </div>
+        <!-- end side nav new -->
         <!-- Tab navs -->
       </div>
     </nav>
@@ -186,6 +210,7 @@
             <span id="countli" class="badge rounded-pill badge-notification bg-danger">0</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" id="ul_o" aria-labelledby="dropdownMenuButton">
+            <!--data From Database-->
             <li><a class="dropdown-item " href="alert">Action</a></li>
             <li><a class="dropdown-item" href="alert">Another action</a></li>
             <li><a class="dropdown-item" href="alert">Something else here</a></li>
@@ -193,9 +218,6 @@
             <li><a class="dropdown-item" href="alert">Something else here</a></li>
             <li><a class="dropdown-item" href="alert">Something else here</a></li>
           </ul>
-          
-            
-            
         </div>
         
         <!--End Notifications -->
@@ -205,18 +227,32 @@
     <!-- Navbar -->
   </header>
   <!--Main Navigation-->
-  
+  <!-- Modal -->
   <!--Main layout-->
   {% include 'loginform.html' %}
-  <main style="margin-top: 58px; padding-left: 0px;">
+  <main style="margin-top: 58px; ">
     <div class="container pt-4">{% block content %} {% endblock %}</div>
+    <!-- Toasts -->
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger bg-gradient text-white ">
+          <i class='fas fa-exclamation-triangle'></i>&nbsp
+          <strong class="me-auto">Alert</strong>
+          <small id="timealert"></small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-danger text-white ">
+          <div id="AlertId"></div>
+        </div>
+      </div>
+    </div>
+    <!--End Toasts -->
   </main>
+  
   <!--Main layout-->
      {% block footer %} {% endblock %}
      {% block script %} {% endblock %}
-     <!-- alert -->
-     
-     <!-- end alert -->
   <script>
     $(document).ready(function () {
       $('.nav a').click(function(e) {
@@ -236,6 +272,18 @@
       document.getElementById("countli").innerHTML = 0
     });
   </script>
-
-  </body>
+  <script>
+    $(document).ready(function(){
+        $('#selectionGP').on('change', function(){
+            var demovalue = $(this).val();
+            if ($(this).val() == "all"){
+                $("div.display").show();
+            } else {
+                $("div.display").hide();
+                $(".data"+demovalue).show();
+            }
+        });
+    });
+  </script>
+</body>
 </html>
