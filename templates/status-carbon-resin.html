@@ -1,0 +1,176 @@
+{% extends 'layout.html' %}
+{% block title %}Alert{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/line.js') }}"></script>
+<!-- Choose date -->
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- script pagination -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<!-- css pagination -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+{% endblock %}
+{% block content %}
+<div class="card">
+    <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">
+        Status Open Carbon and Resin 
+            <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" />
+    </h5>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <h5 class="card-header d-flex justify-content-center bg-dark bg-gradient text-white">Phase 4</h5>
+                    <div class="card-body">
+                            <table class="display table align-middle mb-0 bg-white">
+                                <thead class="bg-light">
+                                  <tr>
+                                    <th>Date</th>
+                                    <th>Machine</th>
+                                    <th>Carbon</th>
+                                    <th>Resin 1</th>
+                                    <th>Resin 2</th>
+                                    <th>Resin 3</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        
+                    </div>
+                  </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <h5 class="card-header d-flex justify-content-center bg-dark bg-gradient text-white">Phase 5</h5>
+                    <div class="card-body">
+                            <table class="display table align-middle mb-0 bg-white">
+                                <thead class="bg-light">
+                                  <tr>
+                                    <th>Date</th>
+                                    <th>Machine</th>
+                                    <th>Carbon</th>
+                                    <th>Resin 1</th>
+                                    <th>Resin 2</th>
+                                    <th>Resin 3</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        
+                    </div>
+                  </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+                <div class="card mt-3">
+                    <h5 class="card-header d-flex justify-content-center bg-dark bg-gradient text-white">Phase 9</h5>
+                    <div class="card-body">
+                            <table class="display table align-middle mb-0 bg-white">
+                                <thead class="bg-light">
+                                  <tr>
+                                    <th>Date</th>
+                                    <th>Machine</th>
+                                    <th>Carbon</th>
+                                    <th>Resin 1</th>
+                                    <th>Resin 2</th>
+                                    <th>Resin 3</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0"></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                    <td>
+                                      <p class="text-muted mb-0 "></p>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-6">
+
+            </div>
+          </div>
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(function() {
+        $('input[name="daterange"]').daterangepicker();
+    });
+</script>
+<script>
+  $(document).ready(function () {
+    $('table.display').DataTable({
+      pagingType: 'full_numbers',
+      scrollY: '200px',
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+});
+</script>
+{% endblock %}

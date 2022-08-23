@@ -1,73 +1,164 @@
-google.charts.load('current', {'packages':['gauge']});
+google.charts.load('current', {'packages':['line']});
 google.charts.setOnLoadCallback(drawChart);
 
-var start = new Date().getTime();
-var end = new Date().getTime();
-var time = end - start;
+var timer = [];
+//P4
+var robot = [];
+var fisa2 = [];
+var fisa4 = [];
+
+
+//P5
+var L13 = [];
+var L14 = [];
+var L15S1 = [];
+var L15S2 = [];
+var fisa3 = [];
+
+
+//P9
+var HC4 = [];
+var HC5S1 = [];
+var HC5S2 = [];
+var AI = [];
+var HC3 = [];
+var HC6 = [];
+
+
 
 function drawChart() {
 
-  function drawGauge() {
-    $.getJSON('/dataapi').done(function (json){
+    var optionsLP4 = {
+        chart: {
+          title: 'Phase4',
+        },
+        width: 900,
+        height: 500
+    };
 
-      var dataP4 = new google.visualization.DataTable();
-      dataP4.addColumn('string', 'Label');
-      dataP4.addColumn('number', 'Value');
+    var optionsLP5 = {
+      chart: {
+        title: 'Phase5',
+      },
+      width: 900,
+      height: 500
+    };
 
-      var dataP5 = new google.visualization.DataTable();
-      dataP5.addColumn('string', 'Label');
-      dataP5.addColumn('number', 'Value');
+    var optionsLP9 = {
+      chart: {
+        title: 'Phase9',
+      },
+      width: 900,
+      height: 500
+    };
 
-      var dataP9 = new google.visualization.DataTable();
-      dataP9.addColumn('string', 'Label');
-      dataP9.addColumn('number', 'Value');
+      function drawLine() {
+        $.getJSON('/dataapi', function (json) {
+        function addLeadingZero(num) {
+            return (num <= 9) ? ("0" + num) : num;
+          }
+    
+        currDate = new Date(),
+        time = addLeadingZero(currDate.getHours()) + ":" +
+        addLeadingZero(currDate.getMinutes()) + ":" +
+        addLeadingZero(currDate.getSeconds());
+        
+        timer.push(time.toString());
+        //P4
+        robot.push(json[0].Data[0].Water);
+        fisa2.push(json[0].Data[1].Water);
+        fisa4.push(json[0].Data[2].Water);
 
-      document.getElementById("Phase4").innerHTML = json[0].Station+" "+json[0].Phase;
-      dataP4.addRow([json[0].Data[0].id, json[0].Data[0].Water]);
-      dataP4.addRow([json[0].Data[1].id, json[0].Data[1].Water]);
-      dataP4.addRow([json[0].Data[2].id, json[0].Data[2].Water]);
+
+        //P5
+        L15S1.push(json[1].Data[0].Water);
+        L15S2.push(json[1].Data[1].Water);
+        fisa3.push(json[1].Data[2].Water);
+        L13.push(json[1].Data[3].Water);
+        L14.push(json[1].Data[4].Water);
 
 
-      document.getElementById("Phase5").innerHTML = json[0].Station+" "+json[1].Phase;
-      dataP5.addRow([json[1].Data[0].id, json[1].Data[0].Water]);
-      dataP5.addRow([json[1].Data[1].id, json[1].Data[1].Water]);
-      dataP5.addRow([json[1].Data[2].id, json[1].Data[2].Water]);
-      dataP5.addRow([json[1].Data[3].id, json[1].Data[3].Water]);
-      dataP5.addRow([json[1].Data[4].id, json[1].Data[4].Water]);
+        //P9
+        HC4.push(json[2].Data[0].Water);
+        HC5S1.push(json[2].Data[1].Water);
+        HC5S2.push(json[2].Data[2].Water);
+        AI.push(json[2].Data[3].Water);
+        HC3.push(json[2].Data[4].Water);
+        HC4.push(json[2].Data[5].Water);
 
 
-      document.getElementById("Phase9").innerHTML = json[0].Station+" "+json[2].Phase;
-      dataP9.addRow([json[2].Data[0].id, json[2].Data[0].Water]);
-      dataP9.addRow([json[2].Data[1].id, json[2].Data[1].Water]);
-      dataP9.addRow([json[2].Data[2].id, json[2].Data[2].Water]);
-      dataP9.addRow([json[2].Data[3].id, json[2].Data[3].Water]);
-      dataP9.addRow([json[2].Data[4].id, json[2].Data[4].Water]);
-      dataP9.addRow([json[2].Data[5].id, json[2].Data[5].Water]);
-      
-          
-      chartP4.draw(dataP4, options);
-      chartP5.draw(dataP5, options);
-      chartP9.draw(dataP9, options);
+         if (timer.length == 11) {
+            timer.shift();
+            robot.shift();
+            fisa2.shift();
+            fisa4.shift();
+            L15S1.shift();
+            L15S2.shift();
+            fisa3.shift();
+            L13.shift();
+            L14.shift();
+            HC4.shift();
+            HC5S1.shift();
+            HC5S2.shift();
+            AI.shift();
+            HC3.shift();
+            HC4.shift();
 
-    });
-  }
 
-  var chartP4 = new google.visualization.Gauge(document.getElementById('dataP4'));
-  var chartP5 = new google.visualization.Gauge(document.getElementById('dataP5'));
-  var chartP9 = new google.visualization.Gauge(document.getElementById('dataP9'));
+         };
 
-  var options = {
-    // width:1000, height:500,
-    redFrom: 0, redTo: 5,
-    yellowFrom: 5, yellowTo: 20,
-    greenFrom: 20, greenTo: 30,
-    min: 0, max: 30,
-    minorTicks: 5
-  };
+        var dataLP4 = new google.visualization.DataTable();
+        dataLP4.addColumn('string', 'Time');
+        dataLP4.addColumn('number', json[0].Data[0].id);
+        dataLP4.addColumn('number', json[0].Data[1].id);
+        dataLP4.addColumn('number', json[0].Data[2].id);
 
-    setInterval(drawGauge, 1000);
+
+        for(i = 0; i < timer.length; i++){
+
+          dataLP4.addRow([timer[i], robot[i], fisa2[i], fisa4[i]]);
+
+        };
+        
+        var dataLP5 = new google.visualization.DataTable();
+        dataLP5.addColumn('string', 'Time');
+        dataLP5.addColumn('number', json[1].Data[0].id);
+        dataLP5.addColumn('number', json[1].Data[1].id);
+        dataLP5.addColumn('number', json[1].Data[2].id);
+        dataLP5.addColumn('number', json[1].Data[3].id);
+        dataLP5.addColumn('number', json[1].Data[4].id);
+
+
+        for(i = 0; i < timer.length; i++){
+
+          dataLP5.addRow([timer[i], L15S1[i], L15S2[i], fisa3[i], L13[i], L14[i]]);
+
+        };
+
+        var dataLP9 = new google.visualization.DataTable();
+        dataLP9.addColumn('string', 'Time');
+        dataLP9.addColumn('number', json[2].Data[0].id);
+        dataLP9.addColumn('number', json[2].Data[1].id);
+        dataLP9.addColumn('number', json[2].Data[2].id);
+        dataLP9.addColumn('number', json[2].Data[3].id);
+        dataLP9.addColumn('number', json[2].Data[4].id);
+        dataLP9.addColumn('number', json[2].Data[5].id);
+
+        
+        for(i = 0; i < timer.length; i++){
+
+          dataLP9.addRow([timer[i], HC4[i], HC5S1[i], HC5S2[i], AI[i], HC3[i], HC4[i]]);
+
+        };
+
+        chartLP4.draw(dataLP4, google.charts.Line.convertOptions(optionsLP4));
+        chartLP5.draw(dataLP5, google.charts.Line.convertOptions(optionsLP5));
+        chartLP9.draw(dataLP9, google.charts.Line.convertOptions(optionsLP9));
+        }); 
+    }
+    setInterval(drawLine, 1000);
+
+var chartLP4 = new google.charts.Line(document.getElementById('linechartP4'));
+var chartLP5 = new google.charts.Line(document.getElementById('linechartP5'));
+var chartLP9 = new google.charts.Line(document.getElementById('linechartP9'));
 }
-
-$(window).resize(function(){
-  drawChart();
-});

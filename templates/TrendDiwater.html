@@ -1,0 +1,383 @@
+{% extends 'layout.html' %}
+{% block title %}Alert{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/line.js') }}"></script>
+<!-- Choose date -->
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- script pagination -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<!-- css pagination -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+{% endblock %}
+{% block content %}
+<div class="card">
+    <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Trend Deionized water
+        <div class="d-flex flex-row-reverse">
+            <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" />
+
+<script type="text/javascript">
+$(function() {
+    $('input[name="daterange"]').daterangepicker();
+});
+</script>
+    </h5>
+    <div class="card-body">
+        <div class="card">
+            <div class="card-header bg-dark bg-gradient text-white">Phase4</div>
+              <div class="card-body">
+                  <div class="row">
+                      <div class="col-6">
+                              <table class="display table align-middle mb-0 bg-white">
+                                  <thead class="bg-light">
+                                    <tr>
+                                      <th>Date</th>
+                                      <th>Machine</th>
+                                      <th>Status Machine</th>
+                                      <th>StatusDIWater</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 4</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0 ">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 2</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                      </div>
+                      <div class="col-6">
+                          <div id="linechartP4" class="display dataP4" style="height: 18rem;"></div>
+                      </div>
+                    </div>
+              </div>
+          </div>
+          <div class="card mt-3">
+            <div class="card-header bg-dark bg-gradient text-white">Phase5</div>
+              <div class="card-body">
+                  <div class="row">
+                      <div class="col-6">
+                              <table  class="display table align-middle mb-0 bg-white">
+                                  <thead class="bg-light">
+                                    <tr>
+                                      <th>Date</th>
+                                      <th>Machine</th>
+                                      <th>Status Machine</th>
+                                      <th>StatusDIWater</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 4</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0 ">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 2</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                      </div>
+                      <div class="col-6">
+                        <div id="linechartP5" class="display dataP5" style="height: 18rem;"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="card mt-3">
+            <div class="card-header bg-dark bg-gradient text-white">Phase9</div>
+              <div class="card-body">
+                  <div class="row">
+                      <div class="col-6">
+                              <table class="display table align-middle mb-0 bg-white">
+                                  <thead class="bg-light">
+                                    <tr>
+                                      <th>Date</th>
+                                      <th>Machine</th>
+                                      <th>Status Machine</th>
+                                      <th>StatusDIWater</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 4</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0 ">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Fisa 2</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <p class="text-muted mb-0">17/08/2022</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">Robot</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">control</p>
+                                      </td>
+                                      <td>
+                                        <p class="text-muted mb-0">pass</p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                      </div>
+                      <div class="col-6">
+                          <div id="linechartP9" class="display dataP9" style="height: 18rem;"></div>
+                      </div>
+                    </div>
+              </div>
+          </div>
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready(function () {
+    $('table.display').DataTable({
+      pagingType: 'full_numbers',
+      scrollY: '200px',
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+});
+</script>
+{% endblock %}

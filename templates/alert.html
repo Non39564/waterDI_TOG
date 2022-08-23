@@ -1,37 +1,58 @@
 {% extends 'layout.html' %}
 {% block title %}Alert{% endblock %}
 {% block head %}
+<!-- script pagination -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<!-- css pagination -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
 {% endblock %}
 {% block content %}
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-      </tr>
-    </tbody>
-</table>
+<div class="card mt-3">
+  <h5 class="card-header bg-danger bg-gradient text-white">Alert status</h5>
+    <div class="card-body">
+      <table class="display table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th>Station</th>
+            <th>Phase</th>
+            <th>Machine</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for error in error %}
+          <tr>
+            <td>
+              <p class="text-muted mb-0">{{ error['Station'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">{{ error['Phase'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">{{ error['Site'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0 ">{{ error['Detail'] }}</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</div>
 {% endblock %}
 {% block script %}
+<script>
+  $(document).ready(function () {
+    $('table.display').DataTable({
+      pagingType: 'full_numbers',
+      scrollY: '200px',
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+
+});
+</script>
 {% endblock %}

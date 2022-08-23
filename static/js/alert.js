@@ -10,6 +10,7 @@ function alert() {
         const m = d.getMinutes()
         if (m < 10) {
           const m = "0"+m
+          console.log(m)
         }
         const erroralert = []
         for (j in json[i].Data) {
@@ -65,5 +66,19 @@ function AlertDeleteSuccess() {
     icon: 'success',
     title: 'success',
     text: 'Your machine has been deleted',
+  })
+}
+function AlertNotMatchPassword() {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error!',
+    text: 'Password Not Matching!',
+  })
+}
+function AlertWaitRecept() {
+  Swal.fire({
+    icon: 'success',
+    title: 'success',
+    text: 'Wait for recept',
   })
 }

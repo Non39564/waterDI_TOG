@@ -25,12 +25,16 @@
       href="{{ url_for('static', filename='css/notification.css') }}"
       rel="stylesheet"
     />
+    <!-- scrollbar -->
+    <link
+      href="{{ url_for('static', filename='css/tableScroll.css') }}"
+      rel="stylesheet"
+    />
     <!-- MDB -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css"
       rel="stylesheet"
     />
-    
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.js"
@@ -75,8 +79,14 @@
   {% if addsuccess == "False" %}
   <body onload="AlertAddError()">
   {% endif %}
-  {% if delsuccess== "True" %}
+  {% if delsuccess == "True" %}
   <body onload="AlertDeleteSuccess()">
+  {% endif %}
+  {% if notmatchpassword == "True" %}
+  <body onload="AlertNotMatchPassword()">
+  {% endif %}
+  {% if waitforrecept == "True" %}
+  <body onload="AlertWaitRecept()">
   {% endif %}
   <body>
     <!-- The sidebar -->
@@ -106,7 +116,7 @@
              <span>Sumary Deionzed water</span>
           </a>
           <a
-             href="#"
+             href="/trendDi"
              class="list-group-item list-group-item-action py-2 ripple 
              border-0 border-bottom bg-dark bg-gradient text-white "
              aria-current="true"
@@ -115,7 +125,7 @@
              <span>Trend Deionized water</span>
           </a>
           <a
-             href="#"
+             href="/status-carbon-resin"
              class="list-group-item list-group-item-action py-2 ripple 
              border-0 border-bottom bg-dark bg-gradient text-white "
              aria-current="true"
@@ -134,7 +144,7 @@
           </a>
           {% if current_user.is_authenticated %}
           <a
-             href="add"
+             href="addmachine"
              class="list-group-item list-group-item-action py-2 ripple 
              border-0 border-bottom bg-dark bg-gradient text-white "
              aria-current="true"
@@ -143,10 +153,19 @@
             <span>Manage Machine</span>
           </a>
           <a
+             href="setup"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="bi bi-gear fa-fw me-3"></i>
+            <span>Setup</span>
+          </a>
+          <a
              href="logout"
              class="list-group-item list-group-item-action py-2 ripple 
              border-0 border-bottom bg-dark bg-gradient text-white "
-             aria-current="true" style="margin-top: 100%;"
+             aria-current="true" style="margin-top: 80%;"
              >
             <i class="bi-solid bi-door-open-fill fa-fw me-3"></i>
             <span>Logout</span>
@@ -200,7 +219,7 @@
           {% endif %}
           &nbsp&nbsp&nbsp
           <button
-            class="btn btn-primary "
+            class="btn btn-dark bg-gradient"
             type="button"
             id="dropdownMenuButton"
             data-mdb-toggle="dropdown"
@@ -210,13 +229,22 @@
             <span id="countli" class="badge rounded-pill badge-notification bg-danger">0</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" id="ul_o" aria-labelledby="dropdownMenuButton">
+            {% for error in error %}
             <!--data From Database-->
-            <li><a class="dropdown-item " href="alert">Action</a></li>
-            <li><a class="dropdown-item" href="alert">Another action</a></li>
-            <li><a class="dropdown-item" href="alert">Something else here</a></li>
-            <li><a class="dropdown-item" href="alert">Something else here</a></li>
-            <li><a class="dropdown-item" href="alert">Something else here</a></li>
-            <li><a class="dropdown-item" href="alert">Something else here</a></li>
+            <li><a class="dropdown-item " href="alert">{{ error['Detail'] }} ที่ {{ error['Site'] }}</a></li>
+            {% endfor %}
+            {% if current_user.is_authenticated %}
+            {% for user_recept in user_recept %}
+            <li><a class="dropdown-item " >Confirm User <b>{{ user_recept['Name'] }}</b>
+              <a type="button" href="{{ url_for('confirm_reject') }}" class="btn btn-success" name="confirm" value={{ user_recept['Name'] }}>
+                <i class="fa-solid fa-check"></i>
+              </a>
+              <a type="button" href="{{ url_for('confirm_reject') }}" class="btn btn-danger" name="reject" value={{ user_recept['Name'] }}>
+                <i class="fa-solid fa-xmark"></i>
+              </a>
+            </a></li>
+            {% endfor %}
+            {% endif %}
           </ul>
         </div>
         
@@ -231,7 +259,7 @@
   <!--Main layout-->
   {% include 'loginform.html' %}
   <main style="margin-top: 58px; ">
-    <div class="container pt-4">{% block content %} {% endblock %}</div>
+    <div class="container pt-4 ">{% block content %} {% endblock %}</div>
     <!-- Toasts -->
 
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -269,7 +297,7 @@
   <script>
     document.getElementById("countli").innerHTML = $("#ul_o").children().length;
     $( "#dropdownMenuButton" ).click(function() {
-      document.getElementById("countli").innerHTML = 0
+      document.getElementById("countli").style.display = "none";
     });
   </script>
   <script>

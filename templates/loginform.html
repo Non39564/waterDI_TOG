@@ -38,37 +38,38 @@
                 </div>
 
                 <!-- Submit button -->
-                <button type="submit" name='submit' class="btn btn-primary btn-block mb-4">Sign in</button>
+                <button type="submit" value="login" name="check" class="btn btn-primary btn-block mb-4">Sign in</button>
               </form>
             </div>
             <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-              <form>
+              <form action="{{ url_for('login') }}" method='POST'>
                 <!-- Name input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="registerName" class="form-control border-bottom border-4 rounded-0" />
+                  <input type="text" id="registerName" name="registerName" class="form-control border-bottom border-4 rounded-0" />
                   <label class="form-label" for="registerName">Name</label>
                 </div>
 
                 <!-- Username input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="registerUsername" class="form-control border-bottom border-4 rounded-0" />
+                  <input type="text" id="registerUsername" name="registerUsername" class="form-control border-bottom border-4 rounded-0" />
                   <label class="form-label" for="registerUsername">Username</label>
                 </div>
 
                 <!-- Password input -->
                 <div class="form-outline mb-4">
-                  <input type="password" id="registerPassword" class="form-control border-bottom border-4 rounded-0" />
+                  <input type="password" id="registerPassword" name="registerPassword" class="form-control border-bottom border-4 rounded-0" />
                   <label class="form-label" for="registerPassword">Password</label>
                 </div>
 
                 <!-- Repeat Password input -->
                 <div class="form-outline mb-4">
-                  <input type="password" id="registerRepeatPassword" class="form-control border-bottom border-4 rounded-0" />
+                  <input type="password" id="registerRepeatPassword" name="registerRepeatPassword" class="form-control border-bottom border-4 rounded-0" />
                   <label class="form-label" for="registerRepeatPassword">Repeat password</label>
+                  <span id='message'></span>
                 </div>
 
                 <!-- Submit button -->
-                <button type="submit" class="btn btn-primary btn-block mb-3">Sign up</button>
+                <button type="submit" value="register" name="check" class="btn btn-primary btn-block mb-3">Sign up</button>
               </form>
             </div>
           </div>

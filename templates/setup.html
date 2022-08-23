@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+{% block title %}setup{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+
+<div id="container" style="background-color:white"></div>
+<!-- Tab content -->
+<!-- container -->
+<div class="card mt-3">
+  <h5 class="card-header bg-dark bg-gradient text-white">Monitor And Setup</h5>
+    <div class="card-body">
+      <table id="example" class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th>Site</th>
+            <th>Value</th>
+            <th>Input Low Water</th>
+            <th>Input High Water</th>
+            <th>Off-set (+) Water</th>
+            <th>Off-set (-) Water</th>
+            <th>Input Low Temp</th>
+            <th>Input High Temp</th>
+            <th>Off-set (+) Temp</th>
+            <th>Off-set (-) Temp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for setup in setup %}
+          <tr>
+            <td style="width:150px">
+              <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">36</p>
+            </td>
+            <td>
+                <input type="text" class="form-control" value={{ setup['Low_Water'] }}>
+            </td>
+            <td>
+                <input type="text" class="form-control" value={{ setup['Hight_Water'] }}>
+            </td>
+            <td>
+                <input type="text" class="form-control" value={{ setup['Plus_Water'] }}> 
+            </td>
+            <td>
+                <input type="text" class="form-control" value={{ setup['Minus_Water'] }}>
+            </td>
+            <td>
+              <input type="text" class="form-control" value={{ setup['Low_Temp'] }}>
+          </td>
+          <td>
+              <input type="text" class="form-control" value={{ setup['Hight_Temp'] }}>
+          </td>
+          <td>
+              <input type="text" class="form-control" value={{ setup['Plus_Temp'] }}> 
+          </td>
+          <td>
+              <input type="text" class="form-control" value={{ setup['Minus_Temp'] }}>
+          </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary mt-2">CHANGE</button>
+    </div>
+</div>
+
+ <!-- End Tab content -->
+
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+    var table = $('#example').DataTable({
+        columnDefs: [
+            {
+                orderable: false,
+                targets: [1, 2, 3],
+            },
+        ],
+    });
+ 
+    $('button').click(function () {
+        var data = table.$('input, select').serialize();
+        alert('The following data would have been submitted to the server: \n\n' + data.substr(0) + '...');
+        return false;
+    });
+});
+</script>
+{% endblock %}
