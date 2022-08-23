@@ -46,9 +46,7 @@ def Add_Machine(Machine, IP, PORT, Station, Phase):
 def Add_Device(Machine, Site, Slot_Temp, Slot_Water):
     connection = getConnection()
     cursor = connection.cursor()
-    update_Machine = "UPDATE machine SET Site='%s' WHERE Machine = '%s'" % (Site, Machine)
     insert_Machine_Data = "INSERT INTO Machine_Data(Site, Machine, Slot_Temp, Slot_Water) VALUES('%s', '%s', '%s', '%s')" % (Site, Machine, Slot_Temp, Slot_Water)
-    cursor.execute(update_Machine)
     cursor.execute(insert_Machine_Data)
     connection.commit()
     
@@ -176,7 +174,6 @@ def get_dropdown_values_machine():
         lst_p = []
         for phase in dataphase:
             lst_p.append( phase )
-        # print(key)
         myDict[key] = lst_p
     
     class_entry_relations = myDict

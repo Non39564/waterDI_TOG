@@ -169,6 +169,7 @@ def getConnection():
 #     data = cursor.fetchall()
 #     for row in range(len(data)):
 #         machine.append(data[row]["Machine"])
+#     print(machine)
 #     return machine
     
 # def dynamic_phase_machine():
@@ -197,9 +198,8 @@ def getConnection():
 #         myDict[key] = lst_p
     
 #     class_entry_relations = myDict
-#     print(class_entry_relations)
+#     # print(class_entry_relations)
 #     return class_entry_relations
-
 
 # def dynamic_slot():
 #     slot = []
