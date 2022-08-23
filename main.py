@@ -103,20 +103,20 @@ def addmachine():
             station = flask.request.form['inputOpMac']
             phase = flask.request.form['inputPhaseMac']
             Add_Machine(id, ip, port, station, phase)
-            return render_template('add.html')
+            return flask.redirect(flask.url_for('addmachine'))
         if flask.request.form['add'] == "device":
             Machine = flask.request.form['inputMachineID']
             Site = flask.request.form['inputSite']
             Slot_Temp = flask.request.form['Slot_temp']
             Slot_Water= flask.request.form['Water']
             Add_Device(Machine, Site, Slot_Temp, Slot_Water)
-            return render_template('add.html')
+            return flask.redirect(flask.url_for('addmachine'))
         if flask.request.form['add'] == "phase":
             OPadd = flask.request.form['OPadd']
             Phaseadd = flask.request.form['Phaseadd']
             Siteadd = flask.request.form['Siteadd']
             add_phase(OPadd, Phaseadd, Siteadd)
-            return render_template('add.html')
+            return flask.redirect(flask.url_for('addmachine'))
         
     station = get_dropdown_values()
     machine_data = get_dropdown_values_machine()
