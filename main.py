@@ -13,30 +13,30 @@ error = showerror()
 user_recept = show_recept()
 render_template = partial(real_render_template, error=error, user_recept=user_recept)
 
-@app.route('/dataapi', methods=["GET", "POST"])
-def dataapi():
-    url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
-    text = url.text
-    data = json.loads(text)
-    user=[
-          {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
-                                                      {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
-                                                      {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
-          {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
-                                                      {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
-                                                      {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
-                                                      {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
-                                                      {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
-          {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
-                                                      {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
-                                                      {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
-                                                      {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
-                                                      {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
-                                                      {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
-          ]
-    response = make_response(json.dumps(user))
-    response.content_type = 'application/json'
-    return jsonify(user)
+# @app.route('/dataapi', methods=["GET", "POST"])
+# def dataapi():
+#     url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
+#     text = url.text
+#     data = json.loads(text)
+#     user=[
+#           {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
+#                                                       {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
+#                                                       {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
+#           {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
+#                                                       {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
+#                                                       {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
+#                                                       {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
+#                                                       {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
+#           {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
+#                                                       {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
+#                                                       {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
+#                                                       {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
+#                                                       {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
+#                                                       {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
+#           ]
+#     response = make_response(json.dumps(user))
+#     response.content_type = 'application/json'
+#     return jsonify(user)
 
 ########################### Function Login ###########################
 login_manager = LoginManager()
@@ -149,15 +149,16 @@ def setup():
 @app.route('/confirm_reject')
 @flask_login.login_required
 def confirm_reject():
-    user_confirm = request.args.get('confirm')
+    user_confirm = flask.request.form['confirm']
+    user_reject = flask.request.form['reject']
     print(user_confirm)
-    user_reject = request.args.get('reject')
     if request.args.get('confirm'):
         confirm_User(user_confirm)
         return render_template('index.html')
     if request.args.get('reject'):
         reject_User(user_reject)        
         return render_template('index.html')
+    return render_template('index.html')
 
 ########################### End Function Login ###########################
 

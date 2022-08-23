@@ -14,10 +14,11 @@ def getConnection():
     
 def showerror():
     connection = getConnection()
-    sql = """SELECT machine_station.Station, machine_station.Phase, Machine.Site, di_error.Detail
-            FROM Machine
-            JOIN di_error ON Machine.Machine=di_error.Machine
-            JOIN machine_station ON Machine.id=machine_station.ID"""
+    sql = """SELECT machine_station.Station, machine_station.Phase, di_error.Detail
+            FROM machine_station
+            JOIN machine ON machine_station.ID=machine_station.ID
+            JOIN machine_data ON Machine.Machine=machine_data.Machine
+            JOIN di_error ON di_error.Site=machine_data.Site"""
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
@@ -205,7 +206,6 @@ def show_machine():
                             machine_master.Port,
                             machine_station.Station, 
                             machine_station.Phase,
-                            machine.Site,
                             machine_data.Slot_Water,
                             machine_data.Slot_Temp
                         FROM machine_master
@@ -301,7 +301,6 @@ def users():
         lst_p = {}
         password = find_password(user)
         for word in password:
-            # key = data[password]["Username"]
             lst_p["password"] = (word)
         myDict[key] = lst_p
     class_entry_relations = myDict

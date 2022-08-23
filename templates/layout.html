@@ -236,12 +236,12 @@
             {% if current_user.is_authenticated %}
             {% for user_recept in user_recept %}
             <li><a class="dropdown-item " >Confirm User <b>{{ user_recept['Name'] }}</b>
-              <a type="button" href="{{ url_for('confirm_reject') }}" class="btn btn-success" name="confirm" value={{ user_recept['Name'] }}>
-                <i class="fa-solid fa-check"></i>
-              </a>
-              <a type="button" href="{{ url_for('confirm_reject') }}" class="btn btn-danger" name="reject" value={{ user_recept['Name'] }}>
-                <i class="fa-solid fa-xmark"></i>
-              </a>
+                <button type="button" class="btn btn-success" name="confirm" value={{ user_recept['Name'] }}>
+                  <i class="fa-solid fa-check"></i>
+                </button>
+                <button type="button" class="btn btn-danger" name="reject" value={{ user_recept['Name'] }}>
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
             </a></li>
             {% endfor %}
             {% endif %}
