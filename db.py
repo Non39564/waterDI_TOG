@@ -203,6 +203,7 @@ def show_machine():
                             machine_master.Port,
                             machine_station.Station, 
                             machine_station.Phase,
+                            machine_data.Site,
                             machine_data.Slot_Water,
                             machine_data.Slot_Temp
                         FROM machine_master

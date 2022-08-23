@@ -71,6 +71,16 @@
 {% endblock %}
 {% block script %}
 <script>
+  $(document).ready(function () {
+    $('table.display').DataTable({
+      pagingType: 'full_numbers',
+      scrollY: '200px',
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+    });
+
+  });
     $(document).ready(function () {
     var table = $('#example').DataTable({
         columnDefs: [
