@@ -129,7 +129,9 @@ def addmachine():
 @app.route('/delete', methods=['GET', 'POST'])
 @flask_login.login_required
 def delete():
-    return render_template('add.html')
+    Site = request.args.get('Site')
+    delete_device(Site)
+    return flask.redirect(flask.url_for('addmachine'))
         
 @app.route('/logout')
 def logout():
@@ -145,8 +147,7 @@ def unauthorized_handler():
 def setup():
     setup = setupMachine()
     show_machine = machine_DropDown_setup()
-    option = 'All'
-    return render_template('setup.html', setup = setup, show_machine = show_machine ,option=option)
+    return render_template('setup.html', setup = setup, show_machine = show_machine)
 
 @app.route('/find_setup')
 @flask_login.login_required
@@ -154,7 +155,7 @@ def find_setup():
     selectionMachine = request.args.get('selectionMachine')
     setup = show_site_machine(selectionMachine)
     show_machine = machine_DropDown_setup()
-    return render_template('setup.html', setup = setup, show_machine = show_machine, option=selectionMachine)
+    return render_template('setup.html', setup = setup, show_machine = show_machine, selectionMachine=selectionMachine)
 
 @app.route('/confirm_reject', methods=['GET', 'POST'])
 @flask_login.login_required
@@ -172,8 +173,7 @@ def confirm_reject():
 @app.route('/change_setup' , methods=['GET', 'POST'])
 @flask_login.login_required
 def change_setup():
-    option = request.args.get('option')
-    setup = show_site_machine(option)
+    setup = setupMachine()
     name_site = []
     for i in setup:
         name_site.append(i['Site'])

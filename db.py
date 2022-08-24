@@ -219,7 +219,8 @@ def setupMachine():
     cursor = connection.cursor()
     show_setup = """SELECT off_set.Site, off_set.Low_Water, off_set.Hight_Water, off_set.Plus_Water, off_set.Minus_Water, 
                     off_set.Low_Temp, off_set.Hight_Temp, off_set.Plus_Temp, off_set.Minus_Temp
-                     FROM off_set"""
+                     FROM off_set
+                     JOIN machine_data ON machine_data.Site=off_set.Site"""
     cursor.execute(show_setup)
     data = cursor.fetchall()
     return data
@@ -368,6 +369,13 @@ def update_setup(Site, low_water, high_water, plus_water, minus_water, plus_temp
     update_setup = f"""UPDATE off_set SET Low_Water='{low_water}',Hight_Water='{high_water}',Plus_Water='{plus_water}',
     Minus_Water='{minus_water}', Plus_Temp='{plus_temp}',Minus_Temp='{minus_temp}' WHERE Site = '{Site}'"""
     cursor.execute(update_setup)
+    connection.commit()
+    
+def delete_device(Site):
+    connection = getConnection()
+    sql = f"DELETE FROM machine_data WHERE Site='{Site}'"
+    cursor = connection.cursor()
+    cursor.execute(sql)
     connection.commit()
 
 ########################### End Function DB ###########################

@@ -128,62 +128,61 @@
 <div class="card mt-3">
   <div class="card-header bg-danger bg-gradient text-white">Delete Machine</div>
     <div class="card-body">
-      <table class="display table align-middle mb-0 bg-white">
-        <thead class="bg-light">
-          <tr>
-            <th>IP</th>
-            <th>Port</th>
-            <th>Station</th>
-            <th>Phase</th>
-            <th>Site</th>
-            <th>Slot water</th>
-            <th>Slot Temp</th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for edit_delete in edit_delete %}
-          <tr>
-            <td>
-              <div class="d-flex align-items-center">
-                <p class="fw-bold mb-1">{{ edit_delete['Ip'] }}</p>
-              </div>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Port'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Station'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Phase'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Site'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Slot_Water'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ edit_delete['Slot_Temp'] }}</p>
-            </td>
-            <td>
-              <button type="button" class="btn btn-link btn-sm text-bg-primary">
-                Edit
-              </button>
-              <button type="button" class="btn btn-link btn-sm text-bg-danger">
-                Delete
-              </button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>Machine</th>
-          </tr>
-      </tfoot>
-      </table>
+      <form >
+        
+        <table class="display table align-middle mb-0 bg-white">
+          <thead class="bg-light">
+            <tr>
+              <th>IP</th>
+              <th>Port</th>
+              <th>Station</th>
+              <th>Phase</th>
+              <th>Site</th>
+              <th>Slot water</th>
+              <th>Slot Temp</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for edit_delete in edit_delete %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <p class="fw-bold mb-1">{{ edit_delete['Ip'] }}</p>
+                </div>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Port'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Station'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Phase'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Site'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Slot_Water'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{ edit_delete['Slot_Temp'] }}</p>
+              </td>
+              <td>
+                <button value="{{ edit_delete['Site'] }}" name="edit_delete" type="button" class="btn btn-link btn-sm text-bg-primary edit">
+                  Edit
+                </button>
+                <button value="{{ edit_delete['Site'] }}" name="edit_delete" type="button" class="btn btn-link btn-sm text-bg-danger delete">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+      </form>
     </div>
 </div>
 
@@ -329,4 +328,5 @@
       }
   });
 </script>
+<script src="{{ url_for('static', filename='js/alert.js') }}"></script>
 {% endblock %}
