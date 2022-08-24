@@ -377,5 +377,37 @@ def delete_device(Site):
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()
+    
+def edit_device(Ip, Port, Station, Phase, Slot_Water, Slot_Temp, Site):
+    connection = getConnection()
+    sql = f"""UPDATE machine_master
+                JOIN machine ON machine_master.Machine = machine.Machine
+                JOIN machine_station ON machine.ID = machine_station.ID
+                JOIN machine_data ON machine_data.Machine = machine_master.Machine
+                SET machine_master.Ip = '{Ip}', machine_master.Port = '{Port}', machine_station.Station = '{Station}',
+                machine_station.Phase = '{Phase}', machine_data.Slot_Water='{Slot_Water}', machine_data.Slot_Temp='{Slot_Temp}'
+                WHERE machine_data.Site = '{Site}'"""
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    connection.commit()
+    
+def edit_machine_device(Site):
+    connection = getConnection()
+    cursor = connection.cursor()
+    edit_machine_device = f"""SELECT machine_master.Ip, 
+                            machine_master.Port,
+                            machine_station.Station, 
+                            machine_station.Phase,
+                            machine_data.Site,
+                            machine_data.Slot_Water,
+                            machine_data.Slot_Temp
+                        FROM machine_master
+                        INNER JOIN machine ON machine_master.Machine = machine.Machine
+                        INNER JOIN machine_station ON machine.ID = machine_station.ID
+                        INNER JOIN machine_data ON machine_data.Machine = machine_master.Machine
+                        Where machine_data.Site = '{Site}'"""
+    cursor.execute(edit_machine_device)
+    data = cursor.fetchall()
+    return data
 
 ########################### End Function DB ###########################

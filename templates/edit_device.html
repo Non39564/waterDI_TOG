@@ -1,0 +1,157 @@
+<html>
+<head>
+    <!-- script pagination -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <!-- css pagination -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+<body>
+  <div class="card mt-3">
+    <div class="card-header bg-dark bg-gradient text-white">Edit</div>
+    <div class="card-body">
+      <form action="{{ url_for('edit_value') }}" method='POST'>
+      <table class="display table align-middle mb-0 bg-white" id="alldevice">
+        <thead class="bg-light">
+          <tr>
+            <th>Site</th>
+            <th>IP</th>
+            <th>Port</th>
+            <th>Station</th>
+            <th>Phase</th>
+            <th>Slot water</th>
+            <th>Slot Temp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for edit_delete in edit %}
+          <tr>
+            <td>
+              <input type="hidden" class="form-control" name="{{ edit_delete['Site'] }}" id="{{ edit_delete['Site'] }}"
+                value={{ edit_delete['Site'] }}>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" name="Ip{{ edit_delete['Site'] }}" id="Ip{{ edit_delete['Site'] }}"
+                value={{ edit_delete['Ip'] }}>
+              </div>
+            </td>
+            <td>
+              <input type="text" class="form-control" name="Port{{ edit_delete['Site'] }}" id="Port{{ edit_delete['Site'] }}"
+                value={{ edit_delete['Port'] }}>
+            </td>
+            <td>
+                <select id="inputOP" name="inputOP" class="form-control inputOP">
+                  <option value="{{ edit_delete['Station'] }}">{{ edit_delete['Station'] }}</option>
+                </select>
+            </td>
+            <td>
+              <select id="inputPhase" name="Phase{{ edit_delete['Site'] }}" class="form-control inputPhase">
+                <option value="{{ edit_delete['Phase'] }}">{{ edit_delete['Phase'] }}</option>
+              </select>
+            </td>
+            <td>
+              <select id="Water" name="Slot_Water{{ edit_delete['Site'] }}" class="form-control">
+                <option value="{{ edit_delete['Slot_Water'] }}">{{ edit_delete['Slot_Water'] }}</option>
+              </select>
+              <!--<input type="text" class="form-control" name="Slot_Water{{ edit_delete['Site'] }}" id="Slot_Water{{ edit_delete['Site'] }}"
+                value={{ edit_delete['Slot_Water'] }}>-->
+            </td>
+            <td>
+              <select id="Slot_temp" name="Slot_Temp{{ edit_delete['Site'] }}" class="form-control">
+                <option value="{{ edit_delete['Slot_Temp'] }}">{{ edit_delete['Slot_Temp'] }}</option>
+              </select>
+              <!--<input type="text" class="form-control" name="Slot_Temp{{ edit_delete['Site'] }}" id="Slot_Temp{{ edit_delete['Site'] }}"
+                value={{ edit_delete['Slot_Temp'] }}>-->
+            </td>
+          </tr>
+          <input type="hidden" value="{{ edit_delete['Site'] }}" name="{{ edit_delete['Site'] }}">
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-link btn-sm text-bg-primary Edit">Edit</button>
+      </form>
+    </div>
+  </div>
+      <script>
+        $(document).ready(function () {
+          $('table.display').DataTable({
+            pagingType: 'full_numbers',
+            scrollY: '200px',
+            scrollCollapse: true,
+          });
+      });
+      </script> 
+      <!--Select Phase in Add Device-->
+      <script>
+        "use strict";
+        var station = {{ station|default("")|tojson }};
+
+        var inputOP = $('select#inputOP');
+        var inputPhase = $('select#inputPhase');
+
+        for (var key in station) {
+          inputOP.append($('<option/>', {'value': key, 'text': key}));
+        }
+
+        inputOP.change(function(ev) {
+          inputPhase.empty();
+          inputPhase.append($('<option/>'));
+
+            var phase = station[inputOP.val()];
+
+            for (var i in phase) {
+              inputPhase.append($('<option/>', {'value': phase[i], 'text': phase[i]}));
+              console.log(phase[i])
+            }
+        });
+      </script>
+      <!--Select Slot-->
+      <script>
+        "use strict";
+        var slot = {{ slot|default("")|tojson }};
+
+        var Water = $('select#Water');
+        var Slot_temp = $('select#Slot_temp');
+
+        for (var i = 1; i < 15; i++) {
+          Water.append($('<option/>', {'value': i, 'text': i}));
+          Slot_temp.append($('<option/>', {'value': i, 'text': i}));
+        }
+
+        for (var key in slot) {
+          $('select').find('option[value="' + key +'"]').prop('disabled', true);
+        }
+
+        $('select').change(function(){
+          
+          var notAllowed = $(this).find('option:selected').data('notallowed');
+          var currentValue = $(this).val();
+          var oldValue = $(this).data('old');
+
+          $(this).data('old', currentValue);
+          if(oldValue) {
+            $('select').not(this).find('option[value="' + oldValue +'"]').prop('disabled', false);
+            
+            var previousNotAllowed = $(this).find('option[value="' + oldValue +'"]').data('notallowed');
+
+            if(previousNotAllowed){
+              $('select').not(this).find('option[value="' + previousNotAllowed +'"]').prop('disabled', false);
+            }
+          }
+          
+          if(notAllowed){
+            var items = $('select').not(this).find('option[value="' + notAllowed +'"]').prop('disabled',true);
+          }
+        
+        $('select').not(this).find('option[value="' + currentValue +'"]').prop('disabled', true);
+          
+      });
+      </script>
+</body>
+</html>
