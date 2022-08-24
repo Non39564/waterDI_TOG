@@ -211,7 +211,7 @@
             loading="lazy"
           />
         </a>
-        
+
         <!-- Notifications -->
         <div class="dropdown">
           {% if current_user.is_authenticated %}
@@ -236,12 +236,14 @@
             {% if current_user.is_authenticated %}
             {% for user_recept in user_recept %}
             <li><a class="dropdown-item " >Confirm User <b>{{ user_recept['Name'] }}</b>
-                <button type="button" class="btn btn-success" name="confirm" value={{ user_recept['Name'] }}>
+              <form action="{{ url_for('confirm_reject') }}">
+                <button type="submit" class="btn btn-success" name="confirm" value="{{ user_recept['Name'] }}">
                   <i class="fa-solid fa-check"></i>
                 </button>
-                <button type="button" class="btn btn-danger" name="reject" value={{ user_recept['Name'] }}>
+                <button type="submit" class="btn btn-danger" name="reject" value="{{ user_recept['Name'] }}">
                   <i class="fa-solid fa-xmark"></i>
                 </button>
+              </form>
             </a></li>
             {% endfor %}
             {% endif %}

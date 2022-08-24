@@ -10,16 +10,17 @@
 <div class="card mt-3">
   <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Monitor And Setup 
     <div class="select-wrapper mb-2 ">
-      <select id="selectionGP" class="select select-initialized">
-          <option value="" disabled selected>Choose Machine</option>
-          <option value="all">All</option>
-          <option value="P4">Machine 01</option>
-          <option value="P5">Machine 02</option>
-          <option value="P9">Machine 03</option>
-      </select>
+      <form action="{{ url_for('find_setup') }}">
+        <select id="selectionMachine" name="selectionMachine" class="select select-initialized">
+            <option value="" disabled selected>Choose Machine</option>
+            <!--<option value="P4">Machine 01</option>-->
+        </select>
+      </form>
   </div>
   </h5>
-    <div class="card-body">
+    <div class="card-body">    
+      <form action="{{ url_for('change_setup') }}">
+
       <table  class="table align-middle mb-0 bg-white">
         <thead class="bg-light">
           <tr>
@@ -37,42 +38,53 @@
         </thead>
         <tbody>
           {% for setup in setup %}
-          <tr>
-            <td style="width:150px">
-              <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
+            <tr>
+              <td style="width:150px">
+                <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">36</p>
+              </td>
+              <td>
+                  <input type="text" class="form-control" name="Low_Water_{{ setup['Site'] }}" id="Low_Water_{{ setup['Site'] }}"
+                  value={{ setup['Low_Water'] }}>
+              </td>
+              <td>
+                  <input type="text" class="form-control" name="High_Water_{{ setup['Site'] }}" id="High_Water_{{ setup['Site'] }}"
+                  value={{ setup['Hight_Water'] }}>
+              </td>
+              <td>
+                  <input type="text" class="form-control" name="Plus_Water_{{ setup['Site'] }}" id="Plus_Water_{{ setup['Site'] }}"
+                  value={{ setup['Plus_Water'] }}> 
+              </td>
+              <td>
+                  <input type="text" class="form-control" name="Minus_Water_{{ setup['Site'] }}" id="Minus_Water_{{ setup['Site'] }}"
+                  value={{ setup['Minus_Water'] }}>
+              </td>
+              <!-- <td>
+                <input type="text" class="form-control" name="Low_Temp_{{ setup['Site'] }}" id="Low_Temp_{{ setup['Site'] }}"
+                value={{ setup['Low_Temp'] }}>
             </td>
             <td>
-              <p class="text-muted mb-0">36</p>
+                <input type="text" class="form-control" name="Hight_Temp_{{ setup['Site'] }}" id="Hight_Temp_{{ setup['Site'] }}"
+                value={{ setup['Hight_Temp'] }}>
+            </td> -->
+            <td>
+                <input type="text" class="form-control" name="Plus_Temp_{{ setup['Site'] }}" id="Plus_Temp_{{ setup['Site'] }}"
+                value={{ setup['Plus_Temp'] }}> 
             </td>
             <td>
-                <input type="text" class="form-control" value={{ setup['Low_Water'] }}>
+                <input type="text" class="form-control" name="Minus_Temp_{{ setup['Site'] }}" id="Minus_Temp_{{ setup['Site'] }}"
+                value={{ setup['Minus_Temp'] }}>
             </td>
-            <td>
-                <input type="text" class="form-control" value={{ setup['Hight_Water'] }}>
-            </td>
-            <td>
-                <input type="text" class="form-control" value={{ setup['Plus_Water'] }}> 
-            </td>
-            <td>
-                <input type="text" class="form-control" value={{ setup['Minus_Water'] }}>
-            </td>
-            <!-- <td>
-              <input type="text" class="form-control" value={{ setup['Low_Temp'] }}>
-          </td>
-          <td>
-              <input type="text" class="form-control" value={{ setup['Hight_Temp'] }}>
-          </td> -->
-          <td>
-              <input type="text" class="form-control" value={{ setup['Plus_Temp'] }}> 
-          </td>
-          <td>
-              <input type="text" class="form-control" value={{ setup['Minus_Temp'] }}>
-          </td>
-          </tr>
+            </tr>
+            <input type="hidden" value="{{ setup['Site'] }}" name="{{ setup['Site'] }}">
           {% endfor %}
         </tbody>
       </table>
+      <input type="hidden" value="{{option}}" name="option">
       <button type="submit" class="btn btn-primary mt-2">CHANGE</button>
+      </form>
     </div>
 </div>
 
@@ -81,21 +93,33 @@
 {% endblock %}
 {% block script %}
 <script>
-    $(document).ready(function () {
-    var table = $('#example').DataTable({
-        columnDefs: [
-            {
-                orderable: false,
-                targets: [1, 2, 3],
-            },
-        ],
-    });
- 
     $('button').click(function () {
         var data = table.$('input, select').serialize();
         alert('The following data would have been submitted to the server: \n\n' + data.substr(0) + '...');
         return false;
     });
-});
+</script>
+<!--Select Machine-->
+<script>
+  "use strict";
+
+  var show_machine = {{ show_machine|tojson }};
+
+  var system = $('select#selectionMachine');
+  for (var key in show_machine) {
+      system.append($('<option/>', {'value':"/find_setup?selectionMachine="+key, 'text': key}));
+  }
+
+</script>
+<script>
+  $(function () {
+    $("select#selectionMachine").on("change", function () {
+      var url = $(this).val();
+      if (url) {
+        window.location = url;
+      }
+      return false;
+    });
+  });
 </script>
 {% endblock %}

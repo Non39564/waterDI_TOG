@@ -307,7 +307,7 @@ def users():
 def insert_Pre_User(username, Name, password):
     connection = getConnection()
     cursor = connection.cursor()
-    insert_Pre_User = "INSERT INTO pre_user VALUES ('%s','%s',PASSWORD('%s'))" % (username, Name, password)
+    insert_Pre_User = "INSERT INTO pre_user VALUES ('%s','%s','%s')" % (username, Name, password)
     cursor.execute(insert_Pre_User)
     connection.commit()
     
@@ -325,6 +325,49 @@ def reject_User(Name):
     cursor = connection.cursor()
     delete_pre_user = "DELETE FROM pre_user WHERE Name='%s'" % (Name)
     cursor.execute(delete_pre_user)
+    connection.commit()
+    
+def show_site_machine(Machine):
+    connection = getConnection()
+    cursor = connection.cursor()
+    show_site = f"""SELECT off_set.Site, off_set.Low_Water, off_set.Hight_Water, off_set.Plus_Water, off_set.Minus_Water,
+                    off_set.Low_Temp, off_set.Hight_Temp , off_set.Plus_Temp, off_set.Minus_Temp FROM off_set
+                    INNER JOIN machine_data on machine_data.Site = off_set.Site
+                    WHERE Machine = '{Machine}'"""
+    cursor.execute(show_site)
+    data = cursor.fetchall()
+    print(data)
+    return data
+
+def find_machine():
+    machine = []
+    connection = getConnection()
+    cursor = connection.cursor()
+    find_machine = "select * from machine_master"
+    cursor.execute(find_machine)
+    data = cursor.fetchall()
+    for row in range(len(data)):
+        machine.append(data[row]["Machine"])
+    return machine
+    
+def machine_DropDown_setup():
+    Machine = find_machine()
+    myDict = {}
+    for result in Machine:
+        
+        key = result
+        result = result
+        myDict[key] = result
+        
+    class_entry_relations = myDict
+    return class_entry_relations
+
+def update_setup(Site, low_water, high_water, plus_water, minus_water, plus_temp, minus_temp):
+    connection = getConnection()
+    cursor = connection.cursor()
+    update_setup = f"""UPDATE off_set SET Low_Water='{low_water}',Hight_Water='{high_water}',Plus_Water='{plus_water}',
+    Minus_Water='{minus_water}', Plus_Temp='{plus_temp}',Minus_Temp='{minus_temp}' WHERE Site = '{Site}'"""
+    cursor.execute(update_setup)
     connection.commit()
 
 ########################### End Function DB ###########################

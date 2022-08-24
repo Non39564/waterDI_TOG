@@ -144,21 +144,49 @@ def unauthorized_handler():
 @flask_login.login_required
 def setup():
     setup = setupMachine()
-    return render_template('setup.html', setup = setup)
+    show_machine = machine_DropDown_setup()
+    option = 'All'
+    return render_template('setup.html', setup = setup, show_machine = show_machine ,option=option)
 
-@app.route('/confirm_reject')
+@app.route('/find_setup')
+@flask_login.login_required
+def find_setup():
+    selectionMachine = request.args.get('selectionMachine')
+    setup = show_site_machine(selectionMachine)
+    show_machine = machine_DropDown_setup()
+    return render_template('setup.html', setup = setup, show_machine = show_machine, option=selectionMachine)
+
+@app.route('/confirm_reject', methods=['GET', 'POST'])
 @flask_login.login_required
 def confirm_reject():
-    user_confirm = flask.request.form['confirm']
-    user_reject = flask.request.form['reject']
-    print(user_confirm)
     if request.args.get('confirm'):
+        user_confirm = request.args.get('confirm')
         confirm_User(user_confirm)
-        return render_template('index.html')
+        return flask.redirect(flask.url_for('index'))
     if request.args.get('reject'):
+        user_reject = request.args.get('reject')
         reject_User(user_reject)        
-        return render_template('index.html')
-    return render_template('index.html')
+        return flask.redirect(flask.url_for('index'))
+    return flask.redirect(flask.url_for('index'))
+
+@app.route('/change_setup' , methods=['GET', 'POST'])
+@flask_login.login_required
+def change_setup():
+    option = request.args.get('option')
+    setup = show_site_machine(option)
+    name_site = []
+    for i in setup:
+        name_site.append(i['Site'])
+    for j in range(len(name_site)):
+        site = request.args.get(f'{name_site[j]}')
+        low_water = request.args.get(f'Low_Water_{name_site[j]}')
+        high_water = request.args.get(f'High_Water_{name_site[j]}')
+        plus_water = request.args.get(f'Plus_Water_{name_site[j]}')
+        minus_water = request.args.get(f'Minus_Water_{name_site[j]}')
+        plus_temp = request.args.get(f'Plus_Temp_{name_site[j]}')
+        minus_temp = request.args.get(f'Minus_Temp_{name_site[j]}')
+        update_setup(site, low_water, high_water, plus_water, minus_water, plus_temp, minus_temp)
+    return flask.redirect(flask.url_for('setup'))
 
 ########################### End Function Login ###########################
 
