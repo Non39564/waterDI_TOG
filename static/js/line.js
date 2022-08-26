@@ -119,7 +119,7 @@ function drawLineChart() {
         chartLP9.draw(dataLP9, google.charts.Line.convertOptions(optionsLP9));
         }); 
     }
-    setInterval(drawLine, 1000);
+    //setInterval(drawLine, 1000);
 
 var chartLP4 = new google.charts.Line(document.getElementById('linechartP4'));
 var chartLP5 = new google.charts.Line(document.getElementById('linechartP5'));

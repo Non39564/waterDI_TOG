@@ -3,6 +3,7 @@
 {% block head %}
 <script src="{{ url_for('static', filename='js/line.js') }}"></script>
 <!-- Choose date -->
+<script src="{{ url_for('static', filename='js/trend-di.js') }}"></script>
 <!-- Include Required Prerequisites -->
 <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <!-- Include Date Range Picker -->
@@ -13,26 +14,37 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <!-- css pagination -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<!-- DataTables date range filter -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
+<!--End DataTables date range filter -->
 {% endblock %}
 {% block content %}
 <div class="card">
     <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Trend Deionized water
         <div class="d-flex flex-row-reverse">
-            <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" />
-
-<script type="text/javascript">
-$(function() {
-    $('input[name="daterange"]').daterangepicker();
-});
-</script>
     </h5>
     <div class="card-body">
         <div class="card">
-            <div class="card-header bg-dark bg-gradient text-white">Phase4</div>
+            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase4
+              <!-- date range filter -->
+              <table  cellspacing="5" cellpadding="5">
+                <tbody>
+                  <tr>
+                    <td>Choose Date :</td>
+                    <td><input type="text" id="minP4" name="minP4"></td>
+                    <td>To</td>
+                    <td><input type="text" id="maxP4" name="maxP4"></td>
+                  </tr>
+                </tbody>
+              </table>
+            <!-- End date range filter -->
+            </div>
               <div class="card-body">
                   <div class="row">
                       <div class="col-6">
-                              <table class="display table align-middle mb-0 bg-white">
+                              <table class="display table align-middle mb-0 bg-white" id="P4">
                                   <thead class="bg-light">
                                     <tr>
                                       <th>Date</th>
@@ -42,48 +54,23 @@ $(function() {
                                     </tr>
                                   </thead>
                                   <tbody>
+                                    {% for P4 in P4 %}
                                     <tr>
                                       <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
+                                        <p class="text-muted mb-0">{{ P4['Date'] }}</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0">Fisa 4</p>
+                                        <p class="text-muted mb-0">{{ P4['Site'] }}</p>
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0 ">pass</p>
+                                        <p name="{{ P4['Site'] }}" class="mb-0 Status{{ P4['Site'] }}">Pass</p>
+                                        <input type="hidden" name="data{{ P4['Site'] }}"  value="{{ P4['Water'] }}">
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Fisa 2</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
+                                    {% endfor %}
                                   </tbody>
                                 </table>
                       </div>
@@ -94,11 +81,24 @@ $(function() {
               </div>
           </div>
           <div class="card mt-3">
-            <div class="card-header bg-dark bg-gradient text-white">Phase5</div>
+            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase5
+              <!-- date range filter -->
+              <table  cellspacing="5" cellpadding="5">
+                <tbody>
+                  <tr>
+                    <td>Choose Date :</td>
+                    <td><input type="text" id="minP5" name="minP5"></td>
+                    <td>To</td>
+                    <td><input type="text" id="maxP5" name="maxP5"></td>
+                  </tr>
+                </tbody>
+              </table>
+            <!-- End date range filter -->
+            </div>
               <div class="card-body">
                   <div class="row">
                       <div class="col-6">
-                              <table  class="display table align-middle mb-0 bg-white">
+                              <table class="display table align-middle mb-0 bg-white" id="P5">
                                   <thead class="bg-light">
                                     <tr>
                                       <th>Date</th>
@@ -108,48 +108,23 @@ $(function() {
                                     </tr>
                                   </thead>
                                   <tbody>
+                                    {% for P4 in P4 %}
                                     <tr>
                                       <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
+                                        <p class="text-muted mb-0">{{ P4['Date'] }}</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0">Fisa 4</p>
+                                        <p class="text-muted mb-0">{{ P4['Site'] }}</p>
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0 ">pass</p>
+                                        <p name="{{ P4['Site'] }}" class="mb-0 Status{{ P4['Site'] }}">Pass</p>
+                                        <input type="hidden" name="data{{ P4['Site'] }}"  value="{{ P4['Water'] }}">
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Fisa 2</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
+                                    {% endfor %}
                                   </tbody>
                                 </table>
                       </div>
@@ -160,11 +135,24 @@ $(function() {
               </div>
           </div>
           <div class="card mt-3">
-            <div class="card-header bg-dark bg-gradient text-white">Phase9</div>
+            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase9
+              <!-- date range filter -->
+              <table  cellspacing="5" cellpadding="5">
+                <tbody>
+                  <tr>
+                    <td>Choose Date :</td>
+                    <td><input type="text" id="min" name="min"></td>
+                    <td>To</td>
+                    <td><input type="text" id="max" name="max"></td>
+                  </tr>
+                </tbody>
+              </table>
+            <!-- End date range filter -->
+            </div>
               <div class="card-body">
                   <div class="row">
                       <div class="col-6">
-                              <table class="display table align-middle mb-0 bg-white">
+                              <table class="display table align-middle mb-0 bg-white " id="P9">
                                   <thead class="bg-light">
                                     <tr>
                                       <th>Date</th>
@@ -174,188 +162,23 @@ $(function() {
                                     </tr>
                                   </thead>
                                   <tbody>
+                                    {% for P9 in P9 %}
                                     <tr>
                                       <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
+                                        <p class="text-muted mb-0">{{ P9['Date'] }}</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0">Fisa 4</p>
+                                        <p class="text-muted mb-0">{{ P9['Site'] }}</p>
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0 ">pass</p>
+                                        <p name="{{ P9['Site'] }}" class="mb-0 Status{{ P9['Site'] }}">Pass</p>
+                                        <input type="hidden" name="data{{ P9['Site'] }}"  value="{{ P9['Water'] }}">
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Fisa 2</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <p class="text-muted mb-0">17/08/2022</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">Robot</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">pass</p>
-                                      </td>
-                                    </tr>
+                                    {% endfor %}
                                   </tbody>
                                 </table>
                       </div>
@@ -369,15 +192,78 @@ $(function() {
   </div>
 {% endblock %}
 {% block script %}
+<!-- <script src="{{ url_for('static', filename='js/trend-di.js') }}"></script> -->
 <script>
-  $(document).ready(function () {
-    $('table.display').DataTable({
-      pagingType: 'full_numbers',
-      scrollY: '200px',
-      scrollCollapse: true,
-      pageLength: 5,
-      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
-    });
-});
+var minDate, maxDate;
+ 
+ // Custom filtering function which will search data in column four between two values
+ $.fn.dataTable.ext.search.push(
+     function( settings, data, dataIndex ) {
+         var min = minDate.val();
+         var max = maxDate.val();
+         var date = new Date( data[0] );
+  
+         if (
+             ( min === null && max === null ) ||
+             ( min === null && date <= max ) ||
+             ( min <= date   && max === null ) ||
+             ( min <= date   && date <= max )
+         ) {
+             return true;
+         }
+         return false;
+     }
+ );
+  
+ $(document).ready(function() {
+     // Create date inputs
+     minDate = new DateTime($('#minP4'), {
+         format: 'MMMM Do YYYY'
+     });
+     maxDate = new DateTime($('#maxP4'), {
+         format: 'MMMM Do YYYY'
+     });
+  
+     // DataTables initialisation
+     var table = $('#P4').DataTable();
+  
+     // Refilter the table
+     $('#minP4, #maxP4').on('change', function () {
+         table.draw();
+     });
+ });
+</script>
+<script>
+  {% for P4script in P4 %}
+  if ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() > 12){
+    $('p[name="{{ P4script['Site'] }}"]').text("Pass");
+  } else if ((10 < $( 'input[name="data{{ P4script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P4script['Site'] }}"]').text("Monitor");
+  } else if ($('input[name="data{{ P4script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P4script['Site'] }}"]').text("Error");
+  }
+  {% endfor %}
+</script>
+<script>
+  {% for P5script in P5 %}
+  if ($( 'input[name="data{{ P5script['Site'] }}"]' ).val() > 12){
+    $('p[name="{{ P5script['Site'] }}"]').text("Pass");
+  } else if ((10 < $( 'input[name="data{{ P5script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P5script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P5script['Site'] }}"]').text("Monitor");
+  } else if ($('input[name="data{{ P5script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P5script['Site'] }}"]').text("Error");
+  }
+  {% endfor %}
+</script>
+<script>
+  {% for P9script in P9 %}
+  if ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() > 12){
+    $('p[name="{{ P9script['Site'] }}"]').text("Pass");
+  } else if ((10 < $( 'input[name="data{{ P9script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P9script['Site'] }}"]').text("Monitor");
+  } else if ($('input[name="data{{ P9script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P9script['Site'] }}"]').text("Error");
+  }
+  {% endfor %}
 </script>
 {% endblock %}

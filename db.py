@@ -14,11 +14,11 @@ def getConnection():
     
 def showerror():
     connection = getConnection()
-    sql = """SELECT machine_station.Station, machine_station.Phase, di_error.Detail
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail
             FROM machine_station
-            JOIN machine ON machine_station.ID=machine_station.ID
-            JOIN machine_data ON Machine.Machine=machine_data.Machine
-            JOIN di_error ON di_error.Site=machine_data.Site"""
+            JOIN machine ON machine_station.ID = machine.ID
+            JOIN machine_data ON machine_data.Machine = machine.Machine
+            JOIN di_error ON di_error.Site = machine_data.Site"""
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
@@ -407,6 +407,38 @@ def edit_machine_device(Site):
                         INNER JOIN machine_data ON machine_data.Machine = machine_master.Machine
                         Where machine_data.Site = '{Site}'"""
     cursor.execute(edit_machine_device)
+    data = cursor.fetchall()
+    return data
+
+def di_report():
+    connection = getConnection()
+    cursor = connection.cursor()
+    di_report = "SELECT Date, Phase, Site, Water, Temp FROM di_report ORDER BY Date DESC, Time DESC"
+    cursor.execute(di_report)
+    data = cursor.fetchall()
+    return data
+
+def trend_DI_P4():
+    connection = getConnection()
+    cursor = connection.cursor()
+    trend_DI_P4 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 4' ORDER BY Date DESC, Time DESC"
+    cursor.execute(trend_DI_P4)
+    data = cursor.fetchall()
+    return data
+
+def trend_DI_P5():
+    connection = getConnection()
+    cursor = connection.cursor()
+    trend_DI_P5 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 5' ORDER BY Date DESC, Time DESC"
+    cursor.execute(trend_DI_P5)
+    data = cursor.fetchall()
+    return data
+
+def trend_DI_P9():
+    connection = getConnection()
+    cursor = connection.cursor()
+    trend_DI_P9 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 9' ORDER BY Date DESC, Time DESC"
+    cursor.execute(trend_DI_P9)
     data = cursor.fetchall()
     return data
 

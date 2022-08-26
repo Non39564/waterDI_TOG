@@ -30,7 +30,7 @@ function alert() {
     }
   });
 }
-setInterval(alert, 1000);
+//setInterval(alert, 1000);
 
 function AlertsLogin() {
   Swal.fire({

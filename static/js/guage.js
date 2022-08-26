@@ -74,7 +74,7 @@ function drawChart() {
     minorTicks: 5
   };
 
-    setInterval(drawGauge, 1000);
+    //setInterval(drawGauge, 1000);
 }
 
 $(window).resize(function(){

@@ -13,30 +13,30 @@ error = showerror()
 user_recept = show_recept()
 render_template = partial(real_render_template, error=error, user_recept=user_recept)
 
-@app.route('/dataapi', methods=["GET", "POST"])
-def dataapi():
-    url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
-    text = url.text
-    data = json.loads(text)
-    user=[
-          {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
-                                                      {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
-                                                      {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
-          {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
-                                                      {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
-                                                      {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
-                                                      {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
-                                                      {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
-          {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
-                                                      {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
-                                                      {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
-                                                      {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
-                                                      {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
-                                                      {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
-          ]
-    response = make_response(json.dumps(user))
-    response.content_type = 'application/json'
-    return jsonify(user)
+# @app.route('/dataapi', methods=["GET", "POST"])
+# def dataapi():
+#     url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
+#     text = url.text
+#     data = json.loads(text)
+#     user=[
+#           {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
+#                                                       {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
+#                                                       {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
+#           {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
+#                                                       {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
+#                                                       {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
+#                                                       {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
+#                                                       {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
+#           {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
+#                                                       {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
+#                                                       {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
+#                                                       {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
+#                                                       {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
+#                                                       {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
+#           ]
+#     response = make_response(json.dumps(user))
+#     response.content_type = 'application/json'
+#     return jsonify(user)
 
 ########################### Function Login ###########################
 login_manager = LoginManager()
@@ -142,6 +142,11 @@ def edit():
     slot = dynamic_slot()
     return render_template('edit_device.html', edit = edit, station = station, slot = slot)
 
+@app.route('/blank')
+@flask_login.login_required
+def blank():
+    return render_template('blank.html')
+
 @app.route('/edit_value', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_value():
@@ -149,15 +154,21 @@ def edit_value():
         result = request.form.to_dict()
         values = result.values()
         values_Site = list(values)
-        Site = values_Site[1]
-        Ip = values_Site[2]
-        Port = values_Site[3]
-        Station = values_Site[4]
-        Phase = values_Site[5]
-        Slot_Water = values_Site[6]
-        Slot_Temp = values_Site[7]
+        print(values_Site)
+        Site = request.form.get(values_Site[0])
+        Ip = request.form.get("Ip"+values_Site[0])
+        Port = request.form.get("Port"+values_Site[0])
+        Station = request.form.get("inputOP")
+        Phase = request.form.get("Phase"+values_Site[0])
+        Slot_Water = request.form.get("Slot_Water"+values_Site[0])
+        Slot_Temp = request.form.get("Slot_Temp"+values_Site[0])
+        if Slot_Water is None and Slot_Temp is None:
+            edit = edit_machine_device(Site)
+            Slot_Water = edit[0]['Slot_Water']
+            Slot_Temp = edit[0]['Slot_Temp']
+        print(Site, Ip, Port, Station, Phase, Slot_Water, Slot_Temp)
         edit_device(Ip, Port, Station, Phase, Slot_Water, Slot_Temp, Site)
-    return flask.redirect(flask.url_for('addmachine'))
+    return flask.redirect(flask.url_for('blank'))
         
 @app.route('/logout')
 def logout():
@@ -222,7 +233,8 @@ def index():
 
 @app.route('/line')
 def line():
-    return render_template('line.html')
+    report = di_report()
+    return render_template('line.html', report = report)
 
 @app.route('/report')
 def report():
@@ -234,7 +246,10 @@ def alert():
 
 @app.route('/trendDi')
 def trendDi():
-    return render_template('TrendDiwater.html')
+    P4 = trend_DI_P4()
+    P5 = trend_DI_P5()
+    P9 = trend_DI_P9()
+    return render_template('TrendDiwater.html', P4 = P4, P5 = P5, P9 = P9)
 
 @app.route('/status-carbon-resin')
 def statusCR():

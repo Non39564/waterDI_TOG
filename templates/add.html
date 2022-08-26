@@ -17,7 +17,30 @@
 <div id="container" style="background-color:white"></div>
 <!-- Tab content -->
 <!-- container -->
-<div class="card">
+<div class="card mt-3">
+  <div class="card-header bg-dark bg-gradient text-white">Add Station Phase and Site</div>
+    <div class="card-body">
+        <form action="{{ url_for('addmachine') }}" method='POST'>
+            <div class="row mb-4">
+              <div class="form-group col-md-4">
+                <label for="OPadd">OP</label>
+                <input type="text" class="form-control" id="OPadd" name="OPadd">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Phaseadd">Phase</label>
+                <input type="text" class="form-control" id="Phaseadd" name="Phaseadd">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Siteadd">Site</label>
+                <input type="text" class="form-control" id="Siteadd" name="Siteadd">
+              </div>
+            </div>
+            <input type="hidden" value="phase" name="add">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+<div class="card mt-3">
   <div class="card-header bg-dark bg-gradient text-white">Add Machine</div>
     <div class="card-body">
         <form action="{{ url_for('addmachine') }}" method='POST'>
@@ -108,29 +131,6 @@
     </div>
 </div>
 <div class="card mt-3">
-  <div class="card-header bg-dark bg-gradient text-white">Add Station Phase and Site</div>
-    <div class="card-body">
-        <form action="{{ url_for('addmachine') }}" method='POST'>
-            <div class="row mb-4">
-              <div class="form-group col-md-4">
-                <label for="OPadd">OP</label>
-                <input type="text" class="form-control" id="OPadd" name="OPadd">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="Phaseadd">Phase</label>
-                <input type="text" class="form-control" id="Phaseadd" name="Phaseadd">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="Siteadd">Site</label>
-                <input type="text" class="form-control" id="Siteadd" name="Siteadd">
-              </div>
-            </div>
-            <input type="hidden" value="phase" name="add">
-            <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-    </div>
-</div>
-<div class="card mt-3">
   <div class="card-header bg-danger bg-gradient text-white">Delete Machine</div>
     <div class="card-body">
       <form >
@@ -188,12 +188,12 @@
               </td>
               <td >
                 <div class="row g-2">
-                  <div class="col-6">
+                  <div class="col-3">
                     <button value="{{ edit_delete['Site'] }}" name="Edit" type="button" class="btn btn-link btn-sm text-bg-primary Edit">
                       Edit
                     </button>
                   </div>
-                  <div class="col-6 ">
+                  <div class="col-3 ">
                     <button value="{{ edit_delete['Site'] }}" name="delete" type="button" class="btn btn-link btn-sm text-bg-danger delete">
                       Delete
                     </button>
@@ -213,6 +213,7 @@
 
 {% endblock %}
 {% block script %}
+
 <script>
   $(document).ready(function () {
     $('table.display').DataTable({
