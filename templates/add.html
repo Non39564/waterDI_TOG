@@ -277,14 +277,14 @@
   "use strict";
   var machine_data = {{ machine_data|default("")|tojson }};
 
-  var inputPhase = $('select#inputPhase');
+  var inputOP = $('select#inputOP');
   var inputMachineID = $('select#inputMachineID');
 
-  inputPhase.change(function(ev) {
+  inputOP.change(function(ev) {
     inputMachineID.empty();
     inputMachineID.append($('<option/>'));
 
-      var machine = machine_data[inputPhase.val()];
+      var machine = machine_data[inputOP.val()];
 
       for (var i in machine) {
         inputMachineID.append($('<option/>', {'value': machine[i], 'text': machine[i]}));

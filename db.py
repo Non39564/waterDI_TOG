@@ -18,7 +18,21 @@ def showerror():
             FROM machine_station
             JOIN machine ON machine_station.ID = machine.ID
             JOIN machine_data ON machine_data.Machine = machine.Machine
-            JOIN di_error ON di_error.Site = machine_data.Site"""
+            JOIN di_error ON di_error.Site = machine_data.Site
+            WHERE di_error.Data = CURDATE()"""
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    error = cursor.fetchall()
+    return error
+
+def error_report():
+    connection = getConnection()
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Data
+            FROM machine_station
+            JOIN machine ON machine_station.ID = machine.ID
+            JOIN machine_data ON machine_data.Machine = machine.Machine
+            JOIN di_error ON di_error.Site = machine_data.Site
+            ORDER BY di_error.Data DESC"""
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
@@ -138,39 +152,39 @@ def get_dropdown_values():
     class_entry_relations = myDict
     return class_entry_relations
 
-def dynamic_machine(phase):
+def dynamic_machine(OP):
     machine = []
     connection = getConnection()
     cursor = connection.cursor()
     select_machine = """SELECT machine.Machine, machine_station.Phase
                         FROM machine
-                        INNER JOIN machine_station ON machine_station.ID=machine.ID and machine_station.Phase='%s'""" % (phase)
+                        INNER JOIN machine_station ON machine_station.ID=machine.ID and machine_station.Station='%s'""" % (OP)
     cursor.execute(select_machine)
     data = cursor.fetchall()
     for row in range(len(data)):
         machine.append(data[row]["Machine"])
     return machine
     
-def dynamic_phase_machine():
-    phase = []
+def dynamic_op_machine():
+    op = []
     connection = getConnection()
     cursor = connection.cursor()
-    select_phase = "select * from Phase"
-    cursor.execute(select_phase)
+    select_op = "select * from OP"
+    cursor.execute(select_op)
     data = cursor.fetchall()
     for row in range(len(data)):
-        phase.append(data[row]["Phase"])
-    return phase    
+        op.append(data[row]["OP"])
+    return op   
     
 def get_dropdown_values_machine():
-    phase = dynamic_phase_machine()
+    OP = dynamic_op_machine()
     myDict = {}
-    for station in phase:
+    for station in OP:
     
         key = station
-        phase = station
+        op = station
         
-        dataphase = dynamic_machine(phase)
+        dataphase = dynamic_machine(op)
         lst_p = []
         for phase in dataphase:
             lst_p.append( phase )

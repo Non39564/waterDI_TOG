@@ -141,9 +141,9 @@
                 <tbody>
                   <tr>
                     <td>Choose Date :</td>
-                    <td><input type="text" id="min" name="min"></td>
+                    <td><input type="text" id="minP9" name="minP9"></td>
                     <td>To</td>
-                    <td><input type="text" id="max" name="max"></td>
+                    <td><input type="text" id="maxP9" name="maxP9"></td>
                   </tr>
                 </tbody>
               </table>
@@ -192,8 +192,8 @@
   </div>
 {% endblock %}
 {% block script %}
-<!-- <script src="{{ url_for('static', filename='js/trend-di.js') }}"></script> -->
-<script>
+<script src="{{ url_for('static', filename='js/trend-di.js') }}"></script>
+<!-- <script>
 var minDate, maxDate;
  
  // Custom filtering function which will search data in column four between two values
@@ -232,12 +232,12 @@ var minDate, maxDate;
          table.draw();
      });
  });
-</script>
+</script> -->
 <script>
   {% for P4script in P4 %}
   if ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() > 12){
     $('p[name="{{ P4script['Site'] }}"]').text("Pass");
-  } else if ((10 < $( 'input[name="data{{ P4script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() < 12)) {
+  } else if ((10 <= $( 'input[name="data{{ P4script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() < 12)) {
     $('p[name="{{ P4script['Site'] }}"]').text("Monitor");
   } else if ($('input[name="data{{ P4script['Site'] }}"]' ).val() < 10) {
     $('p[name="{{ P4script['Site'] }}"]').text("Error");
@@ -257,9 +257,9 @@ var minDate, maxDate;
 </script>
 <script>
   {% for P9script in P9 %}
-  if ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() > 12){
+  if ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() >= 12){
     $('p[name="{{ P9script['Site'] }}"]').text("Pass");
-  } else if ((10 < $( 'input[name="data{{ P9script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() < 12)) {
+  } else if ((10 <= $( 'input[name="data{{ P9script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() < 12)) {
     $('p[name="{{ P9script['Site'] }}"]').text("Monitor");
   } else if ($('input[name="data{{ P9script['Site'] }}"]' ).val() < 10) {
     $('p[name="{{ P9script['Site'] }}"]').text("Error");

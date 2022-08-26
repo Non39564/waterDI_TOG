@@ -242,7 +242,8 @@ def report():
 
 @app.route('/alert')
 def alert():
-    return render_template('alert.html')
+    report = error_report()
+    return render_template('alert.html', report = report)
 
 @app.route('/trendDi')
 def trendDi():
