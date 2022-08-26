@@ -9,4 +9,3 @@ def getConnection():
         charset='utf8',
         cursorclass=pymysql.cursors.DictCursor
     )
-    

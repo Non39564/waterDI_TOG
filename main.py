@@ -5,6 +5,7 @@ import json, requests
 from flask import render_template as real_render_template
 from functools import partial
 from db import *
+from api2pdf import Api2Pdf
 
 app = Flask(__name__)
 app.secret_key = 'waterdishow'
@@ -255,7 +256,6 @@ def trendDi():
 @app.route('/status-carbon-resin')
 def statusCR():
     return render_template('status-carbon-resin.html')
-
 
 
 if __name__ == "__main__":

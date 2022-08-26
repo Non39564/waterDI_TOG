@@ -23,27 +23,28 @@
 {% block content %}
 <div class="card">
     <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Trend Deionized water
-        <div class="d-flex flex-row-reverse">
+      <!-- date range filter -->
+      <table  cellspacing="5" cellpadding="5">
+        <tbody>
+          <tr>
+            <td>Choose Date :</td>
+            <td><input type="text" id="min" name="min"></td>
+            <td>To</td>
+            <td><input type="text" id="max" name="max"></td>
+          </tr>
+        </tbody>
+      </table>
+    <!-- End date range filter -->
     </h5>
     <div class="card-body">
         <div class="card">
             <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase4
-              <!-- date range filter -->
-              <table  cellspacing="5" cellpadding="5">
-                <tbody>
-                  <tr>
-                    <td>Choose Date :</td>
-                    <td><input type="text" id="minP4" name="minP4"></td>
-                    <td>To</td>
-                    <td><input type="text" id="maxP4" name="maxP4"></td>
-                  </tr>
-                </tbody>
-              </table>
-            <!-- End date range filter -->
+              
             </div>
               <div class="card-body">
                   <div class="row">
                       <div class="col-6">
+                        
                               <table class="display table align-middle mb-0 bg-white" id="P4">
                                   <thead class="bg-light">
                                     <tr>
@@ -82,18 +83,7 @@
           </div>
           <div class="card mt-3">
             <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase5
-              <!-- date range filter -->
-              <table  cellspacing="5" cellpadding="5">
-                <tbody>
-                  <tr>
-                    <td>Choose Date :</td>
-                    <td><input type="text" id="minP5" name="minP5"></td>
-                    <td>To</td>
-                    <td><input type="text" id="maxP5" name="maxP5"></td>
-                  </tr>
-                </tbody>
-              </table>
-            <!-- End date range filter -->
+              
             </div>
               <div class="card-body">
                   <div class="row">
@@ -108,20 +98,20 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {% for P4 in P4 %}
+                                    {% for P5 in P5 %}
                                     <tr>
                                       <td>
-                                        <p class="text-muted mb-0">{{ P4['Date'] }}</p>
+                                        <p class="text-muted mb-0">{{ P5['Date'] }}</p>
                                       </td>
                                       <td>
-                                        <p class="text-muted mb-0">{{ P4['Site'] }}</p>
+                                        <p class="text-muted mb-0">{{ P5['Site'] }}</p>
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
-                                        <p name="{{ P4['Site'] }}" class="mb-0 Status{{ P4['Site'] }}">Pass</p>
-                                        <input type="hidden" name="data{{ P4['Site'] }}"  value="{{ P4['Water'] }}">
+                                        <p name="{{ P5['Site'] }}" class="mb-0 Status{{ P5['Site'] }}">Pass</p>
+                                        <input type="hidden" name="data{{ P5['Site'] }}"  value="{{ P5['Water'] }}">
                                       </td>
                                     </tr>
                                     {% endfor %}
@@ -136,18 +126,6 @@
           </div>
           <div class="card mt-3">
             <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase9
-              <!-- date range filter -->
-              <table  cellspacing="5" cellpadding="5">
-                <tbody>
-                  <tr>
-                    <td>Choose Date :</td>
-                    <td><input type="text" id="minP9" name="minP9"></td>
-                    <td>To</td>
-                    <td><input type="text" id="maxP9" name="maxP9"></td>
-                  </tr>
-                </tbody>
-              </table>
-            <!-- End date range filter -->
             </div>
               <div class="card-body">
                   <div class="row">
@@ -189,7 +167,7 @@
               </div>
           </div>
     </div>
-  </div>
+  
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('static', filename='js/trend-di.js') }}"></script>

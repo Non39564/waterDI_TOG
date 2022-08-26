@@ -88,8 +88,8 @@ def log_status(Machine, Status, Datetime):
     
 def add_phase(OP, Phase, Site):
     op = []
-    OP = "OP"+str(OP)
-    Phase = "Phase "+str(Phase)
+    OP = OP
+    Phase = Phase
     connection = getConnection()
     cursor = connection.cursor()
     select_op = "select * from OP"
