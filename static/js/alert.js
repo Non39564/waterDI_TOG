@@ -14,7 +14,7 @@ function alert() {
       }
       const erroralert = [];
       for (j in json[i].Data) {
-        if (json[i].Data[j].Water < 5) {
+        if (json[i].Data[j].Water < 10) {
           var toast = new bootstrap.Toast(toastLiveExample);
           var macName = json[i].Data[j].id;
           erroralert.push(macName);
