@@ -257,8 +257,8 @@ def trendDi():
 def statusCR():
     return render_template('status-carbon-resin.html')
 
-@app.route('/download')
-def download():
+@app.route('/download_alert')
+def download_alert():
     report = error_report()
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -304,6 +304,63 @@ def download():
     response.headers.set('Content-Type', 'application/pdf')
     
     return response
+
+@app.route('/download_Overview')
+def download_Overview():
+    report = di_report()
+    pdf = FPDF("P", "mm", "A4")
+    pdf.add_page()
+    pdf.add_font('THSarabunNew', '', 'THSarabunNew.ttf', uni=True)
+    
+    page_width = pdf.w - 2 * pdf.l_margin
+
+    pdf.set_font('THSarabunNew', '',14.0) 
+    pdf.cell(page_width, 0.0, 'Deionized water Data', align='C')
+    pdf.ln(10)
+    
+    pdf.set_font('THSarabunNew', '', 12)
+    
+    col_width = page_width/6
+    
+    pdf.ln(1)
+    
+    th = pdf.font_size*2
+
+    pdf.set_fill_color(229, 229, 229)
+    pdf.cell(col_width, th, str("Date"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Phase"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Machine"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Status"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("DIWater"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Temp"), 1, 0, 'C')
+    pdf.ln(th)
+    
+    for row in report:
+        if row["Water"] > 12:
+            Status = "Pass"
+        elif row["Water"] >= 10 and row["Water"] < 12:
+            Status = "Monitor"
+        else:
+            Status = "Error"
+        pdf.cell(col_width, th, str(row['Date']), border=1)
+        pdf.cell(col_width, th, str(row['Phase']), border=1)
+        pdf.cell(col_width, th, str(row['Site']), border=1)
+        pdf.cell(col_width, th, str(Status), border=1)
+        pdf.cell(col_width, th, str(row['Water']), border=1)
+        pdf.cell(col_width, th, str(row['Temp']), border=1)
+        pdf.ln(th)
+        
+    pdf.ln(10)
+    
+    pdf.set_font('THSarabunNew','',10.0) 
+    pdf.cell(page_width, 0.0, '- end of report -', align='C')
+    
+    response = make_response(pdf.output(dest='S').encode('latin-1'))
+    response.headers.set('Content-Disposition', 'attachment', filename="Alert Report" + '.pdf')
+    response.headers.set('Content-Type', 'application/pdf')
+    
+    return response
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -13,10 +13,10 @@ def getConnection():
         cursorclass=pymysql.cursors.DictCursor
     )
     
-###################################### Line notifile ######################################################
+###################################### Line notify ######################################################
 import requests
 url = 'https://notify-api.line.me/api/notify'
-token = 'LOz6sHoZyt46LnvgQBKwpB0nY1q852OqznGnSAODvg0'
+token = '1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8'
 headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
 ###########################################################################################################    
     
@@ -31,7 +31,7 @@ def showerror():
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
-    #requests.post(url, headers=headers, data = {'message':"dfa"})
+    # requests.post(url, headers=headers, data = {'message':"dfa"})
     return error
 
 def error_report():

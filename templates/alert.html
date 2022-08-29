@@ -16,6 +16,15 @@
 <div class="card mt-3">
   <h5 class="card-header bg-danger bg-gradient text-white">Alert status</h5>
     <div class="card-body">
+      <div class="d-grid gap-2 d-md-block">
+        <button class="mt-1 mb-2  btn btn-danger">
+          <a href="{{ url_for('download_alert') }}" class="text-white">
+            <i class="fa fa-file-pdf me-1"></i>
+            <span class="me-3">generate pdf</span>
+          </a>
+        </button>
+    </div>
+      
       <table class="display table align-middle mb-0 bg-white" id="alert">
         <thead class="bg-light">
           <tr>
@@ -48,7 +57,7 @@
           {% endfor %}
         </tbody>
       </table>
-      <a href="{{ url_for('download') }}">Generate Pdf Report</a>
+      
     </div>
 </div>
 {% endblock %}
@@ -61,10 +70,14 @@
       scrollCollapse: true,
       pageLength: 10,
       lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-      dom: '<"mb-3"B>lfrtip',
+      dom: 'Blfrtip',
       buttons: [
-          'excelHtml5'
-      ],
+        {
+          extend: 'excel',
+          text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
+          className: 'mb-3 btn btn-success me-1',
+        }
+    ],
     });
 
 });
