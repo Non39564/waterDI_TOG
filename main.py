@@ -1,3 +1,4 @@
+from fpdf import FPDF
 from flask import Flask, make_response, jsonify, request
 from flask_login import LoginManager
 import flask_login, flask
@@ -5,7 +6,6 @@ import json, requests
 from flask import render_template as real_render_template
 from functools import partial
 from db import *
-from api2pdf import Api2Pdf
 
 app = Flask(__name__)
 app.secret_key = 'waterdishow'
@@ -14,30 +14,30 @@ error = showerror()
 user_recept = show_recept()
 render_template = partial(real_render_template, error=error, user_recept=user_recept)
 
-# @app.route('/dataapi', methods=["GET", "POST"])
-# def dataapi():
-#     url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
-#     text = url.text
-#     data = json.loads(text)
-#     user=[
-#           {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
-#                                                       {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
-#                                                       {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
-#           {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
-#                                                       {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
-#                                                       {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
-#                                                       {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
-#                                                       {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
-#           {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
-#                                                       {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
-#                                                       {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
-#                                                       {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
-#                                                       {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
-#                                                       {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
-#           ]
-#     response = make_response(json.dumps(user))
-#     response.content_type = 'application/json'
-#     return jsonify(user)
+@app.route('/dataapi', methods=["GET", "POST"])
+def dataapi():
+    url = requests.get("http://www.randomnumberapi.com/api/v1.0/random?min=0&max=25&count=10")
+    text = url.text
+    data = json.loads(text)
+    user=[
+          {"Station":"OP2","Phase":"Phase 4", "Data":[{"id":"ROBOT", "Water":data[5], "Temp":data[6], "Status":True},
+                                                      {"id":"Fisa 2", "Water":data[4], "Temp":data[7], "Status":False},
+                                                      {"id":"Fisa 4", "Water":data[3], "Temp":data[8], "Status":True},]},
+          {"Station":"OP2","Phase":"Phase 5", "Data":[{"id":"L15 Station 1", "Water":data[9], "Temp":data[8], "Status":True},
+                                                      {"id":"L15 Station 2", "Water":data[6], "Temp":data[7], "Status":False},
+                                                      {"id":"Fisa 3", "Water":data[5], "Temp":data[4], "Status":False},
+                                                      {"id":"L13", "Water":data[2], "Temp":data[3], "Status":True},
+                                                      {"id":"L14", "Water":data[1], "Temp":data[0], "Status":True},]},
+          {"Station":"OP2","Phase":"Phase 9", "Data":[{"id":"HC-4", "Water":data[0], "Temp":data[1], "Status":True},
+                                                      {"id":"HC-5 Station 1", "Water":data[2], "Temp":data[3], "Status":False},
+                                                      {"id":"HC-5 Station 2", "Water":data[5], "Temp":data[4], "Status":False},
+                                                      {"id":"AI", "Water":data[6], "Temp":data[7], "Status":True},
+                                                      {"id":"HC-3", "Water":data[8], "Temp":data[1], "Status":True},
+                                                      {"id":"HC-6", "Water":data[0], "Temp":data[9], "Status":False},]},
+          ]
+    response = make_response(json.dumps(user))
+    response.content_type = 'application/json'
+    return jsonify(user)
 
 ########################### Function Login ###########################
 login_manager = LoginManager()
@@ -257,6 +257,53 @@ def trendDi():
 def statusCR():
     return render_template('status-carbon-resin.html')
 
+@app.route('/download')
+def download():
+    report = error_report()
+    pdf = FPDF("P", "mm", "A4")
+    pdf.add_page()
+    pdf.add_font('THSarabunNew', '', 'THSarabunNew.ttf', uni=True)
+    
+    page_width = pdf.w - 2 * pdf.l_margin
+
+    pdf.set_font('THSarabunNew', '',14.0) 
+    pdf.cell(page_width, 0.0, 'Alert Data', align='C')
+    pdf.ln(10)
+    
+    pdf.set_font('THSarabunNew', '', 12)
+    
+    col_width = page_width/5
+    
+    pdf.ln(1)
+    
+    th = pdf.font_size*2
+
+    pdf.set_fill_color(229, 229, 229)
+    pdf.cell(col_width, th, str("Station"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Phase"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Machine"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Detail"), 1, 0, 'C')
+    pdf.cell(col_width, th, str("Date"), 1, 0, 'C')
+    pdf.ln(th)
+    
+    for row in report:
+        pdf.cell(col_width, th, str(row['Station']), border=1)
+        pdf.cell(col_width, th, str(row['Phase']), border=1)
+        pdf.cell(col_width, th, str(row['Site']), border=1)
+        pdf.cell(col_width, th, str(row['Detail']), border=1)
+        pdf.cell(col_width, th, str(row['Data']), border=1)
+        pdf.ln(th)
+        
+    pdf.ln(10)
+    
+    pdf.set_font('THSarabunNew','',10.0) 
+    pdf.cell(page_width, 0.0, '- end of report -', align='C')
+    
+    response = make_response(pdf.output(dest='S').encode('latin-1'))
+    response.headers.set('Content-Disposition', 'attachment', filename="Alert Report" + '.pdf')
+    response.headers.set('Content-Type', 'application/pdf')
+    
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)

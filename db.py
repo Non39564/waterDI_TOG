@@ -9,8 +9,16 @@ def getConnection():
         user='root',
         password='',
         charset='utf8',
+        use_unicode=True,
         cursorclass=pymysql.cursors.DictCursor
     )
+    
+###################################### Line notifile ######################################################
+import requests
+url = 'https://notify-api.line.me/api/notify'
+token = 'LOz6sHoZyt46LnvgQBKwpB0nY1q852OqznGnSAODvg0'
+headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
+###########################################################################################################    
     
 def showerror():
     connection = getConnection()
@@ -23,6 +31,7 @@ def showerror():
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
+    #requests.post(url, headers=headers, data = {'message':"dfa"})
     return error
 
 def error_report():

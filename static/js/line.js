@@ -2,6 +2,7 @@ google.charts.load('current', {'packages':['line']});
 google.charts.setOnLoadCallback(drawLineChart);
 
 var timer = [];
+var idP4 = [];
 
 
 $.getJSON('/dataapi', function (json) {
@@ -91,8 +92,9 @@ function drawLineChart() {
         dataLP4.addColumn('string', 'Time');
         for (i in json){
           dataLP4.addColumn('number', json[0].Data[i].id);
+          idP4.push(json[0].Data[i].id)
         }
-          for (i = 0; i < timer.length; i++){
+        for (i = 0; i < timer.length; i++){
           dataLP4.addRow([timer[i], ROBOT[i], Fisa2[i], Fisa4[i]]);
         };
         
@@ -119,7 +121,7 @@ function drawLineChart() {
         chartLP9.draw(dataLP9, google.charts.Line.convertOptions(optionsLP9));
         }); 
     }
-    //setInterval(drawLine, 1000);
+    setInterval(drawLine, 1000);
 
 var chartLP4 = new google.charts.Line(document.getElementById('linechartP4'));
 var chartLP5 = new google.charts.Line(document.getElementById('linechartP5'));
