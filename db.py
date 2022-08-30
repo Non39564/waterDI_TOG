@@ -498,7 +498,8 @@ def reportsomline():
     MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
     FROM di_report
     GROUP BY di_report.Date
-    ORDER BY di_report.Date ASC, di_report.Time ASC;"""
+    ORDER BY di_report.Date ASC, di_report.Time ASC
+    LIMIT 30"""
     cursor.execute(datatable)
     data = cursor.fetchall()
     for i in range(len(data)): 
@@ -515,6 +516,36 @@ def somlinecolumn():
     cursor.execute(datatable)
     data = cursor.fetchall()
     return data
-    
+
+def report_line_month(month, year):
+    connection = getConnection()
+    cursor = connection.cursor()
+    datatable = f"""SELECT di_report.Date,
+    MAX(CASE WHEN di_report.Site = "HC-6" THEN di_report.Water END) "HC-6",
+    MAX(CASE WHEN di_report.Site = "HC-3" THEN di_report.Water END) "HC-3",
+    MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2",
+    MAX(CASE WHEN di_report.Site = "Fisa 3" THEN di_report.Water END) "Fisa 3",
+    MAX(CASE WHEN di_report.Site = "AI" THEN di_report.Water END) "AI",
+    MAX(CASE WHEN di_report.Site = "Fisa 4" THEN di_report.Water END) "Fisa 4",
+    MAX(CASE WHEN di_report.Site = "HC-4" THEN di_report.Water END) "HC-4",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 1" THEN di_report.Water END) "HC-5 Station 1",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 2" THEN di_report.Water END) "HC-5 Station 2",
+    MAX(CASE WHEN di_report.Site = "L13" THEN di_report.Water END) "L13",
+    MAX(CASE WHEN di_report.Site = "L14" THEN di_report.Water END) "L14",
+    MAX(CASE WHEN di_report.Site = "L15 Station 1" THEN di_report.Water END) "L15 Station 1",
+    MAX(CASE WHEN di_report.Site = "L15 Station 2" THEN di_report.Water END) "L15 Station 2",
+    MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
+    FROM di_report
+    WHERE MONTH(Date) = {month} and YEAR(Date) = {year}
+    GROUP BY di_report.Date
+    ORDER BY di_report.Date ASC, di_report.Time ASC"""
+    cursor.execute(datatable)
+    data = cursor.fetchall()
+    for i in range(len(data)): 
+        keysList = list(data[i].keys())   
+        for key in keysList:
+            if data[i][key] is None:
+                data[i][key] = 0
+    return data
 
 ########################### End Function DB ###########################

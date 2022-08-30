@@ -265,8 +265,15 @@ def change_setup():
 def index():
     return render_template('index.html')
 
-@app.route('/line')
+@app.route('/line', methods=['GET', 'POST'])
 def line():
+    if request.method == 'POST':
+        month = flask.request.form['selection_month']
+        year = flask.request.form['year']
+        report = di_report()
+        table = report_line_month(month ,year)
+        column = somlinecolumn()
+        return render_template('line.html', report = report, table = table, column = column)
     report = di_report()
     table = reportsomline()
     column = somlinecolumn()
@@ -398,4 +405,4 @@ def download_Overview():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

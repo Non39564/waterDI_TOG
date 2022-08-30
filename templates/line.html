@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 {% block title %}Real-Time Charts{% endblock %}
 {% block head %}
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 <!-- script pagination -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -10,6 +13,11 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <!-- css pagination -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<!-- DataTables date range filter -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
+<!--End DataTables date range filter -->
 <!--Chart-->
 <script>
   google.charts.load('current', {'packages':['line']});
@@ -34,11 +42,7 @@ data.addRows([
 
 var options = {
   chart: {
-    //title: 'Box Office Earnings in First Two Weeks of Opening',
-    //subtitle: 'in millions of dollars (USD)'
   },
-//   width: 900,
-//   height: 500
 };
 
 var chart = new google.charts.Line(document.getElementById('linechart_material'));
@@ -59,7 +63,41 @@ $(window).resize(function(){
     </h5>
     <div class="card-body pt-0">
       <div class="card mt-3">
-        <h6 class="card-header bg-dark bg-gradient text-white">Deionized water</h6>
+            <h6 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white ">Deionized water
+              <form action="{{ url_for('line') }}" method='POST'>
+                    <select id="selection_month" name="selection_month" class="select select-initialized">
+                        <option value="" disabled selected>Choose Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select id="year" name="year" class="select select-initialized">
+                      <option value="" disabled selected>Choose Year</option>
+                      <option value="2022">2022</option>
+                      <option value="2023">2023</option>
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                      <option value="2027">2027</option>
+                      <option value="2028">2028</option>
+                      <option value="2029">2029</option>
+                      <option value="2030">2030</option>
+                      <option value="2031">2031</option>
+                      <option value="2032">2032</option>
+                      <option value="2033">2033</option>
+                  </select>
+                  <button type="submit">GO</button>
+              </form>
+            </h6>
         <div class="card-body">
           <div id="linechart_material" class="display" style="height: 35rem;"></div>
         </div>
@@ -76,7 +114,7 @@ $(window).resize(function(){
             </button>
         </div>
           
-          <table class="display table align-middle mb-0 bg-white">
+          <table class="display table align-middle mb-0 bg-white" id="line">
               <thead class="bg-light">
                 <tr>
                   <th>Date</th>
@@ -120,6 +158,7 @@ $(window).resize(function(){
 
 {% endblock %}
 {% block script %}
+<script src="{{ url_for('static', filename='js/Report-Di.js') }}"></script>
 <script>
   {% for reportscript in report %}
   if ($( 'input[name="data{{ reportscript['Site'] }}"]' ).val() >= 12){
@@ -135,23 +174,24 @@ $(window).resize(function(){
   }
   {% endfor %}
 </script>
-<script>
-  $(document).ready(function () {
-    $('table.display').DataTable({
-      pagingType: 'full_numbers',
-      scrollY: '1000px',
-      scrollCollapse: true,
-      pageLength: 20,
-      lengthMenu: [ [20, 30, 40, 50, -1], [20, 30, 40, 50, "All"] ],
-      dom: 'Blfrtip',
-      buttons: [
-        {
-          extend: 'excel',
-          text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
-          className: 'mb-3 btn btn-success me-1',
-        }
-    ],
-    });
-});
-</script>
+
+// <script>
+//   $(document).ready(function () {
+//     $('table.display').DataTable({
+//       pagingType: 'full_numbers',
+//       scrollY: '1000px',
+//       scrollCollapse: true,
+//       pageLength: 20,
+//       lengthMenu: [ [20, 30, 40, 50, -1], [20, 30, 40, 50, "All"] ],
+//       dom: 'Blfrtip',
+//       buttons: [
+//         {
+//           extend: 'excel',
+//           text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
+//           className: 'mb-3 btn btn-success me-1',
+//         }
+//     ],
+//     });
+// });
+// </script>
 {% endblock %}
