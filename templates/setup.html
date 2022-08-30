@@ -42,7 +42,7 @@
                 <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
               </td>
               <td>
-                <p class="text-muted mb-0">36</p>
+                <p class="text-muted mb-0 " name="realtime{{ setup['Site'] }}" id="realtime{{ setup['Site'] }}">Loading...</p>
               </td>
               <td>
                   <input type="number" class="form-control" name="Low_Water_{{ setup['Site'] }}" id="Low_Water_{{ setup['Site'] }}"
@@ -124,6 +124,15 @@
 {% for setup_script in setup %}
 var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val();
 $("#Low_Water_{{ setup_script['Site'] }}").attr({"max":High_Water});
+  
+setInterval(function() {
+    var number = 10 + Math.floor(Math.random() * 10);
+    $('#realtime{{ setup_script['Site'] }}').text(number);
+  },
+1000);
 {% endfor %}
+</script>
+<script>
+  
 </script>
 {% endblock %}
