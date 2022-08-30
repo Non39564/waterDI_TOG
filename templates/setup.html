@@ -120,4 +120,13 @@
     });
   });
 </script>
+<script>
+{% for setup_script in setup %}
+var Low_Water = $("#Low_Water_{{ setup_script['Site'] }}").val();
+var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val();
+if(Low_Water > High_Water) {
+  $("#Low_Water_{{ setup_script['Site'] }}").val(High_Water-1)
+}
+{% endfor %}
+</script>
 {% endblock %}

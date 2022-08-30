@@ -145,6 +145,15 @@
             <i class="fa-solid fa-bell fa-fw me-3"></i>
             <span>Alert Status</span>
           </a>
+          <a
+             href="setup"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="bi bi-gear fa-fw me-3"></i>
+            <span>Setup</span>
+          </a>
           {% if current_user.is_authenticated %}
           <a
              href="addmachine"
@@ -155,15 +164,7 @@
             <i class="bi bi-node-plus-fill fa-fw me-3"></i>
             <span>Manage Machine</span>
           </a>
-          <a
-             href="setup"
-             class="list-group-item list-group-item-action py-2 ripple 
-             border-0 border-bottom bg-dark bg-gradient text-white "
-             aria-current="true"
-             >
-             <i class="bi bi-gear fa-fw me-3"></i>
-            <span>Setup</span>
-          </a>
+          
           <a
              href="logout"
              class="list-group-item list-group-item-action py-2 ripple 

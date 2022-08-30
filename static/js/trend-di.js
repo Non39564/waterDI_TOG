@@ -33,6 +33,8 @@ var minDate, maxDate;
      // DataTables initialisation
      var table = $('table.display').DataTable();
   
+     console.log("min"+min)
+    console.log("max"+max)
      // Refilter the table
      $('#min, #max').on('change', function () {
          table.draw();

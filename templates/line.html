@@ -63,9 +63,10 @@ $(window).resize(function(){
     </h5>
     <div class="card-body pt-0">
       <div class="card mt-3">
-            <h6 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white ">Deionized water
+            <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white ">Deionized water
               <form action="{{ url_for('line') }}" method='POST'>
-                    <select id="selection_month" name="selection_month" class="select select-initialized">
+                <div class="select-wrapper mb-2 ">
+                    <select  id="selection_month" name="selection_month" class="select select-initialized">
                         <option value="" disabled selected>Choose Month</option>
                         <option value="1">January</option>
                         <option value="2">February</option>
@@ -95,9 +96,12 @@ $(window).resize(function(){
                       <option value="2032">2032</option>
                       <option value="2033">2033</option>
                   </select>
-                  <button type="submit">GO</button>
+                  <button type="submit" class="sendButton btn btn-primary" id="search">GO</button>
+                </div>
+                    
+                  
               </form>
-            </h6>
+            </h5>
         <div class="card-body">
           <div id="linechart_material" class="display" style="height: 35rem;"></div>
         </div>
@@ -173,6 +177,11 @@ $(window).resize(function(){
     $('td[name="{{ reportscript['Site'] }}"]').addClass("bg-danger");
   }
   {% endfor %}
+</script>
+<script>
+  $('#year').on('change', function () {
+    $('#search').prop('disabled', !$(this).val());
+  }).trigger('change');
 </script>
 
 // <script>

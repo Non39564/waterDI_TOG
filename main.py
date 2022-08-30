@@ -1,5 +1,5 @@
 from fpdf import FPDF
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, Response
 from flask_login import LoginManager
 import flask_login, flask
 import json, requests
@@ -214,14 +214,14 @@ def unauthorized_handler():
     return 'Unauthorized', 401
     
 @app.route('/setup')
-@flask_login.login_required
+# @flask_login.login_required
 def setup():
     setup = setupMachine()
     show_machine = machine_DropDown_setup()
     return render_template('setup.html', setup = setup, show_machine = show_machine)
 
 @app.route('/find_setup')
-@flask_login.login_required
+# @flask_login.login_required
 def find_setup():
     selectionMachine = request.args.get('selectionMachine')
     setup = show_site_machine(selectionMachine)
@@ -242,7 +242,7 @@ def confirm_reject():
     return flask.redirect(flask.url_for('index'))
 
 @app.route('/change_setup' , methods=['GET', 'POST'])
-@flask_login.login_required
+# @flask_login.login_required
 def change_setup():
     setup = setupMachine()
     name_site = []
@@ -404,5 +404,6 @@ def download_Overview():
     return response
 
 
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

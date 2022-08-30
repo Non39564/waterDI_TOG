@@ -25,10 +25,10 @@ var minDate, maxDate;
   
  $(document).ready(function() {
      // Create date inputs
-     minDate = new DateTime($('#min'), {
+     minDate = new DateTime($('input#min'), {
          format: 'MMMM Do YYYY'
      });
-     maxDate = new DateTime($('#max'), {
+     maxDate = new DateTime($('input#max'), {
          format: 'MMMM Do YYYY'
      });
   
@@ -45,8 +45,9 @@ var minDate, maxDate;
      });
   
      // Refilter the table
-     $('#min, #max').on('change', function () {
+     console.log("min"+min)
+     console.log("max"+max)
+     $('input#min,input#max').on('change', function () {
          table.draw();
-         console.log("change")
      });
  });
