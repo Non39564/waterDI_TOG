@@ -134,7 +134,6 @@
   <div class="card-header bg-danger bg-gradient text-white">Delete Machine</div>
     <div class="card-body">
       <form >
-        
         <table class="display table align-middle mb-0 bg-white" id="alldevice">
           <thead class="bg-light">
             <tr>
@@ -188,12 +187,12 @@
               </td>
               <td >
                 <div class="row g-2">
-                  <div class="col-3">
+                  <div class="col-xxl-3">
                     <button value="{{ edit_delete['Site'] }}" name="Edit" type="button" class="btn btn-link btn-sm text-bg-primary Edit">
                       Edit
                     </button>
                   </div>
-                  <div class="col-3 ">
+                  <div class="col-xxl-3 ">
                     <button value="{{ edit_delete['Site'] }}" name="delete" type="button" class="btn btn-link btn-sm text-bg-danger delete">
                       Delete
                     </button>
@@ -222,6 +221,7 @@
       scrollCollapse: true,
       pageLength: 5,
       lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+      responsive: true
     });
 });
 </script> 
@@ -298,15 +298,27 @@
 
   var Water = $('select#Water');
   var Slot_temp = $('select#Slot_temp');
+  var MachineID = $('select#inputMachineID');
 
-  for (var i = 1; i < 15; i++) {
-    Water.append($('<option/>', {'value': i, 'text': i}));
-    Slot_temp.append($('<option/>', {'value': i, 'text': i}));
-  }
+  MachineID.change(function(ev){
+    Water.empty();
+    Slot_temp.empty();
+    Water.append($('<option/>'));
+    Slot_temp.append($('<option/>'))
 
-  for (var key in slot) {
-    $('select').find('option[value="' + key +'"]').prop('disabled', true);
-  }
+    var Slot_Machine = slot[MachineID.val()];
+
+    for (var i = 1; i < 15; i++) {
+      Water.append($('<option/>', {'value': i, 'text': i}));
+      Slot_temp.append($('<option/>', {'value': i, 'text': i}));
+    }
+
+    for (var key in Slot_Machine) {
+      $('select').find('option[value="' + Slot_Machine[key] +'"]').prop('disabled', true);
+      console.log(key)
+    }
+
+  });
 
   $('select').change(function(){
     

@@ -38,13 +38,10 @@
     </h5>
     <div class="card-body">
         <div class="card">
-            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase4
-              
-            </div>
+            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase4</div>
               <div class="card-body">
                   <div class="row">
                       <div class="col-6">
-                        
                               <table class="display table align-middle mb-0 bg-white" id="P4">
                                   <thead class="bg-light">
                                     <tr>
@@ -171,46 +168,6 @@
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('static', filename='js/trend-di.js') }}"></script>
-<!-- <script>
-var minDate, maxDate;
- 
- // Custom filtering function which will search data in column four between two values
- $.fn.dataTable.ext.search.push(
-     function( settings, data, dataIndex ) {
-         var min = minDate.val();
-         var max = maxDate.val();
-         var date = new Date( data[0] );
-  
-         if (
-             ( min === null && max === null ) ||
-             ( min === null && date <= max ) ||
-             ( min <= date   && max === null ) ||
-             ( min <= date   && date <= max )
-         ) {
-             return true;
-         }
-         return false;
-     }
- );
-  
- $(document).ready(function() {
-     // Create date inputs
-     minDate = new DateTime($('#minP4'), {
-         format: 'MMMM Do YYYY'
-     });
-     maxDate = new DateTime($('#maxP4'), {
-         format: 'MMMM Do YYYY'
-     });
-  
-     // DataTables initialisation
-     var table = $('#P4').DataTable();
-  
-     // Refilter the table
-     $('#minP4, #maxP4').on('change', function () {
-         table.draw();
-     });
- });
-</script> -->
 <script>
   {% for P4script in P4 %}
   if ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() > 12){

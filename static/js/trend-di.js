@@ -6,6 +6,8 @@ var minDate, maxDate;
          var min = minDate.val();
          var max = maxDate.val();
          var date = new Date( data[0] );
+         console.log(min);
+         console.log(max);
   
          if (
              ( min === null && max === null ) ||

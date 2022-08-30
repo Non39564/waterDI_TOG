@@ -1,5 +1,7 @@
 import pymysql
 
+import itertools
+
 ########################### Function DB ###########################
 
 def getConnection():
@@ -203,21 +205,30 @@ def get_dropdown_values_machine():
     return class_entry_relations
 
 def dynamic_slot():
+    machine = []
     slot = []
-    myDict = {}
     connection = getConnection()
     cursor = connection.cursor()
     select_slot = "select * from Machine_Data"
     cursor.execute(select_slot)
     data = cursor.fetchall()
     for row in range(len(data)):
-        slot.append(data[row]["Slot_Water"])
-        slot.append(data[row]["Slot_Temp"])
-    for all_slot in slot:
-        myDict[all_slot] = all_slot
-    
-    class_entry_relations = myDict
-    return class_entry_relations
+        if data[row]["Machine"] not in machine:
+            machine.append(data[row]["Machine"])
+        if data[row]["Machine"] == "001":
+            if data[row]["Slot_Water"] and data[row]["Slot_Temp"] not in slot:
+                slot.clear()
+                slot.append([data[row]["Slot_Water"], data[row]["Slot_Temp"]])
+                finalslot001 = list(itertools.chain.from_iterable(slot))
+        if data[row]["Machine"] == "002":
+            if data[row]["Slot_Water"] and data[row]["Slot_Temp"] not in slot:
+                slot.append([data[row]["Slot_Water"], data[row]["Slot_Temp"]])
+                finalslot002 = list(itertools.chain.from_iterable(slot))
+    slot.clear()
+    slot.append(finalslot002)
+    slot.append(finalslot001)
+    dictionary = dict(zip(machine, slot))
+    return dictionary
 
 def show_machine():
     connection = getConnection()
@@ -228,7 +239,8 @@ def show_machine():
                             machine_station.Phase,
                             machine_data.Site,
                             machine_data.Slot_Water,
-                            machine_data.Slot_Temp
+                            machine_data.Slot_Temp,
+                            machine_data.Machine
                         FROM machine_master
                         INNER JOIN machine ON machine_master.Machine = machine.Machine
                         INNER JOIN machine_station ON machine.ID = machine_station.ID
@@ -423,7 +435,8 @@ def edit_machine_device(Site):
                             machine_station.Phase,
                             machine_data.Site,
                             machine_data.Slot_Water,
-                            machine_data.Slot_Temp
+                            machine_data.Slot_Temp,
+                            machine_data.Machine
                         FROM machine_master
                         INNER JOIN machine ON machine_master.Machine = machine.Machine
                         INNER JOIN machine_station ON machine.ID = machine_station.ID
@@ -464,5 +477,44 @@ def trend_DI_P9():
     cursor.execute(trend_DI_P9)
     data = cursor.fetchall()
     return data
+
+def reportsomline():
+    connection = getConnection()
+    cursor = connection.cursor()
+    datatable = """SELECT di_report.Date,
+    MAX(CASE WHEN di_report.Site = "HC-6" THEN di_report.Water END) "HC-6",
+    MAX(CASE WHEN di_report.Site = "HC-3" THEN di_report.Water END) "HC-3",
+    MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2",
+    MAX(CASE WHEN di_report.Site = "Fisa 3" THEN di_report.Water END) "Fisa 3",
+    MAX(CASE WHEN di_report.Site = "AI" THEN di_report.Water END) "AI",
+    MAX(CASE WHEN di_report.Site = "Fisa 4" THEN di_report.Water END) "Fisa 4",
+    MAX(CASE WHEN di_report.Site = "HC-4" THEN di_report.Water END) "HC-4",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 1" THEN di_report.Water END) "HC-5 Station 1",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 2" THEN di_report.Water END) "HC-5 Station 2",
+    MAX(CASE WHEN di_report.Site = "L13" THEN di_report.Water END) "L13",
+    MAX(CASE WHEN di_report.Site = "L14" THEN di_report.Water END) "L14",
+    MAX(CASE WHEN di_report.Site = "L15 Station 1" THEN di_report.Water END) "L15 Station 1",
+    MAX(CASE WHEN di_report.Site = "L15 Station 2" THEN di_report.Water END) "L15 Station 2",
+    MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
+    FROM di_report
+    GROUP BY di_report.Date
+    ORDER BY di_report.Date ASC, di_report.Time ASC;"""
+    cursor.execute(datatable)
+    data = cursor.fetchall()
+    for i in range(len(data)): 
+        keysList = list(data[i].keys())   
+        for key in keysList:
+            if data[i][key] is None:
+                data[i][key] = 0
+    return data
+
+def somlinecolumn():
+    connection = getConnection()
+    cursor = connection.cursor()
+    datatable = """SELECT * from Off_set"""
+    cursor.execute(datatable)
+    data = cursor.fetchall()
+    return data
+    
 
 ########################### End Function DB ###########################

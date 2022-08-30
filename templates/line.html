@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 {% block title %}Real-Time Charts{% endblock %}
 {% block head %}
-<script src="{{ url_for('static', filename='js/line.js') }}"></script>
 <!-- script pagination -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -11,6 +10,46 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <!-- css pagination -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<!--Chart-->
+<script>
+  google.charts.load('current', {'packages':['line']});
+google.charts.setOnLoadCallback(drawChartLine_Summon);
+
+function drawChartLine_Summon() {
+
+var data = new google.visualization.DataTable();
+data.addColumn('string', 'Day');
+{% for chart_report in column %}
+data.addColumn('number', '{{ chart_report['Site'] }}');
+{% endfor %}
+
+data.addRows([
+{% for chart_use in table %}
+  ['{{ chart_use['Date'] }}', {{ chart_use['HC-6'] }}, {{ chart_use['HC-3'] }}, {{ chart_use['Fisa 2'] }}, {{ chart_use['Fisa 3'] }},
+  {{ chart_use['Fisa 4'] }}, {{ chart_use['AI'] }}, {{ chart_use['HC-4'] }}, {{ chart_use['HC-6'] }}, {{ chart_use['HC-5 Station 1'] }},
+  {{ chart_use['HC-5 Station 2'] }}, {{ chart_use['L13'] }}, {{ chart_use['L14'] }}, {{ chart_use['L15 Station 1'] }},
+  {{ chart_use['L15 Station 2'] }}, {{ chart_use['ROB'] }} ],
+{% endfor %}
+]);
+
+var options = {
+  chart: {
+    //title: 'Box Office Earnings in First Two Weeks of Opening',
+    //subtitle: 'in millions of dollars (USD)'
+  },
+//   width: 900,
+//   height: 500
+};
+
+var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+chart.draw(data, google.charts.Line.convertOptions(options));
+}
+
+$(window).resize(function(){
+    drawChartLine_Summon();
+  });
+</script>
 {% endblock %}
 {% block content %}
 
@@ -20,15 +59,15 @@
     </h5>
     <div class="card-body pt-0">
       <div class="card mt-3">
-        <h6 class="card-header bg-dark bg-gradient text-white">Monthly Deionized water</h6>
+        <h6 class="card-header bg-dark bg-gradient text-white">Deionized water</h6>
         <div class="card-body">
-          <div id="linechartP4" class="display dataP4"></div>
+          <div id="linechart_material" class="display" style="height: 35rem;"></div>
         </div>
       </div>
       <div class="card mb-3 mt-3">
         <h6 class="card-header bg-dark bg-gradient text-white">Table of  Deionized water</h6>
         <div class="card-body p-3">
-          <div class="d-grid gap-2 d-md-block">
+          <div class="d-md-block">
             <button class="mt-1 mb-2  btn btn-danger">
               <a href="{{ url_for('download_Overview') }}" class="text-white">
                 <i class="fa fa-file-pdf me-1"></i>
@@ -100,7 +139,7 @@
   $(document).ready(function () {
     $('table.display').DataTable({
       pagingType: 'full_numbers',
-      scrollY: '500px',
+      scrollY: '1000px',
       scrollCollapse: true,
       pageLength: 20,
       lengthMenu: [ [20, 30, 40, 50, -1], [20, 30, 40, 50, "All"] ],

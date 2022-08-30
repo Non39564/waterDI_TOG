@@ -31,28 +31,12 @@ def postdata():
         datapost[0] = data
         dataexport.append(f"{Timestamp} | {data}")
         
-        # filename = f"data/data.txt"
-        # textfile = open(filename, "w")
-        # for d in dataexport:
-        #     textfile.write(str(d) + "\n")
-        # textfile.close()
-        # if data != datapost[0]:
-        #     now = datetime.now()
-        #     Timestamp = now.strftime("%d-%m-%Y, %H:%M:%S")
-        #     datapost[0] = data
-        #     dataexport.append(f"{Timestamp} | {data}")
         if len(dataexport) >=9:
             filename = f"data/data.txt"
             textfile = open(filename, "a")
             textfile.write(str(dataexport[8]) + "\n")
             textfile.close()
             dataexport.clear()
-            print("10 min post")
-
-            # filename = "C:/Users/TOGIIOT/Desktop/Machine_Di_Water/waterDI_TOG-main/waterDI_TOG-main/data.txt"
-            # exportdata = open(filename, 'rb').read()
-            # exportdatatolog(Timestamp,exportdata)
-            # print("Export 10 data")
 
         return "postdata succress"
 
@@ -284,7 +268,9 @@ def index():
 @app.route('/line')
 def line():
     report = di_report()
-    return render_template('line.html', report = report)
+    table = reportsomline()
+    column = somlinecolumn()
+    return render_template('line.html', report = report, table = table, column = column)
 
 @app.route('/report')
 def report():

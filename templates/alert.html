@@ -1,6 +1,10 @@
 {% extends 'layout.html' %}
 {% block title %}Alert{% endblock %}
 {% block head %}
+
+<!-- script date range filter -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
 <!-- script pagination -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -9,12 +13,27 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 
+<!-- css date range filter -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
 <!-- css pagination -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
 {% endblock %}
 {% block content %}
 <div class="card mt-3">
-  <h5 class="card-header bg-danger bg-gradient text-white">Alert status</h5>
+  <h5 class="card-header bg-danger bg-gradient text-white">Alert status
+    <!-- date range filter -->
+    <table  cellspacing="5" cellpadding="5">
+      <tbody>
+        <tr>
+          <td>Choose Date :</td>
+          <td><input type="text" id="min" name="min"></td>
+          <td>To</td>
+          <td><input type="text" id="max" name="max"></td>
+        </tr>
+      </tbody>
+    </table>
+  <!-- End date range filter -->
+  </h5>
     <div class="card-body">
       <div class="d-grid gap-2 d-md-block">
         <button class="mt-1 mb-2  btn btn-danger">
@@ -28,16 +47,19 @@
       <table class="display table align-middle mb-0 bg-white" id="alert">
         <thead class="bg-light">
           <tr>
+            <th>Date</th>
             <th>Station</th>
             <th>Phase</th>
             <th>Machine</th>
             <th>Detail</th>
-            <th>Date</th>
           </tr>
         </thead>
         <tbody>
           {% for error in report %}
           <tr>
+            <td>
+              <p class="text-muted mb-0 ">{{ error['Data'] }}</p>
+            </td>
             <td>
               <p class="text-muted mb-0">{{ error['Station'] }}</p>
             </td>
@@ -50,9 +72,6 @@
             <td>
               <p class="text-muted mb-0 ">{{ error['Detail'] }}</p>
             </td>
-            <td>
-              <p class="text-muted mb-0 ">{{ error['Data'] }}</p>
-            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -63,23 +82,46 @@
 {% endblock %}
 {% block script %}
 <script>
-  $(document).ready(function () {
-    $('table.display').DataTable({
-      pagingType: 'full_numbers',
-      scrollY: '500px',
-      scrollCollapse: true,
-      pageLength: 10,
-      lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-      dom: 'Blfrtip',
-      buttons: [
-        {
-          extend: 'excel',
-          text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
-          className: 'mb-3 btn btn-success me-1',
-        }
-    ],
-    });
-
-});
+ var minDate, maxDate;
+ 
+ // Custom filtering function which will search data in column four between two values
+ $.fn.dataTable.ext.search.push(
+     function( settings, data, dataIndex ) {
+         var min = minDate.val();
+         var max = maxDate.val();
+         var date = new Date( data[0] );
+        //  console.log(min);
+        //  console.log(max);
+  
+         if (
+             ( min === null && max === null ) ||
+             ( min === null && date <= max ) ||
+             ( min <= date   && max === null ) ||
+             ( min <= date   && date <= max )
+         ) {
+             return true;
+         }
+         return false;
+     }
+ );
+  
+ $(document).ready(function() {
+     // Create date inputs
+     minDate = new DateTime($('#min'), {
+         format: 'MMMM Do YYYY'
+     });
+     maxDate = new DateTime($('#max'), {
+         format: 'MMMM Do YYYY'
+     });
+  
+     // DataTables initialisation
+     var table = $('#alert').DataTable();
+  
+     // Refilter the table
+     $('#min, #max').on('change', function (minmax) {
+         table.draw();
+         console.log(minmax)
+     });
+ });
 </script>
 {% endblock %}

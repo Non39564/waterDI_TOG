@@ -84,6 +84,9 @@
                   <option value="{{ edit_delete['Slot_Temp'] }}">{{ edit_delete['Slot_Temp'] }}</option>
                 </select>
                 {% endfor %}
+                {% for edit_Machine in edit %}
+                <input type="hidden" class="form-control" name="Machine" id="Machine" value="{{ edit_Machine['Machine'] }}">
+                {% endfor %}
               </div>
               <button type="submit" class="btn btn-primary mt-3 Edit">Edit</button>
               </form>
@@ -137,6 +140,7 @@
         
         var Water = $('select#Water');
         var Slot_temp = $('select#Slot_temp');
+        var Machine = $('#Machine');
 
         var default_water = $('select#Water').val()
         var default_temp = $('select#Slot_temp').val()
@@ -146,11 +150,12 @@
           Slot_temp.append($('<option/>', {'value': i, 'text': i}));
         }
 
-        for (var key in slot) {
-          $('select').find('option[value="' + key +'"]').prop('disabled', true);
+        var machine = slot[Machine.val()];
+
+        for (var key in machine) {
+          $('select').find('option[value="' + machine[key] +'"]').prop('disabled', true);
         }
 
-        console.log($('select#Water').val())
         var water_select = document.getElementById(Water);
 
         $('select').change(function(){

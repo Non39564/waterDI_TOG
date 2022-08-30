@@ -55,21 +55,3 @@ def showerror():
         requests.post(url, headers=headers, data = {'message':msg})
     return error
 
-def di_report():
-    connection = getConnection()
-    cursor = connection.cursor()
-    di_report = "SELECT Date, Phase, Site, Water, Temp FROM di_report ORDER BY Date DESC, Time DESC"
-    cursor.execute(di_report)
-    data = cursor.fetchall()
-    for i in data:
-        if i["Water"] > 12:
-            Status = "Pass"
-        elif i["Water"] >= 10 and i["Water"] < 12:
-            Status = "Monitor"
-        else:
-            Status = "Error"
-        print(i)
-        print(Status)
-    # return data
-    
-di_report()

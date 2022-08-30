@@ -96,9 +96,10 @@
 <header>
     <!-- Sidebar -->
     <nav id="sidebarMenu" class="d-lg-block sidebar collapse bg-dark bg-gradient text-white">
+
       <div class="position-sticky">
         <!-- side nav new -->
-        <div class="list-group list-group-flush mt-4">
+        <div class="list-group list-group-flush mt-4 ">
           <a
              href="/"
              class="list-group-item list-group-item-action py-2 ripple 
@@ -166,20 +167,21 @@
           <a
              href="logout"
              class="list-group-item list-group-item-action py-2 ripple 
-             border-0 border-bottom bg-dark bg-gradient text-white "
-             aria-current="true" style="margin-top: 80%;"
+             border-0 border-bottom bg-dark bg-gradient text-white mt-5"
+             aria-current="true"
              >
             <i class="bi-solid bi-door-open-fill fa-fw me-3"></i>
             <span>Logout</span>
           </a>
           {% else %}
           <button type="button" class="list-group-item list-group-item-action py-2 ripple 
-          border-0 border-bottom bg-dark bg-gradient text-white" style="margin-top: 120%;" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+          border-0 border-bottom bg-dark bg-gradient text-white mt-5"  data-mdb-toggle="modal" data-mdb-target="#exampleModal">
           <i class="bi-solid bi-door-open-fill fa-fw me-3"></i><span>Login</span>
           </button>
           {% endif %}
 
         </div>
+
         <!-- end side nav new -->
         <!-- Tab navs -->
       </div>
