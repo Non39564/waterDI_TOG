@@ -38,12 +38,12 @@ def showerror():
 
 def error_report():
     connection = getConnection()
-    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Data
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date
             FROM machine_station
             JOIN machine ON machine_station.ID = machine.ID
             JOIN machine_data ON machine_data.Machine = machine.Machine
             JOIN di_error ON di_error.Site = machine_data.Site
-            ORDER BY di_error.Data DESC"""
+            ORDER BY di_error.Date DESC"""
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
