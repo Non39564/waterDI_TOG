@@ -122,8 +122,8 @@
 </script>
 <script>
 {% for setup_script in setup %}
-var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val();
-$("#Low_Water_{{ setup_script['Site'] }}").attr({"max":High_Water});
+var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val()-0.000001;
+$("#Low_Water_{{ setup_script['Site'] }}").attr({"max":High_Water, "step":0.01});
   
 setInterval(function() {
     var number = 10 + Math.floor(Math.random() * 10);
