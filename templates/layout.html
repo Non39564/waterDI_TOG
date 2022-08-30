@@ -128,15 +128,6 @@
              <span>Trend Deionized water</span>
           </a>
           <a
-             href="/status-carbon-resin"
-             class="list-group-item list-group-item-action py-2 ripple 
-             border-0 border-bottom bg-dark bg-gradient text-white "
-             aria-current="true"
-             >
-             <i class="fas fa-toggle-on fa-fw me-3"></i>
-            <span>Status Open Carbon and Resin</span>
-          </a>
-          <a
              href="alert"
              class="list-group-item list-group-item-action py-2 ripple 
              border-0 border-bottom bg-dark bg-gradient text-white "
@@ -145,6 +136,8 @@
             <i class="fa-solid fa-bell fa-fw me-3"></i>
             <span>Alert Status</span>
           </a>
+          
+          {% if current_user.is_authenticated %}
           <a
              href="setup"
              class="list-group-item list-group-item-action py-2 ripple 
@@ -154,7 +147,15 @@
              <i class="bi bi-gear fa-fw me-3"></i>
             <span>Setup</span>
           </a>
-          {% if current_user.is_authenticated %}
+          <a
+             href="/status-carbon-resin"
+             class="list-group-item list-group-item-action py-2 ripple 
+             border-0 border-bottom bg-dark bg-gradient text-white "
+             aria-current="true"
+             >
+             <i class="fas fa-toggle-on fa-fw me-3"></i>
+            <span>Status Open Carbon and Resin</span>
+          </a>
           <a
              href="addmachine"
              class="list-group-item list-group-item-action py-2 ripple 
