@@ -109,13 +109,13 @@ def add_phase(OP, Phase, Site):
     for row in data:
         op.append(row["OP"])
     if OP in op:
-        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
+        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
         insert_phase = "INSERT INTO Phase(OP, Phase, Site) VALUES('%s', '%s', '%s')" % (OP, Phase, Site)
         cursor.execute(insert_site)
         cursor.execute(insert_phase)
         connection.commit()
     else:
-        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
+        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
         insert_op = "INSERT INTO OP(OP) VALUES('%s')" % (OP)
         insert_phase = "INSERT INTO Phase(OP, Phase, Site) VALUES('%s', '%s', '%s')" % (OP, Phase, Site)
         cursor.execute(insert_site)
