@@ -33,10 +33,10 @@ data.addColumn('number', '{{ chart_report['Site'] }}');
 
 data.addRows([
 {% for chart_use in table %}
-  ['{{ chart_use['Date'] }}', {{ chart_use['HC-6'] }}, {{ chart_use['HC-3'] }}, {{ chart_use['Fisa 2'] }}, {{ chart_use['Fisa 3'] }},
-  {{ chart_use['Fisa 4'] }}, {{ chart_use['AI'] }}, {{ chart_use['HC-4'] }}, {{ chart_use['HC-6'] }}, {{ chart_use['HC-5 Station 1'] }},
-  {{ chart_use['HC-5 Station 2'] }}, {{ chart_use['L13'] }}, {{ chart_use['L14'] }}, {{ chart_use['L15 Station 1'] }},
-  {{ chart_use['L15 Station 2'] }}, {{ chart_use['ROB'] }} ],
+  ['{{ chart_use['Date'] }}', {{ chart_use['AI'] }}, {{ chart_use['Fisa 2'] }}, {{ chart_use['Fisa 3'] }}, {{ chart_use['Fisa 4'] }},
+  {{ chart_use['HC-3'] }}, {{ chart_use['HC-4'] }}, {{ chart_use['HC-5 Station 1'] }}, {{ chart_use['HC-5 Station 1'] }}, {{ chart_use['HC-6'] }},
+  {{ chart_use['L13'] }}, {{ chart_use['L14'] }}, {{ chart_use['L15 Station 1'] }}, {{ chart_use['L15 Station 2'] }},
+  {{ chart_use['ROBOT'] }} ],
 {% endfor %}
 ]);
 

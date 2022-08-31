@@ -29,7 +29,7 @@ def showerror():
             JOIN machine ON machine_station.ID = machine.ID
             JOIN machine_data ON machine_data.Machine = machine.Machine
             JOIN di_error ON di_error.Site = machine_data.Site
-            WHERE di_error.Data = CURDATE()"""
+            WHERE di_error.Date = CURDATE()"""
     cursor = connection.cursor()
     cursor.execute(sql)
     error = cursor.fetchall()
@@ -109,13 +109,13 @@ def add_phase(OP, Phase, Site):
     for row in data:
         op.append(row["OP"])
     if OP in op:
-        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)" % (Site)
+        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
         insert_phase = "INSERT INTO Phase(OP, Phase, Site) VALUES('%s', '%s', '%s')" % (OP, Phase, Site)
         cursor.execute(insert_site)
         cursor.execute(insert_phase)
         connection.commit()
     else:
-        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)" % (Site)
+        insert_site = "INSERT INTO Off_Set VALUES('%s', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'N', 'N')" % (Site)
         insert_op = "INSERT INTO OP(OP) VALUES('%s')" % (OP)
         insert_phase = "INSERT INTO Phase(OP, Phase, Site) VALUES('%s', '%s', '%s')" % (OP, Phase, Site)
         cursor.execute(insert_site)

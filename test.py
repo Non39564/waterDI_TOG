@@ -27,8 +27,8 @@ msg = """
 เวลาที่รายงาน : 08:18:11
 ไม่ต่ำกว่า : 1.5 bar 
 ไม่เกินกว่า : 3.25 bar"""
-# r = requests.post(url, headers=headers, data = {'message':msg, 'name':"ชาวโลก"})
-# print (r.text)
+r = requests.post(url, headers=headers, data = {'message':msg})
+print (r.text)
 #############################################################################################################
 
 def showerror():
