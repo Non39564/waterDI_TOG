@@ -78,7 +78,12 @@ $(window).resize(function(){
     </h5>
     <div class="card-body pt-0">
       <div class="card mt-3">
-            <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white ">Deionized water
+        <div class="card-header  bg-dark bg-gradient text-white">
+          <div class="row justify-content-lg-end">
+            <div class="col-lg-5">
+              <h5>Deionized water</h5>
+            </div>
+            <div class="col-lg-7 d-flex justify-content-lg-end ">
               <form action="{{ url_for('line') }}" method='POST'>
                 <div class="select-wrapper mb-2 ">
                     <select  id="selection_month" name="selection_month" class="select select-initialized">
@@ -111,12 +116,12 @@ $(window).resize(function(){
                       <option value="2032">2032</option>
                       <option value="2033">2033</option>
                   </select>
-                  <button type="submit" class="sendButton btn btn-primary" id="search">GO</button>
+                  <button type="submit" class="sendButton btn btn-primary pt-1 pb-1" id="search">GO</button>
                 </div>
-                    
-                  
               </form>
-            </h5>
+          </div>
+          </div>
+        </div>
         <div class="card-body">
           <div id="linechart_material" class="display" style="height: 35rem;"></div>
         </div>
@@ -204,23 +209,4 @@ $(window).resize(function(){
   }).trigger('change');
 </script>
 
-// <script>
-//   $(document).ready(function () {
-//     $('table.display').DataTable({
-//       pagingType: 'full_numbers',
-//       scrollY: '1000px',
-//       scrollCollapse: true,
-//       pageLength: 20,
-//       lengthMenu: [ [20, 30, 40, 50, -1], [20, 30, 40, 50, "All"] ],
-//       dom: 'Blfrtip',
-//       buttons: [
-//         {
-//           extend: 'excel',
-//           text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
-//           className: 'mb-3 btn btn-success me-1',
-//         }
-//     ],
-//     });
-// });
-// </script>
 {% endblock %}

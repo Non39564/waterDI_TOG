@@ -187,12 +187,12 @@
               </td>
               <td >
                 <div class="row g-2">
-                  <div class="col-xxl-3">
+                  <div class="col-xxl-4">
                     <button value="{{ edit_delete['Site'] }}" name="Edit" type="button" class="btn btn-link btn-sm text-bg-primary Edit">
                       Edit
                     </button>
                   </div>
-                  <div class="col-xxl-3 ">
+                  <div class="col-xxl-4">
                     <button value="{{ edit_delete['Site'] }}" name="delete" type="button" class="btn btn-link btn-sm text-bg-danger delete">
                       Delete
                     </button>
@@ -217,7 +217,7 @@
   $(document).ready(function () {
     $('table.display').DataTable({
       pagingType: 'full_numbers',
-      scrollY: '200px',
+      scrollY: '500px',
       scrollCollapse: true,
       pageLength: 5,
       lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
