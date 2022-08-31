@@ -454,6 +454,22 @@ def di_report():
     data = cursor.fetchall()
     return data
 
+def di_report_now():
+    connection = getConnection()
+    cursor = connection.cursor()
+    di_report = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE Date = CURDATE() ORDER BY Date DESC, Time DESC"
+    cursor.execute(di_report)
+    data = cursor.fetchall()
+    return data
+
+def di_report_custom(month, year):
+    connection = getConnection()
+    cursor = connection.cursor()
+    di_report = f"SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE MONTH(Date) = {month} and YEAR(Date) = {year} ORDER BY Time DESC"
+    cursor.execute(di_report)
+    data = cursor.fetchall()
+    return data
+
 def trend_DI_P4():
     connection = getConnection()
     cursor = connection.cursor()
@@ -481,7 +497,7 @@ def trend_DI_P9():
 def reportsomline():
     connection = getConnection()
     cursor = connection.cursor()
-    datatable = """SELECT di_report.Date,
+    datatable = """SELECT di_report.Time,
     MAX(CASE WHEN di_report.Site = "HC-6" THEN di_report.Water END) "HC-6",
     MAX(CASE WHEN di_report.Site = "HC-3" THEN di_report.Water END) "HC-3",
     MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2",
@@ -497,7 +513,8 @@ def reportsomline():
     MAX(CASE WHEN di_report.Site = "L15 Station 2" THEN di_report.Water END) "L15 Station 2",
     MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
     FROM di_report
-    GROUP BY di_report.Date
+    WHERE Date = CURDATE()
+    GROUP BY di_report.Time
     ORDER BY di_report.Date ASC, di_report.Time ASC
     LIMIT 30"""
     cursor.execute(datatable)

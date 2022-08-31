@@ -270,14 +270,16 @@ def line():
     if request.method == 'POST':
         month = flask.request.form['selection_month']
         year = flask.request.form['year']
-        report = di_report()
+        report = di_report_custom(month, year)
         table = report_line_month(month ,year)
         column = somlinecolumn()
-        return render_template('line.html', report = report, table = table, column = column)
-    report = di_report()
+        custom = "True"
+        return render_template('line.html', report = report, table = table, column = column, custom = custom)
+    report = di_report_now()
     table = reportsomline()
     column = somlinecolumn()
-    return render_template('line.html', report = report, table = table, column = column)
+    now = "True"
+    return render_template('line.html', report = report, table = table, column = column, now = now)
 
 @app.route('/report')
 def report():
