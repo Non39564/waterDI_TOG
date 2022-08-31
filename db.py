@@ -473,7 +473,7 @@ def di_report_custom(month, year):
 def trend_DI_P4():
     connection = getConnection()
     cursor = connection.cursor()
-    trend_DI_P4 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 4' ORDER BY Date DESC, Time DESC"
+    trend_DI_P4 = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 4' ORDER BY Date DESC, Time DESC"
     cursor.execute(trend_DI_P4)
     data = cursor.fetchall()
     return data
@@ -481,7 +481,7 @@ def trend_DI_P4():
 def trend_DI_P5():
     connection = getConnection()
     cursor = connection.cursor()
-    trend_DI_P5 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 5' ORDER BY Date DESC, Time DESC"
+    trend_DI_P5 = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 5' ORDER BY Date DESC, Time DESC"
     cursor.execute(trend_DI_P5)
     data = cursor.fetchall()
     return data
@@ -489,7 +489,7 @@ def trend_DI_P5():
 def trend_DI_P9():
     connection = getConnection()
     cursor = connection.cursor()
-    trend_DI_P9 = "SELECT Date, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 9' ORDER BY Date DESC, Time DESC"
+    trend_DI_P9 = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE Phase='Phase 9' ORDER BY Date DESC, Time DESC"
     cursor.execute(trend_DI_P9)
     data = cursor.fetchall()
     return data

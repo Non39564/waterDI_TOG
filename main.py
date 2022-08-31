@@ -48,7 +48,6 @@ def dataapi():
     data = json.load(js) 
     response = make_response(json.dumps(data))
     response.content_type = 'application/json'
-    print(data)
     return jsonify(data)
 
 ########################### Function Login ###########################
@@ -274,6 +273,7 @@ def trendDi():
     P4 = trend_DI_P4()
     P5 = trend_DI_P5()
     P9 = trend_DI_P9()
+    print(P4)
     return render_template('TrendDiwater.html', P4 = P4, P5 = P5, P9 = P9)
 
 @app.route('/status-carbon-resin')

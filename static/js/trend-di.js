@@ -29,7 +29,9 @@ var minDate, maxDate;
      });
   
      // DataTables initialisation
-     var table = $('table.display').DataTable();
+     var table = $('table.display').DataTable({
+        lengthMenu: [ [5, 10, 20, 30, -1], [5, 10, 20, 30, "All"] ],
+     });
   
      // Refilter the table
      $('#min, #max').on('change', function () {
