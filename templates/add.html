@@ -1,0 +1,375 @@
+{% extends 'layout.html' %}
+{% block title %}Add-Machine{% endblock %}
+{% block head %}
+<!-- script pagination -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<!-- css pagination -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" />
+<link
+      href="{{ url_for('static', filename='css/custom-size.css') }}"
+      rel="stylesheet"
+    />
+{% endblock %}
+{% block content %}
+
+<div id="container" style="background-color:white"></div>
+<!-- Tab content -->
+<!-- container -->
+<div class="card mt-3">
+  <div class="card-header bg-dark bg-gradient text-white">Add Station Phase and Site</div>
+    <div class="card-body">
+        <form action="{{ url_for('addmachine') }}" method='POST'>
+            <div class="row mb-4">
+              <div class="form-group col-md-4">
+                <label for="OPadd">OP</label>
+                <input type="text" class="form-control" id="OPadd" name="OPadd">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Phaseadd">Phase</label>
+                <input type="text" class="form-control" id="Phaseadd" name="Phaseadd">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Siteadd">Site</label>
+                <input type="text" class="form-control" id="Siteadd" name="Siteadd">
+              </div>
+            </div>
+            <input type="hidden" value="phase" name="add">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+<div class="card mt-3">
+  <div class="card-header bg-dark bg-gradient text-white">Add Machine</div>
+    <div class="card-body">
+        <form action="{{ url_for('addmachine') }}" method='POST'>
+            <div class="row mb-4">
+              <div class="form-group col-md-4">
+                <label for="MachineId">Machine ID</label>
+                <input type="text" class="form-control" id="MachineId" name="MachineId" >
+              </div>
+              <div class="form-group col-md-4">
+                <label for="MachineIp">IP</label>
+                <input type="text" class="form-control" id="MachineIp" name="MachineIp">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="MachinePort">Port</label>
+                <input type="text" class="form-control" id="MachinePort" name="MachinePort">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputOpMac">Station</label>
+                <select id="inputOpMac" name="inputOpMac" class="form-control inputOP">
+                  <option value="" disabled selected>Choose Station</option>
+                  <!--<option value="OP2">2</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputPhaseMac">Phase</label>
+                <select id="inputPhaseMac" name="inputPhaseMac" class="form-control inputPhase">
+                  <option value="" disabled selected>Choose Phase</option>
+                  <!--<option value="OP2">2</option>-->
+                </select>
+              </div>
+            </div>
+            <input type="hidden" value="machine" name="add">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+<div class="card mt-3">
+  <div class="card-header bg-dark bg-gradient text-white">Add Device</div>
+    <div class="card-body">
+        <form action="{{ url_for('addmachine') }}" method='POST'>
+            <div class="row mb-4">
+              <div class="form-group col-md-4">
+                <label for="inputOP">Station</label>
+                <select id="inputOP" name="inputOP" class="form-control inputOP">
+                  <option value="" disabled selected>Choose Station</option>
+                  <!--<option value="OP2">2</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputPhase">Phase</label>
+                <select id="inputPhase" name="inputPhase" class="form-control inputPhase">
+                  <option value="" disabled selected>Choose Phase</option>
+                  <!--<option value="Phase 9">Phase 9</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputMachineID">Machine ID</label>
+                <select id="inputMachineID" name="inputMachineID" class="form-control">
+                  <option value="" disabled selected>Choose Machine ID</option>
+                  <!--<option value="001">001</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputSite">Site</label>
+                <select id="inputSite" name="inputSite" class="form-control">
+                  <option value="" disabled selected>Choose Site</option>
+                  <!--<option value=Fisa2>Fisa2</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Water">Slot water</label>
+                <select id="Water" name="Water" class="form-control">
+                  <option value="" disabled selected>Choose Slot Water</option>
+                  <!--<option value=1>1</option>-->
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="Slot_temp">Slot temperature</label>
+                <select id="Slot_temp" name="Slot_temp" class="form-control">
+                  <option value="" disabled selected>Choose Slot Temp</option>
+                  <!--<option value=1>1</option>-->
+                </select>
+              </div>
+            </div>
+            <input type="hidden" value="device" name="add" id="device">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+<div class="card mt-3">
+  <div class="card-header bg-danger bg-gradient text-white">Delete Machine</div>
+    <div class="card-body">
+      <form >
+        <table class="display table align-middle mb-0 bg-white" id="alldevice">
+          <thead class="bg-light">
+            <tr>
+              <th>IP</th>
+              <th>Port</th>
+              <th>Station</th>
+              <th>Phase</th>
+              <th>Site</th>
+              <th>Slot water</th>
+              <th>Slot Temp</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for edit_delete in edit_delete %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <!--<input type="text" class="form-control" name="Ip_{{ edit_delete['Ip'] }}" id="Ip_{{ edit_delete['Ip'] }}"
+                  value={{ edit_delete['Ip'] }}>-->
+                  <p>{{ edit_delete['Ip'] }}</p>
+                </div>
+              </td>
+              <td>
+                <!--<input type="text" class="form-control" name="Port_{{ edit_delete['Port'] }}" id="Port_{{ edit_delete['Port'] }}"
+                  value={{ edit_delete['Port'] }}>-->
+                  <p>{{ edit_delete['Port'] }}</p>
+              </td>
+              <td>
+                <!--<input type="text" class="form-control" name="Station_{{ edit_delete['Station'] }}" id="Station_{{ edit_delete['Station'] }}"
+                  value={{ edit_delete['Station'] }}>-->
+                  <p>{{ edit_delete['Station'] }}</p>
+              </td>
+              <td>
+                <!--<input type="text" class="form-control" name="Phase_{{ edit_delete['Phase'] }}" id="Phase_{{ edit_delete['Phase'] }}"
+                  value="{{ edit_delete['Phase'] }}">-->
+                  <p>{{ edit_delete['Phase'] }}</p>
+              </td>
+              <td>
+                <p>{{ edit_delete['Site'] }}</p>
+              </td>
+              <td>
+                <!--<input type="text" class="form-control" name="Slot_Water_{{ edit_delete['Slot_Water'] }}" id="Slot_Water_{{ edit_delete['Slot_Water'] }}"
+                  value={{ edit_delete['Slot_Water'] }}>-->
+                  <p>{{ edit_delete['Slot_Water'] }}</p>
+              </td>
+              <td>
+                <!--<input type="text" class="form-control" name="Slot_Temp_{{ edit_delete['Slot_Temp'] }}" id="Slot_Temp_{{ edit_delete['Slot_Temp'] }}"
+                  value={{ edit_delete['Slot_Temp'] }}>-->
+                  <p>{{ edit_delete['Slot_Temp'] }}</p>
+              </td>
+              <td >
+                <div class="row g-2">
+                  <div class="col-xxl-3">
+                    <button value="{{ edit_delete['Site'] }}" name="Edit" type="button" class="btn btn-link btn-sm text-bg-primary Edit">
+                      Edit
+                    </button>
+                  </div>
+                  <div class="col-xxl-3 ">
+                    <button value="{{ edit_delete['Site'] }}" name="delete" type="button" class="btn btn-link btn-sm text-bg-danger delete">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+      </form>
+    </div>
+</div>
+
+ <!-- End Tab content -->
+
+{% endblock %}
+{% block script %}
+
+<script>
+  $(document).ready(function () {
+    $('table.display').DataTable({
+      pagingType: 'full_numbers',
+      scrollY: '200px',
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+      responsive: true
+    });
+});
+</script> 
+<!--Select Phase in Add Device-->
+<script>
+    "use strict";
+    var station = {{ station|default("")|tojson }};
+
+    var inputOP = $('select#inputOP');
+    var inputPhase = $('select#inputPhase');
+
+    for (var key in station) {
+      inputOP.append($('<option/>', {'value': key, 'text': key}));
+    }
+
+    inputOP.change(function(ev) {
+      inputPhase.empty();
+      inputPhase.append($('<option/>'));
+
+        var phase = station[inputOP.val()];
+
+        for (var i in phase) {
+          inputPhase.append($('<option/>', {'value': phase[i], 'text': phase[i]}));
+          console.log(phase[i])
+        }
+    });
+</script>
+<!--Select Phase in Add Machine-->
+<script>
+  "use strict";
+  var station = {{ station|default("")|tojson }};
+
+  var inputOPMac = $('select#inputOpMac');
+  var inputPhaseMac = $('select#inputPhaseMac');
+
+  for (var key in station) {
+    inputOPMac.append($('<option/>', {'value': key, 'text': key}));
+  }
+
+  inputOPMac.change(function(ev) {
+    inputPhaseMac.empty();
+    inputPhaseMac.append($('<option/>'));
+
+      var phaseMac = station[inputOPMac.val()];
+
+      for (var i in phaseMac) {
+        inputPhaseMac.append($('<option/>', {'value': phaseMac[i], 'text': phaseMac[i]}));
+      }
+  });
+</script>
+<!--Select Machine ID-->
+<script>
+  "use strict";
+  var machine_data = {{ machine_data|default("")|tojson }};
+
+  var inputOP = $('select#inputOP');
+  var inputMachineID = $('select#inputMachineID');
+
+  inputOP.change(function(ev) {
+    inputMachineID.empty();
+    inputMachineID.append($('<option/>'));
+
+      var machine = machine_data[inputOP.val()];
+
+      for (var i in machine) {
+        inputMachineID.append($('<option/>', {'value': machine[i], 'text': machine[i]}));
+      }
+  });
+</script>
+<!--Select Slot-->
+<script>
+  "use strict";
+  var slot = {{ slot|default("")|tojson }};
+
+  var Water = $('select#Water');
+  var Slot_temp = $('select#Slot_temp');
+  var MachineID = $('select#inputMachineID');
+
+  MachineID.change(function(ev){
+    Water.empty();
+    Slot_temp.empty();
+    Water.append($('<option/>'));
+    Slot_temp.append($('<option/>'))
+
+    var Slot_Machine = slot[MachineID.val()];
+
+    for (var i = 1; i < 15; i++) {
+      Water.append($('<option/>', {'value': i, 'text': i}));
+      Slot_temp.append($('<option/>', {'value': i, 'text': i}));
+    }
+
+    for (var key in Slot_Machine) {
+      $('select').find('option[value="' + Slot_Machine[key] +'"]').prop('disabled', true);
+      console.log(key)
+    }
+
+  });
+
+  $('select').change(function(){
+    
+    var notAllowed = $(this).find('option:selected').data('notallowed');
+    var currentValue = $(this).val();
+    var oldValue = $(this).data('old');
+
+    $(this).data('old', currentValue);
+    if(oldValue) {
+      $('select').not(this).find('option[value="' + oldValue +'"]').prop('disabled', false);
+      
+      var previousNotAllowed = $(this).find('option[value="' + oldValue +'"]').data('notallowed');
+
+      if(previousNotAllowed){
+        $('select').not(this).find('option[value="' + previousNotAllowed +'"]').prop('disabled', false);
+      }
+    }
+    
+    if(notAllowed){
+      var items = $('select').not(this).find('option[value="' + notAllowed +'"]').prop('disabled',true);
+    }
+  
+  $('select').not(this).find('option[value="' + currentValue +'"]').prop('disabled', true);
+    
+ });
+</script>
+<!--Select Site-->
+<script>
+  "use strict";
+  var site = {{ site|default("")|tojson }};
+
+  var inputPhase = $('select#inputPhase');
+  var inputSite = $('select#inputSite');
+
+  inputPhase.change(function(ev) {
+    inputSite.empty();
+    inputSite.append($('<option/>'));
+
+      var machine = site[inputPhase.val()];
+
+      for (var i in machine) {
+        inputSite.append($('<option/>', {'value': machine[i], 'text': machine[i]}));
+      }
+  });
+</script>
+<script src="{{ url_for('static', filename='js/alert.js') }}"></script>
+<script>
+  $( ".Edit" ).click(function() {
+    window.open("edit?edit=" + $(this).val(), "_blank", 
+    "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=300,width=800,height=500");
+    console.log($(this).val())
+  })
+  </script>
+{% endblock %}

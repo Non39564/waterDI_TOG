@@ -1,0 +1,142 @@
+{% extends 'layout.html' %}
+{% block title %}setup{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+
+<div id="container" style="background-color:white"></div>
+<!-- Tab content -->
+<!-- container -->
+<div class="card mt-3">
+  <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Monitor And Setup 
+    <div class="select-wrapper mb-2 ">
+      <form action="{{ url_for('find_setup') }}">
+        <select id="selectionMachine" name="selectionMachine" class="select select-initialized">
+            <option value="" disabled selected>Choose Machine</option>
+            <!--<option value="P4">Machine 01</option>-->
+        </select>
+      </form>
+  </div>
+  </h5>
+    <div class="card-body">    
+      <form action="{{ url_for('change_setup') }}">
+      <table  class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th>Site</th>
+            <th>Value</th>
+            <th>Input Low Water</th>
+            <th>Input High Water</th>
+            <th>Off-set (+) Water</th>
+            <th>Off-set (-) Water</th>
+            <!-- <th>Input Low Temp</th>
+            <th>Input High Temp</th> -->
+            <th>Off-set (+) Temp</th>
+            <th>Off-set (-) Temp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for setup in setup %}
+            <tr>
+              <td style="width:150px">
+                <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0 " name="realtime{{ setup['Site'] }}" id="realtime{{ setup['Site'] }}">Loading...</p>
+              </td>
+              <td>
+                  <input type="number" class="form-control" name="Low_Water_{{ setup['Site'] }}" id="Low_Water_{{ setup['Site'] }}"
+                  value={{ setup['Low_Water'] }}>
+              </td>
+              <td>
+                  <input type="number" class="form-control" name="High_Water_{{ setup['Site'] }}" id="High_Water_{{ setup['Site'] }}"
+                  value={{ setup['Hight_Water'] }}>
+              </td>
+              <td>
+                  <input type="number" class="form-control" name="Plus_Water_{{ setup['Site'] }}" id="Plus_Water_{{ setup['Site'] }}"
+                  value={{ setup['Plus_Water'] }}> 
+              </td>
+              <td>
+                  <input type="number" class="form-control" name="Minus_Water_{{ setup['Site'] }}" id="Minus_Water_{{ setup['Site'] }}"
+                  value={{ setup['Minus_Water'] }}>
+              </td>
+              <!-- <td>
+                <input type="text" class="form-control" name="Low_Temp_{{ setup['Site'] }}" id="Low_Temp_{{ setup['Site'] }}"
+                value={{ setup['Low_Temp'] }}>
+            </td>
+            <td>
+                <input type="text" class="form-control" name="Hight_Temp_{{ setup['Site'] }}" id="Hight_Temp_{{ setup['Site'] }}"
+                value={{ setup['Hight_Temp'] }}>
+            </td> -->
+            <td>
+                <input type="number" class="form-control" name="Plus_Temp_{{ setup['Site'] }}" id="Plus_Temp_{{ setup['Site'] }}"
+                value={{ setup['Plus_Temp'] }}> 
+            </td>
+            <td>
+                <input type="number" class="form-control" name="Minus_Temp_{{ setup['Site'] }}" id="Minus_Temp_{{ setup['Site'] }}"
+                value={{ setup['Minus_Temp'] }}>
+            </td>
+            </tr>
+            <input type="hidden" value="{{ setup['Site'] }}" name="{{ setup['Site'] }}">
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary mt-2">CHANGE</button>
+      </form>
+    </div>
+</div>
+
+ <!-- End Tab content -->
+
+{% endblock %}
+{% block script %}
+<script>
+    $('button').click(function () {
+        var data = table.$('input, select').serialize();
+        alert('The following data would have been submitted to the server: \n\n' + data.substr(0) + '...');
+        return false;
+    });
+</script>
+<!--Select Machine-->
+<script>
+  "use strict";
+
+  var show_machine = {{ show_machine|tojson }};
+
+  var system = $('select#selectionMachine');
+  for (var key in show_machine) {
+      system.append($('<option/>', {'value':"/find_setup?selectionMachine="+key, 'text': key}));
+  }
+
+</script>
+<script>
+  $(function () {
+    $("select#selectionMachine").on("change", function () {
+      var url = $(this).val();
+      if (url) {
+        window.location = url;
+      }
+      return false;
+    });
+  });
+</script>
+<script>
+{% for setup_script in setup %}
+var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val()-0.000001;
+$("#Low_Water_{{ setup_script['Site'] }}").attr({"max":High_Water, "step":0.01});
+  
+function call() {
+  $.getJSON('/dataapi', function (json) {
+    console.log(json)
+    //if ($('#realtime{{ setup_script['Site'] }}') = json){
+    //  $('#realtime{{ setup_script['Site'] }}').text(number)
+    //}
+  })
+};
+{% endfor %}
+setInterval(call() ,1000);
+</script>
+<script>
+  
+</script>
+{% endblock %}

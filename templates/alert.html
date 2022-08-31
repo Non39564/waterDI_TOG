@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+{% block title %}Alert{% endblock %}
+{% block head %}
+<!-- DataTable script -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
+<!-- DataTable css -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- script pagination -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="card mt-3">
+  <div class="card-header d-flex bg-danger bg-gradient text-white">
+    <div class="row">
+      <div class="col-lg-6"><h5>Alert status</h5></div>
+      <div class="col-lg-6 ">
+        <!-- date range filter -->
+        <table cellspacing="5" cellpadding="5">
+          <tbody>
+            <tr class="d-flex">
+              <td>Choose Date :</td>
+              <td><input type="text" id="min" name="min"></td>
+              <td>To</td>
+              <td><input type="text" id="max" name="max"></td>
+            </tr>
+          </tbody>
+        </table>
+      <!-- End date range filter --></div>
+    </div>
+  </div>
+    <div class="card-body">
+      <div class="d-grid gap-2 d-md-block">
+        <button class="mt-1 mb-2  btn btn-danger">
+          <a href="{{ url_for('download_alert') }}" class="text-white">
+            <i class="fa fa-file-pdf me-1"></i>
+            <span class="me-3">generate pdf</span>
+          </a>
+        </button>
+    </div>
+      
+      <table class="display table align-middle mb-0 bg-white" id="alert">
+        <thead class="bg-light">
+          <tr>
+            <th>Station</th>
+            <th>Phase</th>
+            <th>Machine</th>
+            <th>Detail</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for error in report %}
+          <tr>
+            <td>
+              <p class="text-muted mb-0">{{ error['Station'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">{{ error['Phase'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">{{ error['Site'] }}</p>
+            </td>
+            <td name="{{ error['Detail'] }}">
+              <p id="{{ error['Detail'] }}" name="{{ error['Detail'] }}" class="mb-0 Status{{ error['Detail'] }}">{{ error['Detail'] }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0 ">{{ error['Date'] }}</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/date-range-alert.js') }}"></script>
+<script>
+  {% for error_script in report %}
+  console.log("{{ error_script['Detail'] }}")
+  if ("{{ error_script['Detail'] }}" === "Normal"){
+    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-success");
+  } else if ("{{ error_script['Detail'] }}" === "Low Water") {
+    $('p[name="{{ error_script['Detail'] }}"]').text("Low");
+    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-warning");
+  } else if ("{{ error_script['Detail'] }}" === "High Water") {
+    $('p[name="{{ error_script['Detail'] }}"]').text("Error");
+    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-danger");
+  }
+  {% endfor %}
+</script>
+{% endblock %}

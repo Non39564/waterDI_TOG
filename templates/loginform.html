@@ -1,0 +1,90 @@
+<!-- test login popup -->
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="card-header d-flex justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <h5 class="modal-title" id="exampleModalLabel">LOGIN</h5>
+          <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Pills navs -->
+          <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#pills-login" role="tab"
+                aria-controls="pills-login" aria-selected="true">Login</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="tab-register" data-mdb-toggle="pill" href="#pills-register" role="tab"
+                aria-controls="pills-register" aria-selected="false">Register</a>
+            </li>
+          </ul>
+          <!-- Pills navs -->
+
+          <!-- Pills content -->
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+              <form action="{{ url_for('login') }}" method='POST'>
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                  <input type='text' name='username' id='username' class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="loginName">Username</label>
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                  <input type='password' name='password' id='password' class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="loginPassword">Password</label>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" value="login" name="check" class="btn btn-primary btn-block mb-4">Sign in</button>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+              <form action="{{ url_for('login') }}" method='POST'>
+                <!-- Name input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="registerName" name="registerName" class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="registerName">Name</label>
+                </div>
+
+                <!-- Username input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="registerUsername" name="registerUsername" class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="registerUsername">Username</label>
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                  <input type="password" id="registerPassword" name="registerPassword" class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="registerPassword">Password</label>
+                </div>
+
+                <!-- Repeat Password input -->
+                <div class="form-outline mb-4">
+                  <input type="password" id="registerRepeatPassword" name="registerRepeatPassword" class="form-control border-bottom border-4 rounded-0" />
+                  <label class="form-label" for="registerRepeatPassword">Repeat password</label>
+                  <span id='message'></span>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" value="register" name="check" class="btn btn-primary btn-block mb-3">Sign up</button>
+              </form>
+            </div>
+          </div>
+          <!-- Pills content -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end test login popup -->
+
+<script>
+  $('ul.nav-pills a').click(function(){
+    $('ul.nav-pills a').removeClass("active");
+    $(this).addClass("active");
+    consloe.log("active");
+  });
+</script>
