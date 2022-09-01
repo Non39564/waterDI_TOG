@@ -19,8 +19,8 @@ def getConnection ():
 		)
     
 def get_data(host,port):
-    c = ModbusClient(host=host, port=port, unit_id=1, auto_open=True)
     try:
+        c = ModbusClient(host=host, port=port, unit_id=1, auto_open=True)
         rr = c.read_input_registers(0,28)
         l = []
         for i in range(0,28,2):
@@ -31,7 +31,7 @@ def get_data(host,port):
             l.append(rr[i])
         return l
     except:
-        l = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        l = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
         print(f"Post {port}  Host {host} is Error connecting")
         return l
 
@@ -87,8 +87,10 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
     if status == 'Normal':
         pass
     else:
+        now = datetime.now()
+        date = now.strftime("%d-%m-%Y")
         connection = getConnection()
-        sql = "INSERT INTO di_error(`Site`, `Detail`) VALUES('%s','%s')" % (Site,status)
+        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`) VALUES('%s','%s')" % (Site,status,date)
         cursor = connection.cursor()
         cursor.execute(sql)
         connection.commit()

@@ -67,11 +67,11 @@ function drawChart() {
 
   var options = {
     // width:1000, height:500,
-    redFrom: 0, redTo: 5,
-    yellowFrom: 5, yellowTo: 20,
-    greenFrom: 20, greenTo: 30,
+    redFrom: 0, redTo: 10, redColor: "FF3838" ,
+    yellowFrom: 20, yellowTo: 30, yellowColor: "FF3838",
+    greenFrom: 10, greenTo: 20,greenColor: "16F200",
     min: 0, max: 30,
-    minorTicks: 5
+    minorTicks: 0,
   };
 
   setInterval(drawGauge, 1000);

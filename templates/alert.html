@@ -93,10 +93,10 @@
   console.log("{{ error_script['Detail'] }}")
   if ("{{ error_script['Detail'] }}" === "Normal"){
     $('p[name="{{ error_script['Detail'] }}"]').addClass("text-success");
-  } else if ("{{ error_script['Detail'] }}" === "Low Water") {
+  } else if ("{{ error_script['Detail'] }}" === "Low") {
     $('p[name="{{ error_script['Detail'] }}"]').text("Low");
     $('p[name="{{ error_script['Detail'] }}"]').addClass("text-warning");
-  } else if ("{{ error_script['Detail'] }}" === "High Water") {
+  } else if ("{{ error_script['Detail'] }}" === "High") {
     $('p[name="{{ error_script['Detail'] }}"]').text("Error");
     $('p[name="{{ error_script['Detail'] }}"]').addClass("text-danger");
   }

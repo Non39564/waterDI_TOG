@@ -24,7 +24,7 @@
         <thead class="bg-light">
           <tr>
             <th>Site</th>
-            <th>Value</th>
+            <!--<th>Value</th>-->
             <th>Input Low Water</th>
             <th>Input High Water</th>
             <th>Off-set (+) Water</th>
@@ -41,9 +41,9 @@
               <td style="width:150px">
                 <p class="text-muted mb-0 ">{{ setup['Site'] }}</p>
               </td>
-              <td>
-                <p class="text-muted mb-0 " name="realtime{{ setup['Site'] }}" id="realtime{{ setup['Site'] }}">Loading...</p>
-              </td>
+              <!--<td>
+                <p class="text-muted mb-0 " name="value_{{ setup['Site'] }}" id="value_{{ setup['Site'] }}">Loading...</p>
+              </td>-->
               <td>
                   <input type="number" class="form-control" name="Low_Water_{{ setup['Site'] }}" id="Low_Water_{{ setup['Site'] }}"
                   value={{ setup['Low_Water'] }}>
@@ -124,17 +124,7 @@
 {% for setup_script in setup %}
 var High_Water = $("#High_Water_{{ setup_script['Site'] }}").val()-0.000001;
 $("#Low_Water_{{ setup_script['Site'] }}").attr({"max":High_Water, "step":0.01});
-  
-function call() {
-  $.getJSON('/dataapi', function (json) {
-    console.log(json)
-    //if ($('#realtime{{ setup_script['Site'] }}') = json){
-    //  $('#realtime{{ setup_script['Site'] }}').text(number)
-    //}
-  })
-};
 {% endfor %}
-setInterval(call() ,1000);
 </script>
 <script>
   
