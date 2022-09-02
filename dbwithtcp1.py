@@ -88,9 +88,9 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
         pass
     else:
         now = datetime.now()
-        date = now.strftime("%d-%m-%Y")
+        date = now.strftime("%Y-%m-%d")
         connection = getConnection()
-        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`) VALUES('%s','%s')" % (Site,status,date)
+        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`) VALUES('%s','%s','%s')" % (Site,status,date)
         cursor = connection.cursor()
         cursor.execute(sql)
         connection.commit()
@@ -113,7 +113,7 @@ def line_bot_error_temp(Site,status,data,date,time,min,max):
         pass
     else:
         now = datetime.now()
-        date = now.strftime("%d-%m-%Y")
+        date = now.strftime("%Y-%m-%d")
         connection = getConnection()
         sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`) VALUES('%s','%s','%s')" % (Site,status,date)
         cursor = connection.cursor()

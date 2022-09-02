@@ -26,32 +26,18 @@ function drawChart() {
       for (i in json[0].Data) {
         dataP4.addRow([json[0].Data[i].id, json[0].Data[i].Water])
       }
-      // dataP4.addRow([json[0].Data[0].id, json[0].Data[0].Water]);
-      // dataP4.addRow([json[0].Data[1].id, json[0].Data[1].Water]);
-      // dataP4.addRow([json[0].Data[2].id, json[0].Data[2].Water]);
  
 
       document.getElementById("Phase5").innerHTML = json[0].Station+" "+json[1].Phase;
       for (i in json[1].Data) {
         dataP5.addRow([json[1].Data[i].id, json[1].Data[i].Water]);
       }
-      // dataP5.addRow([json[1].Data[0].id, json[1].Data[0].Water]);
-      // dataP5.addRow([json[1].Data[1].id, json[1].Data[1].Water]);
-      // dataP5.addRow([json[1].Data[2].id, json[1].Data[2].Water]);
-      // dataP5.addRow([json[1].Data[3].id, json[1].Data[3].Water]);
-      // dataP5.addRow([json[1].Data[4].id, json[1].Data[4].Water]);
 
 
       document.getElementById("Phase9").innerHTML = json[0].Station+" "+json[2].Phase;
       for (i in json[2].Data) {
         dataP9.addRow([json[2].Data[i].id, json[2].Data[i].Water]);
       }
-      // dataP9.addRow([json[2].Data[0].id, json[2].Data[0].Water]);
-      // dataP9.addRow([json[2].Data[1].id, json[2].Data[1].Water]);
-      // dataP9.addRow([json[2].Data[3].id, json[2].Data[3].Water]);  
-      // dataP9.addRow([json[2].Data[3].id, json[2].Data[3].Water]);
-      // dataP9.addRow([json[2].Data[4].id, json[2].Data[4].Water]);
-      // dataP9.addRow([json[2].Data[5].id, json[2].Data[5].Water]);
 
           
       chartP4.draw(dataP4, options);
@@ -66,12 +52,12 @@ function drawChart() {
   var chartP9 = new google.visualization.Gauge(document.getElementById('dataP9'));
 
   var options = {
-    // width:1000, height:500,
     redFrom: 0, redTo: 10, redColor: "FF3838" ,
     yellowFrom: 20, yellowTo: 30, yellowColor: "FF3838",
     greenFrom: 10, greenTo: 20,greenColor: "16F200",
     min: 0, max: 30,
     minorTicks: 0,
+    
   };
 
   setInterval(drawGauge, 1000);

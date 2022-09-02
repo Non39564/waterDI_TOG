@@ -14,9 +14,6 @@ $.fn.dataTable.ext.search.push(
             ( min <= date   && max === null ) ||
             ( min <= date   && date <= max )
         ) {
-         console.log("min"+min)
-         console.log("max"+max)
-         console.log("date"+date)
             return true;
         }
         return false;

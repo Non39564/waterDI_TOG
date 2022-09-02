@@ -7,11 +7,9 @@ var idP4 = [];
 
 $.getJSON('/dataapi', function (json) {
   //P4
-  ROBOT = [];
-  // for (i in json ){
-  //   window[json[0].Data[i].id.replace(/ +/g, "")] = [];
-  //   console.log(json[0].Data[i].id)
-  // }
+  for (i in json[0].Data ){
+    window[json[0].Data[i].id.replace(/ +/g, "")] = [];
+  }
   //P5
   for (i in json[1].Data ){
     window[json[1].Data[i].id.replace(/ +/g, "")] = [];
@@ -61,10 +59,8 @@ function drawLineChart() {
         
         timer.push(time.toString());
         //P4
-        ROBOT.push(json[0].Data[0].Water)
-        for (i in json){
-          
-          //window[json[0].Data[i].id.replace(/ +/g, "")].push(json[0].Data[i].Water);
+        for (i in json[0].Data){
+          window[json[0].Data[i].id.replace(/ +/g, "")].push(json[0].Data[i].Water);
         }
         //P5
         for (i in json[1].Data){
@@ -78,10 +74,9 @@ function drawLineChart() {
         if (timer.length == 11) {
            timer.shift();
            //P4
-           ROBOT.shift();
-          //  for (i in json ){
-          //    window[json[0].Data[i].id.replace(/ +/g, "")].shift();
-          //  }
+           for (i in json[0].Data ){
+             window[json[0].Data[i].id.replace(/ +/g, "")].shift();
+           }
            //P5
            for (i in json[1].Data ){
              window[json[1].Data[i].id.replace(/ +/g, "")].shift();
@@ -93,14 +88,11 @@ function drawLineChart() {
         };
 
         var dataLP4 = new google.visualization.DataTable();
-
         dataLP4.addColumn('string', 'Time');
-        dataLP4.addColumn('number', json[0].Data[0].id);
-        idP4.push(json[0].Data[0].id)
-        // for (i in json){
-        //   dataLP4.addColumn('number', json[0].Data[i].id);
-        //   idP4.push(json[0].Data[i].id)
-        // }
+        for (i in json[0].Data){
+          dataLP4.addColumn('number', json[0].Data[i].id);
+          idP4.push(json[0].Data[i].id)
+        }
         for (i = 0; i < timer.length; i++){
           dataLP4.addRow([timer[i], ROBOT[i]]);//, Fisa2[i], Fisa4[i]
         };
@@ -117,10 +109,8 @@ function drawLineChart() {
         var dataLP9 = new google.visualization.DataTable();
         dataLP9.addColumn('string', 'Time');
         //dataLP9.addColumn('number', json[2].Data[i].id);
-        console.log(json[2])
         for (i in json[2].Data){
           dataLP9.addColumn('number', json[2].Data[i].id);
-          console.log(json[2].Data[i].id)
         }
         for(i = 0; i < timer.length; i++){
           dataLP9.addRow([timer[i], HC4[i], HC3[i], HC6[i], HC5Station1[i], HC5Station2[i]]);//,AI[i]
