@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block title %}TrendDi-Chart{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/line.js') }}"></script>
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- script pagination -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<!-- css pagination -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+<!-- DataTables date range filter -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
+<!--End DataTables date range filter -->
+{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header  bg-dark bg-gradient text-white">
+    <div class="row">
+      <div class="col-lg-5">
+        <h5>Trend Deionized water</h5>
+      </div>
+    </div>
+  </div>
+    <div class="card-body">
+        <div class="card">
+            <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase4</div>
+            <div class="card-body">
+              <div id="linechartP4" class="display dataP4" style="height: 18rem;"></div>
+            </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase5</div>
+          <div class="card-body">
+            <div id="linechartP5" class="display dataP5" style="height: 18rem;"></div>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header bg-dark bg-gradient text-white d-flex justify-content-between">Phase9</div>
+          <div class="card-body">
+            <div id="linechartP9" class="display dataP9" style="height: 18rem;"></div>
+          </div>
+        </div>
+    </div>
+  
+{% endblock %}
+{% block script %}
+{% endblock %}

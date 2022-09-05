@@ -57,7 +57,6 @@ function drawChart() {
     greenFrom: 10, greenTo: 20,greenColor: "16F200",
     min: 0, max: 30,
     minorTicks: 0,
-    
   };
 
   setInterval(drawGauge, 1000);

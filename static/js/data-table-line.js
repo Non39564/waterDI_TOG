@@ -37,6 +37,7 @@ $(document).ready(function() {
         pageLength: 20,
         lengthMenu: [ [20, 30, 40, 50, -1], [20, 30, 40, 50, "All"] ],
         dom: 'Blfrtip',
+        "order": [[ 0, "desc" ]],
         buttons: [
           {
             extend: 'excel',

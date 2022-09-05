@@ -457,7 +457,7 @@ def di_report():
 def di_report_now():
     connection = getConnection()
     cursor = connection.cursor()
-    di_report = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE Date = CURDATE() ORDER BY Date DESC, Time DESC"
+    di_report = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report ORDER BY Date DESC, Time DESC"
     cursor.execute(di_report)
     data = cursor.fetchall()
     return data
@@ -466,6 +466,14 @@ def di_report_custom(month, year):
     connection = getConnection()
     cursor = connection.cursor()
     di_report = f"SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE MONTH(Date) = {month} and YEAR(Date) = {year} ORDER BY Time DESC"
+    cursor.execute(di_report)
+    data = cursor.fetchall()
+    return data
+
+def di_report_custom_day(Day, month, year):
+    connection = getConnection()
+    cursor = connection.cursor()
+    di_report = f"SELECT Date, Time, Phase, Site, Water, Temp FROM di_report WHERE DAY(date) = {Day} and MONTH(Date) = {month} and YEAR(Date) = {year} ORDER BY Time DESC"
     cursor.execute(di_report)
     data = cursor.fetchall()
     return data
@@ -516,7 +524,7 @@ def reportsomline():
     WHERE Date = CURDATE()
     GROUP BY di_report.Time
     ORDER BY di_report.Date ASC, di_report.Time ASC
-    LIMIT 30"""
+    LIMIT 24"""
     cursor.execute(datatable)
     data = cursor.fetchall()
     for i in range(len(data)): 
@@ -555,6 +563,37 @@ def report_line_month(month, year):
     FROM di_report
     WHERE MONTH(Date) = {month} and YEAR(Date) = {year}
     GROUP BY di_report.Date
+    ORDER BY di_report.Date ASC, di_report.Time ASC"""
+    cursor.execute(datatable)
+    data = cursor.fetchall()
+    for i in range(len(data)): 
+        keysList = list(data[i].keys())   
+        for key in keysList:
+            if data[i][key] is None:
+                data[i][key] = 0
+    return data
+
+def report_line_day(Day,month, year):
+    connection = getConnection()
+    cursor = connection.cursor()
+    datatable = f"""SELECT di_report.Time,
+    MAX(CASE WHEN di_report.Site = "HC-6" THEN di_report.Water END) "HC-6",
+    MAX(CASE WHEN di_report.Site = "HC-3" THEN di_report.Water END) "HC-3",
+    MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2",
+    MAX(CASE WHEN di_report.Site = "Fisa 3" THEN di_report.Water END) "Fisa 3",
+    MAX(CASE WHEN di_report.Site = "AI" THEN di_report.Water END) "AI",
+    MAX(CASE WHEN di_report.Site = "Fisa 4" THEN di_report.Water END) "Fisa 4",
+    MAX(CASE WHEN di_report.Site = "HC-4" THEN di_report.Water END) "HC-4",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 1" THEN di_report.Water END) "HC-5 Station 1",
+    MAX(CASE WHEN di_report.Site = "HC-5 Station 2" THEN di_report.Water END) "HC-5 Station 2",
+    MAX(CASE WHEN di_report.Site = "L13" THEN di_report.Water END) "L13",
+    MAX(CASE WHEN di_report.Site = "L14" THEN di_report.Water END) "L14",
+    MAX(CASE WHEN di_report.Site = "L15 Station 1" THEN di_report.Water END) "L15 Station 1",
+    MAX(CASE WHEN di_report.Site = "L15 Station 2" THEN di_report.Water END) "L15 Station 2",
+    MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
+    FROM di_report
+    WHERE DAY(date) = {Day} and MONTH(Date) = {month} and YEAR(Date) = {year}
+    GROUP BY di_report.Time
     ORDER BY di_report.Date ASC, di_report.Time ASC"""
     cursor.execute(datatable)
     data = cursor.fetchall()

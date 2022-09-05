@@ -246,6 +246,15 @@ def index():
 @app.route('/line', methods=['GET', 'POST'])
 def line():
     if request.method == 'POST':
+        if request.values["selection_day"] != "0":
+            day = flask.request.form['selection_day']
+            month = flask.request.form['selection_month']
+            year = flask.request.form['year']
+            report = di_report_custom_day(day, month, year)
+            table = report_line_day(day, month ,year)
+            column = somlinecolumn()
+            customday = "True"
+            return render_template('line.html', report = report, table = table, column = column, customday = customday)
         month = flask.request.form['selection_month']
         year = flask.request.form['year']
         report = di_report_custom(month, year)
@@ -275,6 +284,14 @@ def trendDi():
     P9 = trend_DI_P9()
     print(P4)
     return render_template('TrendDiwater.html', P4 = P4, P5 = P5, P9 = P9)
+
+@app.route('/trendDi-chart')
+def trendDiChart():
+    P4 = trend_DI_P4()
+    P5 = trend_DI_P5()
+    P9 = trend_DI_P9()
+    print(P4)
+    return render_template('trend-di-chart.html', P4 = P4, P5 = P5, P9 = P9)
 
 @app.route('/status-carbon-resin')
 def statusCR():

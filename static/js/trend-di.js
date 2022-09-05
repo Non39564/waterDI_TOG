@@ -31,6 +31,7 @@ var minDate, maxDate;
      // DataTables initialisation
      var table = $('table.display').DataTable({
         lengthMenu: [ [5, 10, 20, 30, -1], [5, 10, 20, 30, "All"] ],
+        "order": [[ 0, "desc" ]],
      });
   
      // Refilter the table

@@ -224,7 +224,7 @@ def Alarm(Site,offset,water,temp):
                 
 def insert_report(Station,Phase,Site,Temp,Water):
     now = datetime.now()
-    insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    insert_time = now.strftime("%Y-%m-%d %H:00:00")
     d,t = insert_time.split(" ")
     connection = getConnection()
     sql = "INSERT INTO di_report(`Station`, `Phase`, `Site`, `Temp`, `Water`,`Date`,`Time`) VALUES('%s','%s','%s','%s','%s','%s','%s')" % (Station,Phase,Site,Temp,Water,d,t)
@@ -270,7 +270,7 @@ while True:
     oplist= get_op_phase()
     for o in range(len(oplist)):
         op,phase = oplist[o].split("|")
-        lists = {"Station":op,'Phase':phase,'Data':[],'Date':d,'Time':t}
+        lists = {"Station":op,"Phase":phase,"Data":[],"Date":d,"Time":t}
         connection = getConnection()
         sql= f"""
         SELECT p.OP as OP,p.Phase as phase ,p.Site as Site, mm.Ip as Ip, mm.Port as Port, md.Slot_Temp as Slot_Temp ,md.Slot_Water as Slot_Water 
@@ -293,13 +293,13 @@ while True:
                             pass
                         elif water_data == -1 and temp_data !=-1:
                             water_data = -999
-                            dicts = {'id':m['Site'],'Water':water_data,'Temp':temp_data}
+                            dicts = {"id":m['Site'],"Water":water_data,"Temp":temp_data}
                             lists['Data'].append(dicts)
                         else:
                             if save is True:
                                 insert_report(m['OP'],m['phase'],m['Site'],temp_data,water_data)
                             Alarm(m['Site'],offset,water_data,temp_data)
-                            dicts = {'id':m['Site'],'Water':water_data,'Temp':temp_data}
+                            dicts = {"id":m['Site'],"Water":water_data,"Temp":temp_data}
                             lists['Data'].append(dicts)
                         
                   
@@ -309,13 +309,13 @@ while True:
     for i in range(len(report)):
         num.append(report[i]['Phase'])
     if 'Phase 4' not in num:
-        report.append({'Station': 'OP2', 'Phase': 'Phase 4', 'Data':[]})
+        report.append({"Station": "OP2", "Phase": "Phase 4", "Data":[],"Date": d,"Time": t})
         num.append('Phase 4')
     if 'Phase 5' not in num:
-        report.append({'Station': 'OP2', 'Phase': 'Phase 5', 'Data':[]})
+        report.append({"Station": "OP2", "Phase": "Phase 5", "Data":[],"Date": d,"Time": t})
         num.append('Phase 5')
     if 'Phase 9' not in num:
-        report.append({'Station': 'OP2', 'Phase': 'Phase 9', 'Data':[]})
+        report.append({"Station": "OP2", "Phase": "Phase 9", "Data":[],"Date": d,"Time": t})
         num.append('Phase 9')  
         
     newlist = sorted(report, key=itemgetter('Phase'))
