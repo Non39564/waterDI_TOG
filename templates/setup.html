@@ -27,12 +27,12 @@
             <!--<th>Value</th>-->
             <th>Input Low Water</th>
             <th>Input High Water</th>
-            <th>Off-set (+) Water</th>
-            <th>Off-set (-) Water</th>
+            <th class="text-info">Off-set (+) Water</th>
+            <th class="text-warning">Off-set (-) Water</th>
             <!-- <th>Input Low Temp</th>
             <th>Input High Temp</th> -->
-            <th>Off-set (+) Temp</th>
-            <th>Off-set (-) Temp</th>
+            <th class="text-success">Off-set (+) Temp</th>
+            <th class="text-danger">Off-set (-) Temp</th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +54,11 @@
               </td>
               <td>
                   <input type="number" class="form-control" name="Plus_Water_{{ setup['Site'] }}" id="Plus_Water_{{ setup['Site'] }}"
-                  value={{ setup['Plus_Water'] }}> 
+                  value={{ setup['Plus_Water'] }} step="0.001"> 
               </td>
               <td>
                   <input type="number" class="form-control" name="Minus_Water_{{ setup['Site'] }}" id="Minus_Water_{{ setup['Site'] }}"
-                  value={{ setup['Minus_Water'] }}>
+                  value={{ setup['Minus_Water'] }} step="0.001">
               </td>
               <!-- <td>
                 <input type="text" class="form-control" name="Low_Temp_{{ setup['Site'] }}" id="Low_Temp_{{ setup['Site'] }}"
@@ -70,11 +70,11 @@
             </td> -->
             <td>
                 <input type="number" class="form-control" name="Plus_Temp_{{ setup['Site'] }}" id="Plus_Temp_{{ setup['Site'] }}"
-                value={{ setup['Plus_Temp'] }}> 
+                value={{ setup['Plus_Temp'] }} step="0.001"> 
             </td>
             <td>
                 <input type="number" class="form-control" name="Minus_Temp_{{ setup['Site'] }}" id="Minus_Temp_{{ setup['Site'] }}"
-                value={{ setup['Minus_Temp'] }}>
+                value={{ setup['Minus_Temp'] }} step="0.001">
             </td>
             </tr>
             <input type="hidden" value="{{ setup['Site'] }}" name="{{ setup['Site'] }}">

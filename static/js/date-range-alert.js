@@ -38,6 +38,11 @@ var minDate, maxDate;
           extend: 'excel',
           text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
           className: 'mb-3 btn btn-success me-1',
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="fa fa-file-pdf me-2"></i><span>generate PDF</span>',
+            className: 'mb-3 btn btn-danger me-1',
         }
     ],
      });

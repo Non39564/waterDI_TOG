@@ -288,6 +288,9 @@ while True:
                         pw,mw,pt,mt = get_offset(m['Site'],offset)
                         water_data = (data[k][m['Slot_Water']-1] + pw) - mw
                         temp_data = (data[k][m['Slot_Temp']-1] + pt) - mt
+                        
+                        water_data = round(water_data, 2)
+                        temp_data = round(temp_data, 2)
                             
                         if water_data == -1 and temp_data == -1:
                             pass

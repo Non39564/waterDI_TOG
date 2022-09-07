@@ -52,7 +52,6 @@
                                       <th>Date</th>
                                       <th>Time</th>
                                       <th>Machine</th>
-                                      <th>Status Machine</th>
                                       <th>StatusDIWater</th>
                                     </tr>
                                   </thead>
@@ -67,9 +66,6 @@
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">{{ P4['Site'] }}</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
                                         <p name="{{ P4['Site'] }}" class="mb-0 Status{{ P4['Site'] }}">Pass</p>
@@ -94,7 +90,6 @@
                                       <th>Date</th>
                                       <th>Time</th>
                                       <th>Machine</th>
-                                      <th>Status Machine</th>
                                       <th>StatusDIWater</th>
                                     </tr>
                                   </thead>
@@ -109,9 +104,6 @@
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">{{ P5['Site'] }}</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
                                         <p name="{{ P5['Site'] }}" class="mb-0 Status{{ P5['Site'] }}">Pass</p>
@@ -135,7 +127,6 @@
                                       <th>Date</th>
                                       <th>Time</th>
                                       <th>Machine</th>
-                                      <th>Status Machine</th>
                                       <th>StatusDIWater</th>
                                     </tr>
                                   </thead>
@@ -150,9 +141,6 @@
                                       </td>
                                       <td>
                                         <p class="text-muted mb-0">{{ P9['Site'] }}</p>
-                                      </td>
-                                      <td>
-                                        <p class="text-muted mb-0">control</p>
                                       </td>
                                       <td>
                                         <p name="{{ P9['Site'] }}" class="mb-0 Status{{ P9['Site'] }}">Pass</p>
@@ -170,4 +158,46 @@
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('static', filename='js/trend-di.js') }}"></script>
+<script>
+  {% for P4script in P4 %}
+  if ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() > 12){
+    $('p[name="{{ P4script['Site'] }}"]').text("Pass");
+    $('p[name="{{ P4script['Site'] }}"]').addClass("text-success");
+  } else if ((10 <= $( 'input[name="data{{ P4script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P4script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P4script['Site'] }}"]').text("Monitor");
+    $('p[name="{{ P4script['Site'] }}"]').addClass("text-warning");
+  } else if ($('input[name="data{{ P4script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P4script['Site'] }}"]').text("Error");
+    $('p[name="{{ P4script['Site'] }}"]').addClass("text-danger");
+  }
+  {% endfor %}
+</script>
+<script>
+  {% for P5script in P5 %}
+  if ($( 'input[name="data{{ P5script['Site'] }}"]' ).val() > 12){
+    $('p[name="{{ P5script['Site'] }}"]').text("Pass");
+    $('p[name="{{ P5script['Site'] }}"]').addClass("text-success");
+  } else if ((10 < $( 'input[name="data{{ P5script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P5script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P5script['Site'] }}"]').text("Monitor");
+    $('p[name="{{ P5script['Site'] }}"]').addClass("text-warning");
+  } else if ($('input[name="data{{ P5script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P5script['Site'] }}"]').text("Error");
+    $('p[name="{{ P5script['Site'] }}"]').addClass("text-danger");
+  }
+  {% endfor %}
+</script>
+<script>
+  {% for P9script in P9 %}
+  if ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() >= 12){
+    $('p[name="{{ P9script['Site'] }}"]').text("Pass");
+    $('p[name="{{ P9script['Site'] }}"]').addClass("text-success");
+  } else if ((10 <= $( 'input[name="data{{ P9script['Site'] }}"]' ).val()) && ($( 'input[name="data{{ P9script['Site'] }}"]' ).val() < 12)) {
+    $('p[name="{{ P9script['Site'] }}"]').text("Monitor");
+    $('p[name="{{ P9script['Site'] }}"]').addClass("text-warning");
+  } else if ($('input[name="data{{ P9script['Site'] }}"]' ).val() < 10) {
+    $('p[name="{{ P9script['Site'] }}"]').text("Error");
+    $('p[name="{{ P9script['Site'] }}"]').addClass("text-danger");
+  }
+  {% endfor %}
+</script>
 {% endblock %}
