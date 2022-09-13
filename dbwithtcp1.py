@@ -227,7 +227,15 @@ def insert_report(Station,Phase,Site,Temp,Water):
     insert_time = now.strftime("%Y-%m-%d %H:00:00")
     d,t = insert_time.split(" ")
     connection = getConnection()
-    sql = "INSERT INTO di_report(`Station`, `Phase`, `Site`, `Temp`, `Water`,`Date`,`Time`) VALUES('%s','%s','%s','%s','%s','%s','%s')" % (Station,Phase,Site,Temp,Water,d,t)
+    
+    if Water > 30 or Water < 10:
+        State = 'Error'
+    elif 10 < Water <= 12 or  28 <= Water < 30:
+        State = 'Monitor'
+    elif 10 < Water < 30:
+        State = 'Pass'
+        
+    sql = "INSERT INTO di_report(`Station`, `Phase`, `Site`, `Temp`, `Water`,`Date`,`Time`,`State`) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')" % (Station,Phase,Site,Temp,Water,d,t,State)
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()

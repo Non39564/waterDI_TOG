@@ -1,4 +1,6 @@
 from fpdf import FPDF
+import os
+import sys
 from flask import Flask, make_response, jsonify, request, Response
 from flask_login import LoginManager
 import flask_login, flask
@@ -9,7 +11,9 @@ from db import *
 from datetime import datetime
 from pymongo import MongoClient
 
+
 app = Flask(__name__)
+    
 app.secret_key = 'waterdishow'
 
 error = showerror()
@@ -404,4 +408,4 @@ def download_Overview():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='10.3.9.156' ,port=80)
+    app.run(debug=True, host='0.0.0.0' ,port=80)

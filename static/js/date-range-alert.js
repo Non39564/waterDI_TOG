@@ -32,7 +32,7 @@ var minDate, maxDate;
      // DataTables initialisation
      var table = $('#alert').DataTable({
       dom: 'Blfrtip',
-      "order": [[ 4, "desc" ]],
+      "order": [[ 0, "desc" ]],
       buttons: [
         {
           extend: 'excel',

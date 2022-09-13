@@ -457,7 +457,7 @@ def di_report():
 def di_report_now():
     connection = getConnection()
     cursor = connection.cursor()
-    di_report = "SELECT Date, Time, Phase, Site, Water, Temp FROM di_report ORDER BY Date DESC, Time DESC"
+    di_report = "SELECT Date, Time, Phase, Site, Water, Temp, State FROM di_report ORDER BY Date DESC, Time DESC, Site DESC"
     cursor.execute(di_report)
     data = cursor.fetchall()
     return data
