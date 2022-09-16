@@ -38,7 +38,7 @@ def showerror():
 
 def error_report():
     connection = getConnection()
-    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date, di_error.Time
             FROM machine_station
             JOIN machine ON machine_station.ID = machine.ID
             JOIN machine_data ON machine_data.Machine = machine.Machine
@@ -48,6 +48,79 @@ def error_report():
     cursor.execute(sql)
     error = cursor.fetchall()
     return error
+#######################################################################################################################################
+def error_report_limit(row, rowperpage):
+    connection = getConnection()
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date, di_error.Time
+            FROM machine_station
+            JOIN machine ON machine_station.ID = machine.ID
+            JOIN machine_data ON machine_data.Machine = machine.Machine
+            JOIN di_error ON di_error.Site = machine_data.Site
+            ORDER BY di_error.Date DESC limit %s,%s""" % (row, rowperpage)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    error = cursor.fetchall()
+    return error
+
+
+def filter_table(likeString):
+    connection = getConnection()
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date, di_error.Time
+            FROM machine_station
+            JOIN machine ON machine_station.ID = machine.ID
+            JOIN machine_data ON machine_data.Machine = machine.Machine
+            JOIN di_error ON di_error.Site = machine_data.Site
+            WHERE di_error.Site LIKE '%s' OR machine_station.Phase LIKE '%s' OR machine_station.Station LIKE '%s'
+            ORDER BY di_error.Date DESC""" % (likeString, likeString, likeString)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+    
+def filter_table_limit(likeString,row, rowperpage):
+    connection = getConnection()
+    sql = """SELECT machine_station.Station, machine_station.Phase, machine_data.Site, di_error.Detail, di_error.Date, di_error.Time
+            FROM machine_station
+            JOIN machine ON machine_station.ID = machine.ID
+            JOIN machine_data ON machine_data.Machine = machine.Machine
+            JOIN di_error ON di_error.Site = machine_data.Site
+            WHERE di_error.Site LIKE '%s' OR machine_station.Phase LIKE '%s' OR machine_station.Station LIKE '%s'
+            ORDER BY di_error.Date DESC limit %s, %s""" % (likeString, likeString, likeString,row, rowperpage)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+
+def di_report_limit(row, rowperpage):
+    connection = getConnection()
+    sql = """SELECT Date, Time, Phase, Site, Water, Temp, State FROM di_report ORDER BY Date DESC, Time DESC limit %s,%s""" % (row, rowperpage)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    error = cursor.fetchall()
+    return error
+
+
+def di_report_filter_table(likeString):
+    connection = getConnection()
+    sql = """SELECT Date, Time, Phase, Site, Water, Temp, State FROM di_report 
+            WHERE Site LIKE '%s' OR Phase LIKE '%s' OR Station LIKE '%s'
+            ORDER BY Date DESC, Time DESC
+            """ % (likeString, likeString, likeString)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+    
+def di_report_filter_table_limit(likeString,row, rowperpage):
+    connection = getConnection()
+    sql = """SELECT Date, Time, Phase, Site, Water, Temp, State FROM di_report ORDER BY Date DESC, Time DESC
+            WHERE Site LIKE '%s' OR Phase LIKE '%s' OR Station LIKE '%s'
+            limit %s, %s""" % (likeString, likeString, likeString,row, rowperpage)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+######################################################################################################################################
 
 def show_recept():
     connection = getConnection()
@@ -235,8 +308,8 @@ def show_machine():
     cursor = connection.cursor()
     show_machine = """SELECT machine_master.Ip, 
                             machine_master.Port,
-                            machine_station.Station, 
-                            machine_station.Phase,
+                            phase.OP, 
+                            phase.Phase,
                             machine_data.Site,
                             machine_data.Slot_Water,
                             machine_data.Slot_Temp,
@@ -244,7 +317,8 @@ def show_machine():
                         FROM machine_master
                         INNER JOIN machine ON machine_master.Machine = machine.Machine
                         INNER JOIN machine_station ON machine.ID = machine_station.ID
-                        INNER JOIN machine_data ON machine_data.Machine = machine_master.Machine"""
+                        INNER JOIN machine_data ON machine_data.Machine = machine_master.Machine
+                        INNER JOIN phase ON machine_data.Site = phase.Site"""
     cursor.execute(show_machine)
     data = cursor.fetchall()
     return data
@@ -419,8 +493,9 @@ def edit_device(Ip, Port, Station, Phase, Slot_Water, Slot_Temp, Site):
                 JOIN machine ON machine_master.Machine = machine.Machine
                 JOIN machine_station ON machine.ID = machine_station.ID
                 JOIN machine_data ON machine_data.Machine = machine_master.Machine
-                SET machine_master.Ip = '{Ip}', machine_master.Port = '{Port}', machine_station.Station = '{Station}',
-                machine_station.Phase = '{Phase}', machine_data.Slot_Water='{Slot_Water}', machine_data.Slot_Temp='{Slot_Temp}'
+                JOIN phase on phase.Site = machine_data.Site
+                SET machine_master.Ip = '{Ip}', machine_master.Port = '{Port}', phase.OP = '{Station}',
+                phase.Phase = '{Phase}', machine_data.Slot_Water='{Slot_Water}', machine_data.Slot_Temp='{Slot_Temp}'
                 WHERE machine_data.Site = '{Site}'"""
     cursor = connection.cursor()
     cursor.execute(sql)

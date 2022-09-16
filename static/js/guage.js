@@ -52,9 +52,9 @@ function drawChart() {
   var chartP9 = new google.visualization.Gauge(document.getElementById('dataP9'));
 
   var options = {
-    redFrom: 0, redTo: 10, redColor: "FF3838" ,
-    yellowFrom: 20, yellowTo: 30, yellowColor: "FF3838",
-    greenFrom: 10, greenTo: 20,greenColor: "16F200",
+    redFrom: 0, redTo: 12, redColor: "FF6609" ,
+    yellowFrom: 12, yellowTo: 13, yellowColor: "FFE126",
+    greenFrom: 13, greenTo: 30,greenColor: "1BFA00",
     min: 0, max: 30,
     minorTicks: 0,
   };

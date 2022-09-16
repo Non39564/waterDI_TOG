@@ -29,13 +29,12 @@ def get_data(host,port):
             else:
                 rr[i] = float(rr[i] / 100)
             l.append(rr[i])
-        return l
+        return l,True
     except:
         l = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
         print(f"Post {port}  Host {host} is Error connecting")
-        return l
+        return l,False
 
-    
 def get_op_phase():
     oplist = []
     connection = getConnection()
@@ -70,6 +69,21 @@ def get_offset(Site,offset):
             mt =offset['Minus_Temp']
     return pw,mw,pt,mt
 
+def update_maintain_data(Site,num):
+    connection = getConnection()
+    sql = "UPDATE maintain_data SET StateID  = %s WHERE Site = '%s'" %(num,Site)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    if num == 1:
+        now = datetime.now()
+        insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        d,t = insert_time.split(" ")
+        sql1 = "INSERT INTO log_matain(`Username`, `Site`, `StateID`, `Date`, `Time`) VALUES('%s','%s','%s','%s','%s')" % ('admin',Site,num,d,t)
+        cursor = connection.cursor()
+        cursor.execute(sql1)
+    connection.commit()
+        
+
 def line_bot_error_water(Site,status,data,date,time,min,max):
     url = 'https://notify-api.line.me/api/notify'
     token = '1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8'
@@ -87,13 +101,21 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
     if status == 'Normal':
         pass
     else:
+        if status == 'Error':
+            s_status = 0
+        elif status == 'Low':
+            s_status = 1
+        elif status == 'Monitor':
+            s_status = 2
         now = datetime.now()
         insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
         d,t = insert_time.split(" ")
         connection = getConnection()
-        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`,`Time`) VALUES('%s','%s','%s','%s')" % (Site,status,d,t)
+        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`,`Time`,`Water`) VALUES('%s','%s','%s','%s','%s')" % (Site,status,d,t,data)
+        sql1 = "INSERT INTO log_status(`Site`, `Status`, `Datetime`) VALUES('%s','%s','%s')" % (Site,s_status,insert_time)
         cursor = connection.cursor()
         cursor.execute(sql)
+        cursor.execute(sql1)
         connection.commit()
 
 def line_bot_error_temp(Site,status,data,date,time,min,max):
@@ -113,13 +135,21 @@ def line_bot_error_temp(Site,status,data,date,time,min,max):
     if status == 'Normal':
         pass
     else:
+        if status == 'Error':
+            s_status = 0
+        elif status == 'Low':
+            s_status = 1
+        elif status == 'Monitor':
+            s_status = 2
         now = datetime.now()
         insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
         d,t = insert_time.split(" ")
         connection = getConnection()
-        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`, `Time`) VALUES('%s','%s','%s')" % (Site,status,d,t)
+        sql = "INSERT INTO di_error(`Site`, `Detail`, `Date`, `Time`,`Temp`) VALUES('%s','%s','%s','%s','%s')" % (Site,status,d,t,data)
+        sql1 = "INSERT INTO log_status(`Site`, `Status`, `Datetime`) VALUES('%s','%s','%s')" % (Site,s_status,insert_time)
         cursor = connection.cursor()
         cursor.execute(sql)
+        cursor.execute(sql1)
         connection.commit()
     
 def update_alarm(Site,data,type):
@@ -132,9 +162,6 @@ def update_alarm(Site,data,type):
     cursor.execute(sql)
     connection.commit()
     
-
-    
-
 def check_alarm(Site,data,date,time,min,max,type,Status_m):
     connection = getConnection()
     sql = "SELECT Site,Status_Di,Status_temp FROM off_set WHERE Site = '%s'" % (Site)
@@ -149,13 +176,19 @@ def check_alarm(Site,data,date,time,min,max,type,Status_m):
                 if Status_m == 'L':
                     line_bot_error_water(Site,"Low",data,date,time,min,max)
                     update_alarm(Site,'L','water')
+                    update_maintain_data(Site,1)
                 elif Status_m == 'N':
                     line_bot_error_water(Site,"Normal",data,date,time,min,max)
                     update_alarm(Site,'N','water')
+                    #update_maintain_data(Site,0)
                 elif Status_m == 'M':
                     line_bot_error_water(Site,"Monitor",data,date,time,min,max) 
                     update_alarm(Site,'M','water')
-           
+                    update_maintain_data(Site,1)
+                elif Status_m == 'E':
+                    line_bot_error_water(Site,"Error",data,date,time,min,max) 
+                    update_alarm(Site,'E','water')
+                    update_maintain_data(Site,1)
         elif type == 'temp':
             if s['Status_temp'] == Status_m:
                 pass
@@ -163,13 +196,19 @@ def check_alarm(Site,data,date,time,min,max,type,Status_m):
                 if Status_m == 'L':
                     line_bot_error_temp(Site,"Low",data,date,time,min,max)
                     update_alarm(Site,'L','temp') 
+                    update_maintain_data(Site,1)
                 elif Status_m == 'N':
                     line_bot_error_temp(Site,"Normal",data,date,time,min,max)
-                    update_alarm(Site,'N','temp') 
+                    update_alarm(Site,'N','temp')
+                    #update_maintain_data(Site,0) 
                 elif Status_m == 'M':
                     line_bot_error_temp(Site,"Monitor",data,date,time,min,max)
                     update_alarm(Site,'M','temp') 
-
+                    update_maintain_data(Site,1)
+                elif Status_m == 'E':
+                    line_bot_error_temp(Site,"Error",data,date,time,min,max)
+                    update_alarm(Site,'E','temp') 
+                    update_maintain_data(Site,1)
 
 def Normal_check(Site,data,date,time,min,max,type):
     connection = getConnection()
@@ -179,36 +218,53 @@ def Normal_check(Site,data,date,time,min,max,type):
     data_status = cursor.fetchall()
     for status in data_status:
         if type == 'water':
-            if status['Status_Di'] == 'L' or status['Status_Di'] == 'M':
+            if status['Status_Di'] == 'L' or status['Status_Di'] == 'M' or status['Status_Di'] == 'E':
                 line_bot_error_water(Site,"Normal",data,date,time,min,max)
+                now = datetime.now()
+                insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
+                connection = getConnection()
+                sql = "INSERT INTO log_status(`Site`, `Status`, `Datetime`) VALUES('%s','%s','%s')" % (Site,3,insert_time)
+                cursor = connection.cursor()
+                cursor.execute(sql)
+                connection.commit()
         elif type == 'temp':
-            if status['Status_temp'] == 'L' or status['Status_temp'] == 'M':
+            if status['Status_temp'] == 'L' or status['Status_temp'] == 'M' or status['Status_Di'] == 'E':
                 line_bot_error_temp(Site,"Normal",data,date,time,min,max)
+                now = datetime.now()
+                insert_time = now.strftime("%Y-%m-%d %H:%M:%S")
+                connection = getConnection()
+                sql = "INSERT INTO log_status(`Site`, `Status`, `Datetime`) VALUES('%s','%s','%s')" % (Site,3,insert_time)
+                cursor = connection.cursor()
+                cursor.execute(sql)
+                connection.commit()
 
-            
-              
-def water_check(Site,min,max,water,date,time):
-    if min+2 <= water <= min+3 :
-        check_alarm(Site,water,date,time,min,max,'water','M')
-    elif water < min+2:
-        check_alarm(Site,water,date,time,min,max,'water','L')
-    else:
-        Normal_check(Site,water,date,time,min,max,'water')
-        update_alarm(Site,'N','water')
 
-def temp_check(Site,min,max,temp,date,time):
-    if min+2 <= temp <= min+3:
-        check_alarm(Site,temp,date,time,min,max,'temp','M')
-    elif temp < min+2:
-        check_alarm(Site,temp,date,time,min,max,'temp','L')
-    else:
-        Normal_check(Site,temp,date,time,min,max,'temp')       
-        update_alarm(Site,'N','temp')
+def water_check(Site,min,max,water,date,time,connection_check):
+    if connection_check is True:
+        if min+2 <= water <= min+3 :
+            check_alarm(Site,water,date,time,min,max,'water','M')
+        elif water < min+2:
+            check_alarm(Site,water,date,time,min,max,'water','L')
+        else:
+            Normal_check(Site,water,date,time,min,max,'water')
+            update_alarm(Site,'N','water')
+            #update_maintain_data(Site,0)
+    elif connection_check is False:
+        check_alarm(Site,water,date,time,min,max,'water','E')
+
+def temp_check(Site,min,max,temp,date,time,connection_check):
+    if connection_check is True:
+        if min+2 <= temp <= min+3:
+            check_alarm(Site,temp,date,time,min,max,'temp','M')
+        elif temp < min+2:
+            check_alarm(Site,temp,date,time,min,max,'temp','L')
+        else:
+            Normal_check(Site,temp,date,time,min,max,'temp')       
+            update_alarm(Site,'N','temp')
+    elif connection_check is False:
+        check_alarm(Site,temp,date,time,min,max,'temp','E')
         
-
-                
-
-def Alarm(Site,offset,water,temp):
+def Alarm(Site,offset,water,temp,connection_check):
     now = datetime.now()
     Timestamp = now.strftime("%d-%m-%Y %H:%M:%S")
     date,time = Timestamp.split(" ")
@@ -218,23 +274,23 @@ def Alarm(Site,offset,water,temp):
             maxw = os['Hight_Water']
             mint = os['Low_Temp']
             maxt = os['Hight_Temp']
-            water_check(Site,minw,maxw,water,date,time)
-            temp_check(Site,mint,maxt,temp,date,time)
+            water_check(Site,minw,maxw,water,date,time,connection_check)
+            temp_check(Site,mint,maxt,temp,date,time,connection_check)
                 
-              
-                
-def insert_report(Station,Phase,Site,Temp,Water):
+def insert_report(Station,Phase,Site,Temp,Water,connection_check):
     now = datetime.now()
     insert_time = now.strftime("%Y-%m-%d %H:00:00")
     d,t = insert_time.split(" ")
     connection = getConnection()
-    
-    if Water > 30 or Water < 10:
-        State = 'Low'
-    elif 10 < Water <= 12 or  28 <= Water < 30:
-        State = 'Monitor'
-    elif 10 < Water < 30:
-        State = 'Normal'
+    if connection_check is True:
+        if Water > 30 or Water < 10:
+            State = 'Low'
+        elif 10 < Water <= 12 or  28 <= Water < 30:
+            State = 'Monitor'
+        elif 10 < Water < 30:
+            State = 'Normal'
+    else:
+        State = 'Error'
         
     sql = "INSERT INTO di_report(`Station`, `Phase`, `Site`, `Temp`, `Water`,`Date`,`Time`,`State`) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')" % (Station,Phase,Site,Temp,Water,d,t,State)
     cursor = connection.cursor()
@@ -261,7 +317,9 @@ while True:
     
     ip_port = []
     data = []
+    connection_check = []
     report = []
+    
     connection = getConnection()
     sql = "SELECT * FROM machine_master"
     cursor = connection.cursor()
@@ -273,9 +331,9 @@ while True:
             ip_port.append(i['Ip']+":"+str(i['Port']))
     for j in range(len(ip_port)):
         port,host = ip_port[j].split(":")
-        data.append(get_data(str(port),int(host)))
-    
-    
+        data_getdata,connection_status = get_data(str(port),int(host))
+        data.append(data_getdata)
+        connection_check.append(connection_status)
     oplist= get_op_phase()
     for o in range(len(oplist)):
         op,phase = oplist[o].split("|")
@@ -309,8 +367,9 @@ while True:
                             lists['Data'].append(dicts)
                         else:
                             if save is True:
-                                insert_report(m['OP'],m['phase'],m['Site'],temp_data,water_data)
-                            Alarm(m['Site'],offset,water_data,temp_data)
+                                insert_report(m['OP'],m['phase'],m['Site'],temp_data,water_data,connection_check[k])
+                            
+                            Alarm(m['Site'],offset,water_data,temp_data,connection_check[k])
                             dicts = {"id":m['Site'],"Water":water_data,"Temp":temp_data}
                             lists['Data'].append(dicts)
                         

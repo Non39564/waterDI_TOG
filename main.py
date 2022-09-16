@@ -170,7 +170,6 @@ def edit_value():
         result = request.form.to_dict()
         values = result.values()
         values_Site = list(values)
-        print(values_Site)
         Site = request.form.get(values_Site[0])
         Ip = request.form.get("Ip"+values_Site[0])
         Port = request.form.get("Port"+values_Site[0])
@@ -179,10 +178,10 @@ def edit_value():
         Slot_Water = request.form.get("Slot_Water"+values_Site[0])
         Slot_Temp = request.form.get("Slot_Temp"+values_Site[0])
         if Slot_Water is None and Slot_Temp is None:
-            edit = edit_machine_device(Site)
+            edit = edit_machine_device(values_Site[0])
+            print(Site)
             Slot_Water = edit[0]['Slot_Water']
             Slot_Temp = edit[0]['Slot_Temp']
-        print(Site, Ip, Port, Station, Phase, Slot_Water, Slot_Temp)
         edit_device(Ip, Port, Station, Phase, Slot_Water, Slot_Temp, Site)
     return flask.redirect(flask.url_for('blank'))
         
@@ -301,111 +300,86 @@ def trendDiChart():
 def statusCR():
     return render_template('status-carbon-resin.html')
 
-@app.route('/download_alert')
-def download_alert():
-    report = error_report()
-    pdf = FPDF("P", "mm", "A4")
-    pdf.add_page()
-    pdf.add_font('THSarabunNew', '', 'THSarabunNew.ttf', uni=True)
+@app.route("/data_line", methods=["POST","GET"])
+def data_line():
     
-    page_width = pdf.w - 2 * pdf.l_margin
-
-    pdf.set_font('THSarabunNew', '',14.0) 
-    pdf.cell(page_width, 0.0, 'Alert Data', align='C')
-    pdf.ln(10)
-    
-    pdf.set_font('THSarabunNew', '', 12)
-    
-    col_width = page_width/5
-    
-    pdf.ln(1)
-    
-    th = pdf.font_size*2
-
-    pdf.set_fill_color(229, 229, 229)
-    pdf.cell(col_width, th, str("Station"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Phase"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Machine"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Detail"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Date"), 1, 0, 'C')
-    pdf.ln(th)
-    
-    for row in report:
-        pdf.cell(col_width, th, str(row['Station']), border=1)
-        pdf.cell(col_width, th, str(row['Phase']), border=1)
-        pdf.cell(col_width, th, str(row['Site']), border=1)
-        pdf.cell(col_width, th, str(row['Detail']), border=1)
-        pdf.cell(col_width, th, str(row['Data']), border=1)
-        pdf.ln(th)
+    if request.method == 'POST':
+        draw = request.form['draw'] 
+        row = int(request.form['start'])
+        rowperpage = int(request.form['length'])
+        searchValue = request.form["search[value]"]
         
-    pdf.ln(10)
-    
-    pdf.set_font('THSarabunNew','',10.0) 
-    pdf.cell(page_width, 0.0, '- end of report -', align='C')
-    
-    response = make_response(pdf.output(dest='S').encode('latin-1'))
-    response.headers.set('Content-Disposition', 'attachment', filename="Alert Report" + '.pdf')
-    response.headers.set('Content-Type', 'application/pdf')
-    
-    return response
+        report = di_report_now()
+        totalRecords = len(report)
+        
+        likeString = "%" + searchValue +"%"
+        filter = di_report_filter_table(likeString)
+        totalRecordwithFilter = len(filter)
 
-@app.route('/download_Overview')
-def download_Overview():
-    report = di_report()
-    pdf = FPDF("P", "mm", "A4")
-    pdf.add_page()
-    pdf.add_font('THSarabunNew', '', 'THSarabunNew.ttf', uni=True)
-    
-    page_width = pdf.w - 2 * pdf.l_margin
-
-    pdf.set_font('THSarabunNew', '',14.0) 
-    pdf.cell(page_width, 0.0, 'Deionized water Data', align='C')
-    pdf.ln(10)
-    
-    pdf.set_font('THSarabunNew', '', 12)
-    
-    col_width = page_width/6
-    
-    pdf.ln(1)
-    
-    th = pdf.font_size*2
-
-    pdf.set_fill_color(229, 229, 229)
-    pdf.cell(col_width, th, str("Date"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Phase"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Machine"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Status"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("DIWater"), 1, 0, 'C')
-    pdf.cell(col_width, th, str("Temp"), 1, 0, 'C')
-    pdf.ln(th)
-    
-    for row in report:
-        if row["Water"] > 12:
-            Status = "Pass"
-        elif row["Water"] >= 10 and row["Water"] < 12:
-            Status = "Monitor"
+        if searchValue == '':
+            report = di_report_limit(row, rowperpage)
         else:
-            Status = "Error"
-        pdf.cell(col_width, th, str(row['Date']), border=1)
-        pdf.cell(col_width, th, str(row['Phase']), border=1)
-        pdf.cell(col_width, th, str(row['Site']), border=1)
-        pdf.cell(col_width, th, str(Status), border=1)
-        pdf.cell(col_width, th, str(row['Water']), border=1)
-        pdf.cell(col_width, th, str(row['Temp']), border=1)
-        pdf.ln(th)
-        
-    pdf.ln(10)
-    
-    pdf.set_font('THSarabunNew','',10.0) 
-    pdf.cell(page_width, 0.0, '- end of report -', align='C')
-    
-    response = make_response(pdf.output(dest='S').encode('latin-1'))
-    response.headers.set('Content-Disposition', 'attachment', filename="Alert Report" + '.pdf')
-    response.headers.set('Content-Type', 'application/pdf')
-    
-    return response
+            report = di_report_filter_table_limit(likeString,row, rowperpage)
+        data = []
+        print(totalRecordwithFilter)
+        for d in report:
+            data.append({
+                'Status': d['State'],
+                'Phase': d['Phase'],
+                'Site': d['Site'],
+                'DIWater': d['Water'],
+                'Date': d['Date'],
+                'Time': str(d['Time']),
+                'Temp':d['Temp']
+            })
+        response = {
+                'draw': draw,
+                'iTotalRecords': totalRecords,
+                'iTotalDisplayRecords': totalRecordwithFilter,
+                'aaData': data,
+            }
+        return jsonify(response)
 
+@app.route("/data_alert", methods=["POST","GET"])
+def data_alert():
+    
+    if request.method == 'POST':
+        draw = request.form['draw'] 
+        row = int(request.form['start'])
+        rowperpage = int(request.form['length'])
+        searchValue = request.form["search[value]"]
+        
+        report = error_report()
+        totalRecords = len(report)
+        
+        likeString = "%" + searchValue +"%"
+        filter = filter_table(likeString)
+        totalRecordwithFilter = len(filter)
+        
+        if searchValue == '':
+            report = error_report_limit(row, rowperpage)
+        else:
+            report = filter_table_limit(likeString,row, rowperpage)
+          
+        data = []
+        for d in report:
+            data.append({
+                'Station': d['Station'],
+                'Phase': d['Phase'],
+                'Site': d['Site'],
+                'Detail': d['Detail'],
+                'Date': d['Date'],
+                'Time': str(d['Time'])
+            })
+        print(data)
+        response = {
+                'draw': draw,
+                'iTotalRecords': totalRecords,
+                'iTotalDisplayRecords': totalRecordwithFilter,
+                'aaData': data,
+            }
+        return jsonify(response)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0' ,port=80)
+    app.run(debug=True, host='10.3.9.156' ,port=80)

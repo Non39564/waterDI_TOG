@@ -9,8 +9,7 @@ function alert() {
       const h = d.getHours();
       const m = d.getMinutes();
       if (m < 10) {
-        const m = "0" + m;
-        console.log(m);
+        const m = "0" + d.getMinutes();
       }
       const erroralert = [];
       for (j in json[i].Data) {

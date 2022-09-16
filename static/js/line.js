@@ -117,7 +117,11 @@ function drawLineChart() {
         };
 
         chartLP4.draw(dataLP4, google.charts.Line.convertOptions(optionsLP4));
-        chartLP5.draw(dataLP5, google.charts.Line.convertOptions(optionsLP5));
+        if (dataLP5.getNumberOfColumns() === 1){
+          $( "#dataP5" ).text( "No data available" );
+        } else {
+          chartLP5.draw(dataLP5, google.charts.Line.convertOptions(optionsLP5));
+        }
         chartLP9.draw(dataLP9, google.charts.Line.convertOptions(optionsLP9));
         }); 
     }

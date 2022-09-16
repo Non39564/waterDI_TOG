@@ -18,6 +18,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.12.1/dataRender/datetime.js"></script>
 {% endblock %}
 {% block content %}
 <div class="card mt-3">
@@ -28,7 +29,7 @@
       </div>
       <div class="col-lg-7 d-flex justify-content-lg-end ">
         <!-- date range filter -->
-        <table cellspacing="5" cellpadding="5">
+        <!-- <table cellspacing="5" cellpadding="5">
           <tbody>
             <tr >
               <td><h5>Choose Date :</h5></td>
@@ -37,7 +38,7 @@
               <td><input type="text" class="form-control" id="max" name="max"></td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       <!-- End date range filter -->
     </div>
     </div>
@@ -51,48 +52,68 @@
             <th>Machine</th>
             <th>Detail</th>
             <th>Date</th>
+            <th>Time</th>
           </tr>
         </thead>
-        <tbody>
-          {% for error in report %}
-          <tr>
-            <td>
-              <p class="text-muted mb-0">{{ error['Station'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ error['Phase'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0">{{ error['Site'] }}</p>
-            </td>
-            <td name="{{ error['Detail'] }}">
-              <p id="{{ error['Detail'] }}" name="{{ error['Detail'] }}" class="mb-0 Status{{ error['Detail'] }}">{{ error['Detail'] }}</p>
-            </td>
-            <td>
-              <p class="text-muted mb-0 ">{{ error['Date'] }}</p>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
       </table>
       
     </div>
 </div>
 {% endblock %}
 {% block script %}
-<script src="{{ url_for('static', filename='js/date-range-alert.js') }}"></script>
 <script>
-  {% for error_script in report %}
-  console.log("{{ error_script['Detail'] }}")
-  if ("{{ error_script['Detail'] }}" === "Normal"){
-    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-success");
-  } else if ("{{ error_script['Detail'] }}" === "Low") {
-    $('p[name="{{ error_script['Detail'] }}"]').text("Low");
-    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-warning");
-  } else if ("{{ error_script['Detail'] }}" === "High") {
-    $('p[name="{{ error_script['Detail'] }}"]').text("Error");
-    $('p[name="{{ error_script['Detail'] }}"]').addClass("text-danger");
-  }
-  {% endfor %}
+  $(document).ready(function () {
+    var Alert_table = $("#alert").DataTable({
+      processing: true,
+      serverSide: true,
+      serverMethod: "post",
+      ajax: {
+        url: "/data_alert",
+      },
+      lengthMenu: [
+        [10, 20, 30, 40, 50, 100],
+        [10, 20, 30, 40, 50, 100],
+      ],
+      searching: true,
+      sort: false,
+      serverSide: true,
+      createdRow: function (row, data, index) {
+        if (data.Detail === "Monitor") {
+          $("td", row).eq(3).addClass("text-yello");
+        } else {
+          $("td", row).eq(3).addClass("text-warning");
+        }
+      },
+      columns: [
+        { data: "Station" },
+        { data: "Phase" },
+        { data: "Site" },
+        { data: "Detail" },   
+        { data: "Date" },
+        { data: "Time" },
+      ],
+      columnDefs: [
+        {
+          targets: 4,
+          render: function (data, type, row, meta) {
+            return moment.utc(data).local().format("YYYY-MM-DD");
+          },
+        },
+      ],
+      dom: 'Blfrtip',
+      buttons: [
+        {
+          extend: 'excel',
+          text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
+          className: 'mb-3 btn btn-success me-1',
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="fa fa-file-pdf me-2"></i><span>generate PDF</span>',
+            className: 'mb-3 btn btn-danger me-1',
+        }
+      ],
+    });
+  });
 </script>
 {% endblock %}
