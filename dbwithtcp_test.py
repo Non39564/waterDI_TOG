@@ -86,18 +86,19 @@ def update_maintain_data(Site,num):
 
 def line_bot_error_water(Site,status,data,date,time,min,max):
     url = 'https://notify-api.line.me/api/notify'
-    token = '1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8'
-    headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
-    msg = f"""
-    รายงานแจ้งเตือนสถานะค่าน้ำ DI 
-    ชื่อจุดติดตั้ง : {Site}
-    สถานะแจ้งเตือน : {status}
-    ค่าน้ำที่วัดได้ : {data} 
-    วันที่รายงาน : {date}
-    เวลาที่รายงาน : {time}
-    ไม่ต่ำกว่า : {min} 
-    ไม่เกินกว่า : {max}"""
-    r = requests.post(url, headers=headers, data = {'message':msg})
+    token = ['1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8','4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
+    for i in range(len(token)):
+        headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
+        msg = f"""
+        รายงานแจ้งเตือนสถานะค่าน้ำ DI 
+        ชื่อจุดติดตั้ง : {Site}
+        สถานะแจ้งเตือน : {status}
+        ค่าน้ำที่วัดได้ : {data} 
+        วันที่รายงาน : {date}
+        เวลาที่รายงาน : {time}
+        ไม่ต่ำกว่า : {min} 
+        ไม่เกินกว่า : {max}"""
+        r = requests.post(url, headers=headers, data = {'message':msg})
     if status == 'Normal':
         pass
     else:
@@ -120,18 +121,19 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
 
 def line_bot_error_temp(Site,status,data,date,time,min,max):
     url = 'https://notify-api.line.me/api/notify'
-    token = '1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8'
-    headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
-    msg = f"""
-    รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
-    ชื่อจุดติดตั้ง : {Site}
-    สถานะแจ้งเตือน : {status}
-    ค่าอุณหภูมิที่วัดได้ : {data} 
-    วันที่รายงาน : {date}
-    เวลาที่รายงาน : {time}
-    ไม่ต่ำกว่า : {min} 
-    ไม่เกินกว่า : {max}"""
-    r = requests.post(url, headers=headers, data = {'message':msg})
+    token = ['1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8','4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
+    for i in range(len(token)):
+        headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
+        msg = f"""
+        รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
+        ชื่อจุดติดตั้ง : {Site}
+        สถานะแจ้งเตือน : {status}
+        ค่าอุณหภูมิที่วัดได้ : {data} 
+        วันที่รายงาน : {date}
+        เวลาที่รายงาน : {time}
+        ไม่ต่ำกว่า : {min} 
+        ไม่เกินกว่า : {max}"""
+        r = requests.post(url, headers=headers, data = {'message':msg})
     if status == 'Normal':
         pass
     else:
@@ -151,6 +153,23 @@ def line_bot_error_temp(Site,status,data,date,time,min,max):
         cursor.execute(sql)
         cursor.execute(sql1)
         connection.commit()
+    
+def Error_alarm(host,port):
+    url = 'https://notify-api.line.me/api/notify'
+    token = ['1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8','4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
+    for i in range(len(token)):
+        headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
+        msg = """
+        รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
+        ชื่อจุดติดตั้ง : {Site}
+        สถานะแจ้งเตือน : {status}
+        ค่าอุณหภูมิที่วัดได้ : {data} 
+        วันที่รายงาน : {date}
+        เวลาที่รายงาน : {time}
+        ไม่ต่ำกว่า : {min} 
+        ไม่เกินกว่า : {max}"""
+        r = requests.post(url, headers=headers, data = {'message':msg})
+    
     
 def update_alarm(Site,data,type):
     connection = getConnection()
@@ -371,7 +390,8 @@ while True:
                             
                             Alarm(m['Site'],offset,water_data,temp_data,connection_check[k])
                             dicts = {"id":m['Site'],"Water":water_data,"Temp":temp_data}
-                            lists['Data'].append(dicts)
+                            if connection_check[k] is True:
+                                lists['Data'].append(dicts)
                         
                   
             report.append(lists)     
