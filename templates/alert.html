@@ -10,7 +10,6 @@
     type="text/javascript"
     src="https://code.jquery.com/jquery-3.5.1.js"
   ></script>
-  <script src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
   <script
     type="text/javascript"
     src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"
@@ -25,13 +24,6 @@
     type="text/css"
     href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"
   />
-  <!-- jquery css datepicker -->
-  <link
-        type="text/css"
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/jquery-ui.css') }}"
-      />
-  <link rel="stylesheet" href="/resources/demos/style.css">
   <!-- script pagination -->
   <script
     type="text/javascript"
@@ -59,45 +51,58 @@
     src="https://cdn.datatables.net/plug-ins/1.12.1/dataRender/datetime.js"
   ></script>
   
+  <!-- flatpicker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
   
   {% endblock %} {% block content %}
   <div class="card mt-3">
-    <div class="card-header bg-danger bg-gradient text-white ">
+    <div class="card-header bg-dark bg-gradient text-white ">
       <div class="row justify-content-lg-end">
-        <div class="col-lg-3">
-          <h4>Alert status</h4>
+        <div class="col-lg-3 d-flex align-content-center flex-wrap">
+          <h4 class="mb-0">Alert status</h4>
         </div>
         <div class="col-lg-9 d-flex justify-content-lg-end">
           <!-- date range filter -->
-          <!-- <table cellspacing="5" cellpadding="5">
+          <table cellspacing="5" cellpadding="5">
             <tbody>
               <tr >
                 <td><h5 class="text-white mb-0">Choose Date :</h5></td>
-                <td><input type="text" class="form-control" id="start_date"></td>
+                <td><input type="text" class="form-control" id="pickadate_start" /></td>
                 <td><h5 class="text-white mb-0">To</h5></td>
-                <td><input type="text" class="form-control" id="end_date"></td>
+                <td><input type="text" class="form-control" id="pickadate_end" /></td>
                 <td>
                   <button type="button" class="btn btn-success"id="submit" name="submit"> Submit </button>
                 </td>
               </tr>
             </tbody>
-          </table> -->
+          </table>
         <!-- End date range filter -->
         </div>
       </div>
     </div>
     <div class="card-body">
-      
-      <br><br>
-      <table class="display dataTable " id="alert_ss">
+      <form action="{{ url_for('export_alert') }}" method='POST' >
+        <input type="hidden" name="startdate" id="export_alert_start" />
+        <input type="hidden" name="enddate" id="export_alert_end"/>
+        <button type="submit" class="btn btn-success"id="submit" name="submit">
+          <i class="fa fa-file-excel me-2"></i><span>generate excel</span>
+        </button>
+      </form>
+      <!-- <a type="button" class="btn btn-success mb-3" href='/export_alert'>
+        <i class="fa fa-file-excel me-2"></i><span>generate excel</span>
+      </a> -->
+      <table class="display dataTable " id="alert">
         <thead class="bg-light">
           <tr>
+            <th>DateTime</th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Station</th>
             <th>Phase</th>
             <th>Site</th>
-            <th>Detail</th>
-            <th>Date</th>
-            <th>Time</th>
+            <th>Status</th>
           </tr>
         </thead>
       </table>
@@ -105,107 +110,93 @@
   </div>
   {% endblock %} {% block script %}
   
-  
   <script>
   
    $(document).ready(function() {
+    
+    
   
     var st_date = '';
     var end_date = '';
   
-      $("#start_date").datepicker({
-        onSelect: function(dateText) {
-            //console.log("Selected date: " + dateText + "; input's current value: " + this.value);
-            $(this).change();
-        },
-        dateFormat: 'yy-mm-dd',
-      })
-      .on("change", function() {
-        st_date = this.value;
-          console.log(this.value);
-      });
   
-      $("#end_date").datepicker({
-        onSelect: function(dateText) {
-            //console.log("Selected date: " + dateText + "; input's current value: " + this.value);
-            $(this).change();
+    $("#pickadate_start").flatpickr({
+      onChange: function(selectedDates, dateStr, instance) {
+        st_date = dateStr;
+            // console.log(dateStr);
+            document.getElementById('export_alert_start').value = st_date ;
+            console.log(document.getElementById('export_alert_start').value)
         },
-        dateFormat: 'yy-mm-dd',
       })
-      .on("change", function() {
-        end_date = this.value;
-          console.log(this.value);
-      });
-       // DataTables initialisation
-       var Alert_table = $("#alert_ss").DataTable({
+    $("#pickadate_end").flatpickr({
+      onChange: function(selectedDates, dateStr, instance) {
+        end_date = dateStr;
+            // console.log(dateStr);
+            document.getElementById('export_alert_end').value = end_date ;
+            console.log(document.getElementById('export_alert_end').value)
+        },
+      })
+  
+      var Alert_table = $("#alert").DataTable({
         processing: true,
         serverSide: true,
         serverMethod: "post",
         ajax: {
-          //type : 'POST',
           url: "/data_alert",
           data: function(d){
             d.startdate = st_date,
             d.enddate = end_date
           }
-          //contentType: 'application/json;charset=UTF-8',
-          //data : {'data':"clicked"}
         },
-        
         lengthMenu: [
-          [10, 20, 30, 40, 50, {{totalRecords}}],
-          [10, 20, 30, 40, 50, "All"],
+          [10, 20, 30, 40, 50, 100], 
+          [10, 20, 30, 40, 50, 100]
         ],
+        searching: true,
+        sort: false,
         createdRow: function (row, data, index) {
           if (data.Detail === "Error") {
-            $("td", row).eq(3).removeClass("text-warning");
-            $("td", row).eq(3).removeClass("text-yellow");
-            $("td", row).eq(3).addClass("text-danger");
+            $("td", row).eq(5).removeClass("text-warning");
+            $("td", row).eq(5).removeClass("text-yellow");
+            $("td", row).eq(5).addClass("text-danger");
           } else if (data.Detail === "Monitor") {
-            $("td", row).eq(3).removeClass("text-danger");
-            $("td", row).eq(3).removeClass("text-warning");
-            $("td", row).eq(3).addClass("text-yellow");
+            $("td", row).eq(5).removeClass("text-danger");
+            $("td", row).eq(5).removeClass("text-warning");
+            $("td", row).eq(5).addClass("text-yellow");
           } else if (data.Detail === "Low") {
-            $("td", row).eq(3).removeClass("text-danger");
-            $("td", row).eq(3).removeClass("text-yellow");
-            $("td", row).eq(3).addClass("text-warning");
+            $("td", row).eq(5).removeClass("text-danger");
+            $("td", row).eq(5).removeClass("text-yellow");
+            $("td", row).eq(5).addClass("text-warning");
           }
         },
         columns: [
+          { data: "Date_Time" },
+          { data: "Date" },
+          { data: "Time" },
           { data: "Station" },
           { data: "Phase" },
           { data: "Site" },
           { data: "Detail" },
-          { data: "Date" },
-          { data: "Time" },
         ],
         columnDefs: [
           {
-            targets: 4,
+            targets: 0,
+            visible: false,
+            searchable: false,
             render: function (data, type, row, meta) {
-              return moment.utc(data).local().format("YYYY-MM-DD");
-              
+              return moment.utc(data).local().format("YYYY-MM-DD hh:mm:ss");
             },
           },
-        ],
-        dom: 'Blfrtip',
-        buttons: [
           {
-            extend: 'excel',
-            text: '<i class="fa fa-file-excel me-2"></i><span>generate excel</span>',
-            className: 'mb-3 btn btn-success me-1',
-            exportOptions: {
-              modifier: {
-                  page: 'all'
-              }
-            }
+            targets: 1,
+            visible: true,
+            searchable: false,
+            render: function (data, type, row, meta) {
+              return moment.utc(data).local().format("YYYY-MM-DD");
+            },
           },
-          {
-              extend: 'pdf',
-              text: '<i class="fa fa-file-pdf me-2"></i><span>generate PDF</span>',
-              className: 'mb-3 btn btn-danger me-1',
-          }
-        ],
+          
+        ]
       });
   
       $("#submit").on("click", function () {

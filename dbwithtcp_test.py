@@ -6,8 +6,15 @@ import requests
 import pymysql
 from datetime import datetime
 from operator import itemgetter
+from pymongo import MongoClient
 
-#192.168.0.244
+def insert_to_mongodb(data):
+    client = MongoClient('localhost',27017,serverSelectionTimeoutMS=1500)
+    db = client.Water_di
+    tb = db['report']
+    tb.insert_many(data)
+    print('insert to mogodb')
+
 def getConnection ():
     return pymysql.connect(
         host = 'localhost',
@@ -83,10 +90,9 @@ def update_maintain_data(Site,num):
         cursor.execute(sql1)
     connection.commit()
         
-
 def line_bot_error_water(Site,status,data,date,time,min,max):
     url = 'https://notify-api.line.me/api/notify'
-    token = ['1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8','4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
+    token = ['4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
     for i in range(len(token)):
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
         msg = f"""
@@ -98,7 +104,10 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
         เวลาที่รายงาน : {time}
         ไม่ต่ำกว่า : {min} 
         ไม่เกินกว่า : {max}"""
-        r = requests.post(url, headers=headers, data = {'message':msg})
+        try:
+            r = requests.post(url, headers=headers, data = {'message':msg})
+        except:
+            print("don't send data to line")
     if status == 'Normal':
         pass
     else:
@@ -121,7 +130,7 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
 
 def line_bot_error_temp(Site,status,data,date,time,min,max):
     url = 'https://notify-api.line.me/api/notify'
-    token = ['1ynH4ehbVZZK3ngffNqBjnZVdnU5gKtNIYLu14IOLD8','4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
+    token = ['4f8iOTmuyDB4lnQj8cFngHbL5VTVd5q3sbKXgUxSGLJ']
     for i in range(len(token)):
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
         msg = f"""
@@ -411,14 +420,15 @@ while True:
         
     newlist = sorted(report, key=itemgetter('Phase'))
     print(newlist)  
+    
     if save is True:
         save = False
-    try:
-        url = "http://10.3.9.156/postdata"
-        x = requests.post(url, json=newlist)
+    try:     
+        x = requests.post('http://10.3.9.156:80/postdata', json=newlist)
         print(x.status_code)
     except:
         print("Don't send to server")
+    insert_to_mongodb(newlist)
     print()          
     time.sleep(1)
 

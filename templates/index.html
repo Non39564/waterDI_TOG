@@ -7,7 +7,14 @@
 {% block content %}
 
 <div class="card">
-    <h5 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Status Machine
+    <h4 class="card-header d-flex justify-content-between bg-dark bg-gradient text-white">Status Machine
+        <div class="select-wrapper mb-2">
+            <select id="selectionGP" class="form-select">
+              <option value="" disabled selected>Choose Phase</option>
+              <option value="all">All</option>
+            </select>
+        </div>
+        <!-- select 
         <div class="select-wrapper mb-2 ">
             <select id="selectionGP" class="select select-initialized">
                 <option value="" disabled selected>Choose Phase</option>
@@ -16,21 +23,21 @@
                 <option value="P5">OP2 Phase 5</option>
                 <option value="P9">OP2 Phase 9</option>
             </select>
-        </div>
-    </h5>
-    <div class="card-body">
+        </div>-->
+        <!-- end select -->
+    </h4>
+    <div class="card-body" id="card-body">
         <!-- Phase -->
 
-        <div class="p-1 mb-2 bg-dark bg-gradient text-white">
+        <div class="p-1 mb-2 bg-dark bg-gradient text-white display dataP4">
             <h2 class="text-center m-0" id="Phase4"></h2>
         </div>
-        <div id="dataP4" class="display dataP4 ">
-        </div>
-        <div class="p-1 mb-2 bg-dark bg-gradient text-white">
+        <div id="dataP4" class="display dataP4 "></div>
+        <div class="p-1 mb-2 bg-dark bg-gradient text-white display dataP5">
             <h2 class="text-center m-0" id="Phase5"></h2>
         </div>
         <div id="dataP5" class="display dataP5"></div>
-        <div class="p-1 mb-2 bg-dark bg-gradient text-white">
+        <div class="p-1 mb-2 bg-dark bg-gradient text-white display dataP9">
             <h2 class="text-center m-0" id="Phase9"></h2>
         </div>
         <div id="dataP9" class="display dataP9"></div>
@@ -38,9 +45,22 @@
 <!-- Phase end -->
     </div>
 </div>
-
-
-
 {% endblock %}
 {% block script %}
+<script>
+  "use strict";
+  var station = {{ station|default("")|tojson }};
+
+  var inputOP = $('select#selectionGP');
+
+  for (var key in station) {
+    inputOP.append($("<optgroup id='"+key+"' label='"+key+"'>"+"</optgroup>"))
+    //inputOP.append($('<optgroup/>', {'value': key, 'text': key}));
+  }
+  for (var i in station.OP2){
+    var value = station.OP2[i].substring(0,1)+station.OP2[i].substring(6)
+    $('#'+key).append($('<option/>', {'value': value, 'text': station.OP2[i]}))
+    console.log()
+  }
+</script>
 {% endblock %}
