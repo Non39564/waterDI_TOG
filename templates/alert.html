@@ -90,9 +90,6 @@
           <i class="fa fa-file-excel me-2"></i><span>generate excel</span>
         </button>
       </form>
-      <!-- <a type="button" class="btn btn-success mb-3" href='/export_alert'>
-        <i class="fa fa-file-excel me-2"></i><span>generate excel</span>
-      </a> -->
       <table class="display dataTable " id="alert">
         <thead class="bg-light">
           <tr>
@@ -111,15 +108,9 @@
   {% endblock %} {% block script %}
   
   <script>
-  
    $(document).ready(function() {
-    
-    
-  
     var st_date = '';
     var end_date = '';
-  
-  
     $("#pickadate_start").flatpickr({
       onChange: function(selectedDates, dateStr, instance) {
         st_date = dateStr;
@@ -148,6 +139,11 @@
             d.enddate = end_date
           }
         },
+        //"drawCallback": function (settings) { 
+          // Here the response
+        //  var response = settings.json;
+        //  console.log(response);
+        //},
         lengthMenu: [
           [10, 20, 30, 40, 50, 100], 
           [10, 20, 30, 40, 50, 100]
@@ -184,7 +180,7 @@
             visible: false,
             searchable: false,
             render: function (data, type, row, meta) {
-              return moment.utc(data).local().format("YYYY-MM-DD hh:mm:ss");
+             return moment.utc(data).local().format("YYYY-MM-DD hh:mm:ss");
             },
           },
           {
@@ -195,16 +191,16 @@
               return moment.utc(data).local().format("YYYY-MM-DD");
             },
           },
-          
+          {
+            type : 'time-uni',
+            targets : 2
+          },
         ]
       });
-  
       $("#submit").on("click", function () {
         Alert_table.ajax.reload();
       });
-    
    });
-    
   </script>
   
   {% endblock %}

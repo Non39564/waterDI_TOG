@@ -190,8 +190,11 @@ window.Apex = {
       data: generateMinuteWiseTimeSeries(new Date().getTime(), 12)
     }],
     xaxis: {
-      type: 'datetime',
-      range: 30000
+        labels: {
+            show: false
+          },
+        type: 'datetime',
+        range: 30000
     }
   }
   
@@ -226,7 +229,8 @@ window.Apex = {
         //######################################################################
       }
       $( "#freence" ).text("Frequency is " + json[0]["Frequency"] + " Hz");
-      
+      $( "#temp" ).text("Coolant Temp is " + json[0]["Coolant Temp"] + " C");
+ 
       if (json[0].Mode === "Auto"){
         $('#Mode_Switch').text("Auto");
         $('#Mode_Switch').addClass("text-success");

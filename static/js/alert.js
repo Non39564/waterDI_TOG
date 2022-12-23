@@ -20,7 +20,7 @@ function alert() {
         if (json[i].Data[j].Water < 10) {
           var toast = new bootstrap.Toast(toastLiveExample);
           var macName = json[i].Data[j].id;
-          erroralert.push(macName);
+          erroralert.push(macName+" Status: Low");
         }
       }
       if (erroralert.length > 0) {
@@ -33,7 +33,7 @@ function alert() {
     }
   });
 }
-setInterval(alert, 1000);
+setInterval(alert, 30000);
 
 function AlertsLogin() {
   Swal.fire({

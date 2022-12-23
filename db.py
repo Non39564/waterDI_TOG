@@ -70,11 +70,11 @@ def get_error_name():
     Name = []
     connection = getConnection()
     sql = """SELECT machine_data.Site
-            FROM machine_station
-            JOIN machine ON machine_station.ID = machine.ID
-            JOIN machine_data ON machine_data.Machine = machine.Machine
-            JOIN di_error ON di_error.Site = machine_data.Site
-            GROUP BY machine_data.Site"""
+                FROM machine_station
+                JOIN machine ON machine_station.ID = machine.ID
+                JOIN machine_data ON machine_data.Machine = machine.Machine
+                JOIN di_error ON di_error.Site = machine_data.Site
+                GROUP BY machine_data.Site"""
     cursor = connection.cursor()
     cursor.execute(sql)
     data = cursor.fetchall()
@@ -580,6 +580,30 @@ def di_report_now(startdate, enddate):
     data = cursor.fetchall()
     return data
 
+def log_maintain(startdate, enddate):
+    connection = getConnection()
+    cursor = connection.cursor()
+    if startdate == '' or enddate == '':
+        sql = """SELECT log_matain.Username, log_matain.Site, log_matain.Date, log_matain.Time, log_matain.Date_Finish, state_maintain.Detail FROM log_matain
+        JOIN state_maintain ON state_maintain.StateID = log_matain.StateID ORDER BY log_matain.Date DESC, Time DESC"""
+    else :
+        sql = f"""SELECT log_matain.Username, log_matain.Site, log_matain.Date, log_matain.Time, log_matain.Date_Finish, state_maintain.Detail FROM log_matain
+        JOIN state_maintain ON state_maintain.StateID = log_matain.StateID WHERE log_matain.Date BETWEEN '{startdate}' and '{enddate}' ORDER BY log_matain.Date DESC, Time DESC"""
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    return data
+
+def site_maintain():
+    datalist = []
+    connection = getConnection()
+    cursor = connection.cursor()
+    sql = """SELECT Site FROM log_matain GROUP BY Site"""
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    for i in data:
+        datalist.append(i['Site'])
+    return datalist
+
 def report_Site_Name():
     Name = []
     connection = getConnection()
@@ -895,14 +919,16 @@ def columnP4():
 def tableP4():
     connection = getConnection()
     cursor = connection.cursor()
-    datatable = """SELECT di_report.Date,
-    MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2",
-    MAX(CASE WHEN di_report.Site = "Fisa 4" THEN di_report.Water END) "Fisa 4",
-    MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT"
-    FROM di_report
-    GROUP BY di_report.Date
-    ORDER BY di_report.Date ASC, di_report.Time ASC
-    LIMIT 31"""
+    datatable = """SELECT * FROM (
+        SELECT di_report.Date,
+        MAX(CASE WHEN di_report.Site = "Fisa 2" THEN di_report.Water END) "Fisa 2", 
+        MAX(CASE WHEN di_report.Site = "Fisa 4" THEN di_report.Water END) "Fisa 4", 
+        MAX(CASE WHEN di_report.Site = "ROBOT" THEN di_report.Water END) "ROBOT" 
+        FROM di_report 
+        GROUP BY di_report.Date 
+        ORDER BY di_report.Date DESC 
+        LIMIT 31) tableP4
+        ORDER BY Date ASC"""
     cursor.execute(datatable)
     data = cursor.fetchall()
     for i in range(len(data)): 
@@ -925,7 +951,8 @@ def columnP5():
 def tableP5():
     connection = getConnection()
     cursor = connection.cursor()
-    datatable = """SELECT di_report.Date,
+    datatable = """SELECT * FROM (
+    SELECT di_report.Date,
     MAX(CASE WHEN di_report.Site = "Fisa 3" THEN di_report.Water END) "Fisa 3",
     MAX(CASE WHEN di_report.Site = "L13" THEN di_report.Water END) "L13",
     MAX(CASE WHEN di_report.Site = "L14" THEN di_report.Water END) "L14",
@@ -933,8 +960,9 @@ def tableP5():
     MAX(CASE WHEN di_report.Site = "L15 Station 2" THEN di_report.Water END) "L15 Station 2"
     FROM di_report
     GROUP BY di_report.Date
-    ORDER BY di_report.Date ASC, di_report.Time ASC
-    LIMIT 31"""
+    ORDER BY di_report.Date DESC
+    LIMIT 31) tableP5
+    ORDER BY Date ASC"""
     cursor.execute(datatable)
     data = cursor.fetchall()
     for i in range(len(data)): 
@@ -957,7 +985,8 @@ def columnP9():
 def tableP9():
     connection = getConnection()
     cursor = connection.cursor()
-    datatable = """SELECT di_report.Date,
+    datatable = """SELECT * FROM (
+    SELECT di_report.Date,
     MAX(CASE WHEN di_report.Site = "HC-6" THEN di_report.Water END) "HC-6",
     MAX(CASE WHEN di_report.Site = "HC-3" THEN di_report.Water END) "HC-3",
     MAX(CASE WHEN di_report.Site = "AI" THEN di_report.Water END) "AI",
@@ -966,8 +995,9 @@ def tableP9():
     MAX(CASE WHEN di_report.Site = "HC-5 Station 2" THEN di_report.Water END) "HC-5 Station 2"
     FROM di_report
     GROUP BY di_report.Date
-    ORDER BY di_report.Date ASC, di_report.Time ASC
-    LIMIT 31"""
+    ORDER BY di_report.Date DESC
+    LIMIT 31) tableP9
+    ORDER BY Date ASC"""
     cursor.execute(datatable)
     data = cursor.fetchall()
     for i in range(len(data)): 
@@ -1020,6 +1050,17 @@ def find_DepartmentID(user):
         DepartmentID.append(data[row]["DepartmentID"])
     return DepartmentID
 
+def find_position(user):
+    DepartmentID = []
+    connection = getConnection()
+    cursor = connection.cursor()
+    find_DepartmentID = "select * from user where Username = '%s'" % (user)
+    cursor.execute(find_DepartmentID)
+    data = cursor.fetchall()
+    for row in range(len(data)):
+        DepartmentID.append(data[row]["position"])
+    return DepartmentID
+
 def users_permission():
     users = find_users()
     myDict = {}
@@ -1030,25 +1071,131 @@ def users_permission():
         
         lst_p = {}
         password = find_DepartmentID(user)
+        po = find_position(user)
         for word in password:
             lst_p["DepartmentID"] = (word)
+        for word in po:
+            lst_p["position"] = (word)
         myDict[key] = lst_p
     class_entry_relations = myDict
     return class_entry_relations
 
-def find_Maintain():
+def find_Maintain(startdate, enddate):
     connection = getConnection()
     cursor = connection.cursor()
-    find_Maintain = """SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
-    (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
-    FROM off_set
-    JOIN phase on phase.Site = off_set.Site
-    JOIN Maintain_data on Maintain_data.Site = off_set.Site
-    JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
-    JOIN di_error ON di_error.Site = maintain_data.Site
-    WHERE off_set.Status_Di != 'N' and off_set.Status_Temp != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error)
-    GROUP BY phase.Site
-    ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    if startdate == '' or enddate == '':
+        find_Maintain = """SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error)
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    else :
+        find_Maintain = f"""SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) 
+        and Date BETWEEN '{startdate}' and '{enddate}'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    cursor.execute(find_Maintain)
+    data = cursor.fetchall()
+    return data
+
+def find_Maintain_P4(startdate, enddate):
+    connection = getConnection()
+    cursor = connection.cursor()
+    if startdate == '' or enddate == '':
+        find_Maintain = """SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) and phase.Phase = 'Phase 4'
+        GROUP BY phase.Site 
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    else :
+        find_Maintain = f"""SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) 
+        and phase.Phase = 'Phase 4' and Date BETWEEN '{startdate}' and '{enddate}'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    cursor.execute(find_Maintain)
+    data = cursor.fetchall()
+    return data
+
+def find_Maintain_P5(startdate, enddate):
+    connection = getConnection()
+    cursor = connection.cursor()
+    if startdate == '' or enddate == '':
+        find_Maintain = """SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) and phase.Phase = 'Phase 5'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    else :
+        find_Maintain = f"""SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) 
+        and phase.Phase = 'Phase 5' and Date BETWEEN '{startdate}' and '{enddate}'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    cursor.execute(find_Maintain)
+    data = cursor.fetchall()
+    return data
+
+def find_Maintain_P9(startdate, enddate):
+    connection = getConnection()
+    cursor = connection.cursor()
+    if startdate == '' or enddate == '':
+        find_Maintain = """SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) and phase.Phase = 'Phase 9'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
+    else :
+        find_Maintain = f"""SELECT phase.OP, phase.Phase, phase.Site, off_set.Status_Di, off_set.Status_Temp, state_maintain.Detail,
+        (di_error.Date) as Date, Max(di_error.Time) as Time, MAX(di_error.Water) as Water
+        FROM off_set
+        JOIN phase on phase.Site = off_set.Site
+        JOIN Maintain_data on Maintain_data.Site = off_set.Site
+        JOIN State_maintain on maintain_data.StateID = state_maintain.StateID
+        JOIN di_error ON di_error.Site = maintain_data.Site
+        WHERE off_set.Status_Di != 'N' and di_error.Date IN(SELECT MAX(di_error.Date) FROM di_error) 
+        and phase.Phase = 'Phase 9' and Date BETWEEN '{startdate}' and '{enddate}'
+        GROUP BY phase.Site
+        ORDER BY di_error.Date DESC, di_error.Time DESC"""
     cursor.execute(find_Maintain)
     data = cursor.fetchall()
     return data
@@ -1071,10 +1218,10 @@ def update_process(Username, State, Site):
     data = cursor.fetchall()
     return data
 
-def insert_process(Username, State, Site, Date, Time):
+def insert_process(Username, State, Site, Date, Time, Date_finish):
     connection = getConnection()
     cursor = connection.cursor()
-    insert_process = f"""INSERT INTO log_matain(Username, Site, StateID, Date, Time) VALUES ('{Username}','{Site}','{State}','{Date}','{Time}')"""
+    insert_process = f"""INSERT INTO log_matain(Username, Site, StateID, Date, Time, Date_Finish) VALUES ('{Username}','{Site}','{State}','{Date}','{Time}','{Date_finish}')"""
     cursor.execute(insert_process)
     connection.commit()
 
@@ -1086,6 +1233,16 @@ def show_process(Site):
     JOIN user on log_matain.Username = user.Username
     JOIN department on department.departmentID = user.departmentID
     WHERE log_matain.Site = '{Site}' ORDER BY Date DESC, Time DESC LIMIT 1"""
+    cursor.execute(show_process)
+    data = cursor.fetchall()
+    return data
+
+def show_all_process():
+    connection = getConnection()
+    cursor = connection.cursor()
+    show_process = f"""SELECT * FROM log_matain JOIN state_maintain on state_maintain.StateID = log_matain.StateID 
+    JOIN user on log_matain.Username = user.Username JOIN department on department.departmentID = user.departmentID 
+    GROUP BY log_matain.Site , Date ORDER BY Date DESC, Time DESC"""
     cursor.execute(show_process)
     data = cursor.fetchall()
     return data
@@ -1170,5 +1327,12 @@ def detail_timeline(KeyWork):
     cursor.execute(Select_Timeline)
     data = cursor.fetchall()
     return data    
+
+def approved_status(Site):
+    connection = getConnection()
+    cursor = connection.cursor()
+    updateStatus = f"""UPDATE maintain_data SET StateID='5' WHERE Site = '{Site}'"""
+    cursor.execute(updateStatus)
+    connection.commit()
 
 ########################### End Function DB ###########################

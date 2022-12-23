@@ -19,7 +19,7 @@ body {
   }
   
   .content-area {
-    max-width: 1280px;
+    max-width: auto;
     margin: 0 auto;
   }
   
@@ -55,8 +55,14 @@ body {
     display: none;
   }
   
+  .color-purple-Violet{
+    color: #f529ee;
+  }
+  .color-yellow-texas{
+    background-color: #ffeb0e;
+  }
   .color-purple{
-    background-color: #D462FF;
+    color: #D462FF;
   }
   .color-zombie-green{
     background-color: #54C571;

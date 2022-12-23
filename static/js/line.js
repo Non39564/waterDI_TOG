@@ -39,18 +39,18 @@ function drawLineChart() {
           title: 'Phase4',
         },
         series: {
-          1: {
+          2: {
             areaOpacity: 0.6,
             color: '#EF9A9A',
             visibleInLegend: false,
             type: 'area'
           },
-          2: {
+          3: {
             areaOpacity: 0.6,
             color: '#fee000',
             visibleInLegend: false,
             type: 'area'},
-          3: {
+          4: {
             areaOpacity: 0.6,
             color: '#9ff78d',
             visibleInLegend: false,
@@ -70,18 +70,18 @@ function drawLineChart() {
         title: 'Phase5',
       },
       series: {
-        1: {
+        0: {
           areaOpacity: 0.6,
           color: '#EF9A9A',
           visibleInLegend: false,
           type: 'area'
         },
-        2: {
+        1: {
           areaOpacity: 0.6,
           color: '#fee000',
           visibleInLegend: false,
           type: 'area'},
-        3: {
+        2: {
           areaOpacity: 0.6,
           color: '#9ff78d',
           visibleInLegend: false,
@@ -170,16 +170,19 @@ function drawLineChart() {
         dataLP4.addColumn('number', 'Monitor');
         dataLP4.addColumn('number', 'Normal');
         for (i = 0; i < timer.length; i++){
-          dataLP4.addRow([timer[i], ROBOT[i], 10, 3, 17]);//, Fisa2[i], Fisa4[i]
+          dataLP4.addRow([timer[i], ROBOT[i], Fisa4[i], 10, 3, 17]);
         };
         
         var dataLP5 = new google.visualization.DataTable();
         dataLP5.addColumn('string', 'Time');
+        dataLP5.addColumn('number', 'Low');
+        dataLP5.addColumn('number', 'Monitor');
+        dataLP5.addColumn('number', 'Normal');
         for (i in json[1].Data){
           dataLP5.addColumn('number', json[1].Data[i].id);
         }
         for(i = 0; i < timer.length; i++){
-          dataLP5.addRow([timer[i]]);//, L15Station1[i], L15Station2[i], Fisa3[i], L13[i], L14[i]
+          dataLP5.addRow([timer[i], 10, 3, 17, L15Station1[i],L15Station2[i], Fisa3[i]]);//, L15Station2[i], L13[i], L14[i]
         };
 
         var dataLP9 = new google.visualization.DataTable();

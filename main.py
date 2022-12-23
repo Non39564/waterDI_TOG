@@ -10,6 +10,8 @@ from datetime import datetime
 from pymongo import MongoClient
 from docx import *
 import xlsxwriter
+from operator import itemgetter
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = 'waterdishow'
@@ -18,8 +20,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 error = showerror()
 user_recept = show_recept()
-passive = "False"
-MM = "False"
+passive = "False" #Setup
+MM = "False" #ManageMachine
 render_template = partial(real_render_template, error=error, user_recept=user_recept, passive = passive, MM = MM)
 
 def allowed_file(filename):
@@ -101,7 +103,7 @@ def login():
                     passive = 'True'
                     MM = 'False'
                 elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-                    passive = 'False'
+                    passive = 'True'
                     MM = 'True'
                 else:
                     passive = 'False'
@@ -144,7 +146,7 @@ def addmachine():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -243,7 +245,7 @@ def setup():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -327,7 +329,7 @@ def confirm_request():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -346,7 +348,7 @@ def document():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -369,7 +371,7 @@ def document_it():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -414,6 +416,13 @@ def update_status_doc():
             SelectDoc = SelectDoc_IT()
             update_state_doc(Status, KeyWork)
             return flask.redirect(flask.url_for('document', SelectDoc = SelectDoc, Access = Access))
+        
+@app.route('/approved')
+@flask_login.login_required
+def approved():
+    Site = request.args.get('site')
+    approved_status(Site)
+    return flask.redirect(flask.url_for('editProcess'))
 
 @app.route('/edit_maintain', methods=['GET', 'POST'])
 @flask_login.login_required
@@ -436,11 +445,12 @@ def edit_maintain_value():
         values = result.values()
         values_Site = list(values)
         Site = values_Site[0]
-        State = values_Site[7]
+        State = values_Site[8]
         Date = values_Site[5]
-        Time = values_Site[6]
+        Time = values_Site[7]
+        Date_finish = values_Site[6]
         update_process(flask_login.current_user.get_id(), State, Site)
-        insert_process(flask_login.current_user.get_id(), State, Site, Date, Time)
+        insert_process(flask_login.current_user.get_id(), State, Site, Date, Time, Date_finish)
     return flask.redirect(flask.url_for('blank'))
 
 @app.route('/popup-acKnow')
@@ -504,7 +514,7 @@ def requestTimeline():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -512,10 +522,16 @@ def requestTimeline():
     Timeline = Select_Timeline()
     return render_template('request-timeline.html', Select_Timeline = Timeline, passive = passive, MM = MM)
 
-@app.route('/view-process')
+@app.route('/edit-process', methods=['POST', 'GET'])
 @flask_login.login_required
-def viewProcess():
-    maintain = find_Maintain()
+def editProcess():
+    startdate = ''
+    enddate = ''
+    finishing = 'False'
+    if request.method == 'POST':
+        startdate = request.form['st_view_process']
+        enddate =  request.form['end_view_process']
+    maintain = find_Maintain(startdate, enddate)
     if flask_login.current_user.is_anonymous:
         passive = "False"
         Access = "False"
@@ -525,14 +541,81 @@ def viewProcess():
         passive = "True"
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'True'
+        MM = 'True'
+        Access = "False"
+    elif 2 == permission[flask_login.current_user.get_id()]['DepartmentID']:
         passive = 'False'
         MM = 'True'
         Access = "False"
+        maintain = find_Maintain_P4(startdate, enddate)
+    elif 4 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'False'
+        MM = 'True'
+        Access = "False"
+        maintain = find_Maintain_P9(startdate, enddate)
+    elif 6 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'False'
+        MM = 'True'
+        Access = "False"
+        maintain = find_Maintain_P5(startdate, enddate)
     else :
         Access = "False"
         passive = "False"
         MM = 'False'
-    return render_template('view-process.html', maintain = maintain, Access = Access, passive = passive, MM = MM) 
+    if "Production Engineer" == permission[flask_login.current_user.get_id()]['position']:
+        finishing = 'True'
+    print(finishing)
+    start = f'{startdate}'
+    end = f'{enddate}'
+    return render_template('edit-process.html', maintain = maintain, Access = Access, passive = passive, MM = MM, startdate = start, enddate = end, finishing = finishing) 
+
+@app.route('/view-process', methods=['POST', 'GET'])
+@flask_login.login_required
+def viewProcess():
+    startdate = ''
+    enddate = ''
+    if request.method == 'POST':
+        startdate = request.form['st_view_process']
+        enddate =  request.form['end_view_process']
+    maintain = find_Maintain(startdate, enddate)
+    if flask_login.current_user.is_anonymous:
+        passive = "False"
+        Access = "False"
+        MM = 'False'
+    elif 3 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        Access = "True"
+        passive = "True"
+        MM = 'False'
+    elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'True'
+        MM = 'True'
+        Access = "False"
+    elif 2 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'False'
+        MM = 'True'
+        Access = "False"
+        maintain = find_Maintain_P4(startdate, enddate)
+    elif 4 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'False'
+        MM = 'True'
+        Access = "False"
+        maintain = find_Maintain_P9(startdate, enddate)
+    elif 6 == permission[flask_login.current_user.get_id()]['DepartmentID']:
+        passive = 'False'
+        MM = 'True'
+        Access = "False"
+        maintain = find_Maintain_P5(startdate, enddate)
+    else :
+        Access = "False"
+        passive = "False"
+        MM = 'False'
+    start = f'{startdate}'
+    end = f'{enddate}'
+    print(start, end)
+    Site = request.args.get('show')
+    process = show_all_process()
+    return render_template('view-process.html', maintain = maintain, process = process, Access = Access, passive = passive, MM = MM, startdate = start, enddate = end) 
     
         
 ############################################################## End Function Login #################################################
@@ -547,7 +630,7 @@ def index():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -585,7 +668,7 @@ def data_line():
                 'Site': d['Site'],
                 'DIWater': d['Water'],
                 'Date': d['Date'],
-                'Time': str(d['Time']),
+                'Time': str(pd.to_datetime(d['Time'], format="%H:%M:%S").time()),
                 'Temp':d['Temp']
             })
         response = {
@@ -605,7 +688,7 @@ def line():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -657,9 +740,11 @@ def data_alert():
                 'Site': d['Site'],
                 'Detail': d['Detail'],
                 'Date': d['Date'],
-                'Time': str(d['Time']),
+                'Time': str(pd.to_datetime(d['Time'], format="%H:%M:%S").time()), #convert h:mm:ss -> hh:mm:ss
                 'Date_Time': (datetime.combine(d['Date'],(datetime.min + d['Time']).time()))
             })
+            
+        data = sorted(data, key=itemgetter('Date_Time'), reverse=True)
         response = {
                 'draw': draw,
                 'iTotalRecords': totalRecordwithFilter,
@@ -677,7 +762,7 @@ def alert():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -790,6 +875,38 @@ def export_trend():
     return send_file(f'Trend_Water Di Phase {phase}.xlsx',mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         as_attachment=True, download_name=f'Trend_Water Di Phase {phase}_{date}.xlsx')     
     
+@app.route('/export_log_Maintain', methods=["POST","GET"])
+def export_log_Maintain():
+    startdate = request.args.get('startdate')
+    enddate = request.args.get('enddate')
+    print(startdate,enddate)
+    report = log_maintain(startdate,enddate)
+    Site = site_maintain()
+
+    workbook   = xlsxwriter.Workbook('log_maintain.xlsx')
+    num = 1
+    for i in range(len(Site)):
+        worksheet = workbook.add_worksheet(Site[i])
+        worksheet.write(0, 0, 'Date') 
+        worksheet.write(0, 1, 'Time') 
+        worksheet.write(0, 2, 'Date_Finish') 
+        worksheet.write(0, 3, 'Site') 
+        worksheet.write(0, 4, 'Username') 
+        for j in range(len(report)):
+            if report[j]['Site'] == Site[i]:
+                worksheet.write(num, 0, str(report[j]['Date'])) 
+                worksheet.write(num, 1, str(report[j]['Time'])) 
+                worksheet.write(num, 2, str(report[j]['Date_Finish'])) 
+                worksheet.write(num, 3, report[j]['Site']) 
+                worksheet.write(num, 4, report[j]['Username']) 
+                num += 1
+        num = 1
+    workbook.close()
+    now = datetime.now()
+    date = now.strftime("%Y%m%d")
+    return send_file('log_maintain.xlsx',mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                     as_attachment=True, download_name=f'log_maintain_{date}.xlsx')
+
 
 @app.route('/trendDi')
 def trendDi():
@@ -800,7 +917,7 @@ def trendDi():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'
@@ -849,7 +966,7 @@ def data_di_P4():
                 'Site': d['Site'],
                 'Water': d['Water'],
                 'Date': d['Date'],
-                'Time': str(d['Time']),
+                'Time': str(pd.to_datetime(d['Time'], format="%H:%M:%S").time()),
                 'Temp':d['Temp']
             })
         response = {
@@ -888,7 +1005,7 @@ def data_di_P5():
                 'Site': d['Site'],
                 'Water': d['Water'],
                 'Date': d['Date'],
-                'Time': str(d['Time']),
+                'Time': str(pd.to_datetime(d['Time'], format="%H:%M:%S").time()),
                 'Temp':d['Temp']
             })
         response = {
@@ -928,7 +1045,7 @@ def data_di_P9():
                 'Site': d['Site'],
                 'Water': d['Water'],
                 'Date': d['Date'],
-                'Time': str(d['Time']),
+                'Time': str(pd.to_datetime(d['Time'], format="%H:%M:%S").time()),
                 'Temp':d['Temp']
             })
         response = {
@@ -948,7 +1065,7 @@ def trendDiChart():
         passive = 'True'
         MM = 'False'
     elif 1 == permission[flask_login.current_user.get_id()]['DepartmentID']:
-        passive = 'False'
+        passive = 'True'
         MM = 'True'
     else:
         passive = 'False'

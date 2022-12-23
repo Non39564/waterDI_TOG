@@ -36,6 +36,7 @@ def get_data(host,port):
             else:
                 rr[i] = float(rr[i] / 100)
             l.append(rr[i])
+        c.close()
         return l,True
     except:
         l = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
@@ -96,14 +97,14 @@ def line_bot_error_water(Site,status,data,date,time,min,max):
     for i in range(len(token)):
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
         msg = f"""
-        รายงานแจ้งเตือนสถานะค่าน้ำ DI 
-        ชื่อจุดติดตั้ง : {Site}
-        สถานะแจ้งเตือน : {status}
-        ค่าน้ำที่วัดได้ : {data} 
-        วันที่รายงาน : {date}
-        เวลาที่รายงาน : {time}
-        ไม่ต่ำกว่า : {min} 
-        ไม่เกินกว่า : {max}"""
+รายงานแจ้งเตือนสถานะค่าน้ำ DI 
+ชื่อจุดติดตั้ง : {Site}
+สถานะแจ้งเตือน : {status}
+ค่าน้ำที่วัดได้ : {data} 
+วันที่รายงาน : {date}
+เวลาที่รายงาน : {time}
+ไม่ต่ำกว่า : {min} 
+ไม่เกินกว่า : {max}"""
         try:
             r = requests.post(url, headers=headers, data = {'message':msg})
         except:
@@ -134,14 +135,14 @@ def line_bot_error_temp(Site,status,data,date,time,min,max):
     for i in range(len(token)):
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
         msg = f"""
-        รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
-        ชื่อจุดติดตั้ง : {Site}
-        สถานะแจ้งเตือน : {status}
-        ค่าอุณหภูมิที่วัดได้ : {data} 
-        วันที่รายงาน : {date}
-        เวลาที่รายงาน : {time}
-        ไม่ต่ำกว่า : {min} 
-        ไม่เกินกว่า : {max}"""
+รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
+ชื่อจุดติดตั้ง : {Site}
+สถานะแจ้งเตือน : {status}
+ค่าอุณหภูมิที่วัดได้ : {data} 
+วันที่รายงาน : {date}
+เวลาที่รายงาน : {time}
+ไม่ต่ำกว่า : {min} 
+ไม่เกินกว่า : {max}"""
         r = requests.post(url, headers=headers, data = {'message':msg})
     if status == 'Normal':
         pass
@@ -169,14 +170,14 @@ def Error_alarm(host,port):
     for i in range(len(token)):
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token[i]}
         msg = """
-        รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
-        ชื่อจุดติดตั้ง : {Site}
-        สถานะแจ้งเตือน : {status}
-        ค่าอุณหภูมิที่วัดได้ : {data} 
-        วันที่รายงาน : {date}
-        เวลาที่รายงาน : {time}
-        ไม่ต่ำกว่า : {min} 
-        ไม่เกินกว่า : {max}"""
+รายงานแจ้งเตือนสถานะค่าอุณหภูมิ
+ชื่อจุดติดตั้ง : {Site}
+สถานะแจ้งเตือน : {status}
+ค่าอุณหภูมิที่วัดได้ : {data} 
+วันที่รายงาน : {date}
+เวลาที่รายงาน : {time}
+ไม่ต่ำกว่า : {min} 
+ไม่เกินกว่า : {max}"""
         r = requests.post(url, headers=headers, data = {'message':msg})
     
     
@@ -304,13 +305,22 @@ def Alarm(Site,offset,water,temp,connection_check):
             maxt = os['Hight_Temp']
             water_check(Site,minw,maxw,water,date,time,connection_check)
             temp_check(Site,mint,maxt,temp,date,time,connection_check)
-                
-def insert_report(Station,Phase,Site,Temp,Water,connection_check):
+    
+    
+datalist = []  
+            
+def insert_report(Station,Phase,Site,connection_check):
     now = datetime.now()
     insert_time = now.strftime("%Y-%m-%d %H:00:00")
     d,t = insert_time.split(" ")
+    Temp = 0
+    Water = 0
     connection = getConnection()
     if connection_check is True:
+        for i in range(len(datalist)):
+            if datalist[i]["OP"] == Station and datalist[i]["Phase"] == Phase and datalist[i]["Site"] == Site:
+                Temp = Temp+datalist[i]["Temp"]
+                Water = Water+datalist[i]["Water"]
         if Water > 30 or Water < 10:
             State = 'Low'
         elif 10 < Water <= 12 or  28 <= Water < 30:
@@ -325,11 +335,25 @@ def insert_report(Station,Phase,Site,Temp,Water,connection_check):
     cursor.execute(sql)
     connection.commit()
             
-            
+          
 set_time = ""
 dataexport = []
 times = 0
 save = False
+
+def append_data_before10min(OP,Phase,Site,Temp,Water):
+    if len(datalist) == 0 :
+        datalist.append({"OP":OP,"Phase":Phase,"Site":Site,"Temp":Temp, "Water":Water})
+    else:
+        count = 0
+        for dl in range(len(datalist)):
+            if datalist[dl]["OP"] == OP and datalist[dl]["Phase"] == Phase and datalist[dl]["Site"] == Site:
+                datalist[dl]["Temp"] = (datalist[dl]["Temp"]+Temp)/2
+                datalist[dl]["Water"] = (datalist[dl]["Water"]+Water)/2
+                count =+1
+                
+        if count == 0:
+            datalist.append({"OP":OP,"Phase":Phase,"Site":Site,"Temp":Temp, "Water":Water})  
 
 while True:
     now = datetime.now()
@@ -338,6 +362,7 @@ while True:
     
     offset = get_offset_data()
     ti = now.strftime("%H")
+    minus = int(now.strftime("%M"))
     print(times)
     if ti != times:
         times = ti
@@ -353,7 +378,7 @@ while True:
     cursor = connection.cursor()
     cursor.execute(sql)
     m = cursor.fetchall()
-    
+
     for i in m:
         if i['Ip']+":"+str(i['Port']) not in ip_port:
             ip_port.append(i['Ip']+":"+str(i['Port']))
@@ -376,16 +401,17 @@ while True:
         cursor.execute(sql)
         re = cursor.fetchall()
         if len(re) > 0:
-            # ip port site op phase
             for m in re:
                 for k in range(len(ip_port)):
                     if m['Ip']+":"+str(m['Port']) == ip_port[k]:
                         pw,mw,pt,mt = get_offset(m['Site'],offset)
                         water_data = (data[k][m['Slot_Water']-1] + pw) - mw
                         temp_data = (data[k][m['Slot_Temp']-1] + pt) - mt
-                        
                         water_data = round(water_data, 2)
                         temp_data = round(temp_data, 2)
+                        
+                        if minus == 50:
+                            append_data_before10min(m['OP'],m['phase'],m['Site'],temp_data,water_data)
                             
                         if water_data == -1 and temp_data == -1:
                             pass
@@ -395,16 +421,12 @@ while True:
                             lists['Data'].append(dicts)
                         else:
                             if save is True:
-                                insert_report(m['OP'],m['phase'],m['Site'],temp_data,water_data,connection_check[k])
-                            
+                                insert_report(m['OP'],m['phase'],m['Site'],connection_check[k])
                             Alarm(m['Site'],offset,water_data,temp_data,connection_check[k])
                             dicts = {"id":m['Site'],"Water":water_data,"Temp":temp_data}
                             if connection_check[k] is True:
                                 lists['Data'].append(dicts)
-                        
-                  
             report.append(lists)     
-       
     num = []
     for i in range(len(report)):
         num.append(report[i]['Phase'])
@@ -429,6 +451,8 @@ while True:
     except:
         print("Don't send to server")
     insert_to_mongodb(newlist)
-    print()          
-    time.sleep(1)
+    print() 
+    print(datalist)    
+    print()      
+    time.sleep(10)
 

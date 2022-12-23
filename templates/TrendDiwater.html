@@ -125,11 +125,7 @@ function drawChartLine_Phase5() {
   };
   
   var chart = new google.visualization.ComboChart(document.getElementById('linechart_Phase5'));
-  if (data["Wf"][0]["c"][1]["v"] === 0){
-    $( "#dataP5" ).text( "No data available" );
-  } else {
-    chart.draw(data, options);
-  }
+  chart.draw(data, options);
   }
 
   function drawChartLine_Phase9() {
@@ -360,8 +356,6 @@ $(window).resize(function(){
     })
     $( ".Export4" ).click(function() {
     window.location.href=`export_trend?phase=4&startdate=${st_date_p4}&enddate=${end_date_p4}`;
-    //window.open("export_trend?phase=4", "_blank", 
-    //"toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=300,width=800,height=500");
     })
     var data_table = $("#P4").DataTable({
       processing: true,
